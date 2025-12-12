@@ -13,7 +13,7 @@ const AboutPage = () => {
                         <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-2xl rotate-y-12">
                             <img
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmHoj0vChTuwRwtj4WMJB_K9TL4vBvRxb_58w3tE5hI_0c3EwhXM9rL2oijC2VuLBvc_jwud3uawTIwKumgLE2K5Q4dE_Od4MedX3mtrYD3GSqkQvPH8yIXSM3FL_b4p2JWH8MyXuYXMZzweYwVq9gCKCYw7w604pT9jzzQRO3fkWympgDWXcKtFKKShQam2j3w3IU7Rx76HyQGOGoj7IqOVdmtn09BJDlOUF-ZtB5BCvw3xtLyABS8s6G_2gxQd2bq-C1T5E9zmod"
-                                alt="Alex Morgan Portrait"
+                                alt="Shedrick Flowers Portrait"
                                 className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
                             />
                         </div>

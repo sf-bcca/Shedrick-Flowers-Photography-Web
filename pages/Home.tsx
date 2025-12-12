@@ -121,7 +121,7 @@ const HomePage = () => {
                     <div className="flex flex-col items-center gap-6 mb-12">
                         <img
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"
-                            alt="Alex Morgan - Lead Photographer"
+                            alt="Shedrick Flowers - Lead Photographer"
                             loading="lazy"
                             className="w-20 h-20 rounded-full object-cover border-4 border-background-dark ring-2 ring-primary"
                         />
