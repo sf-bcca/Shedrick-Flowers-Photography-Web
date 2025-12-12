@@ -120,7 +120,7 @@ export const Footer: React.FC = () => {
                      </div>
                 </div>
                 <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
-                    <p>© 2024 {siteTitle} Photography. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} {siteTitle}. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link to="/about" className="hover:text-white transition-colors">About</Link>
                         <Link to="/services" className="hover:text-white transition-colors">Services</Link>
