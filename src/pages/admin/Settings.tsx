@@ -14,6 +14,11 @@ const Settings = () => {
     const [siteDesc, setSiteDesc] = useState('');
     const [logoUrl, setLogoUrl] = useState('');
     const [contactEmail, setContactEmail] = useState('');
+    const [contactPhone, setContactPhone] = useState('');
+    const [contactAddressStreet, setContactAddressStreet] = useState('');
+    const [contactAddressCity, setContactAddressCity] = useState('');
+    const [contactAddressState, setContactAddressState] = useState('');
+    const [contactAddressZip, setContactAddressZip] = useState('');
 
     // Social Links
     const [socialLinks, setSocialLinks] = useState({
@@ -37,6 +42,11 @@ const Settings = () => {
             setSiteDesc(data.site_description || '');
             setLogoUrl(data.logo_url || '');
             setContactEmail(data.contact_email || '');
+            setContactPhone(data.contact_phone || '');
+            setContactAddressStreet(data.contact_address_street || '');
+            setContactAddressCity(data.contact_address_city || '');
+            setContactAddressState(data.contact_address_state || '');
+            setContactAddressZip(data.contact_address_zip || '');
             setSocialLinks({
                 facebook: data.social_links?.facebook || '',
                 twitter: data.social_links?.twitter || '',
@@ -56,6 +66,11 @@ const Settings = () => {
             site_description: siteDesc,
             logo_url: logoUrl,
             contact_email: contactEmail,
+            contact_phone: contactPhone,
+            contact_address_street: contactAddressStreet,
+            contact_address_city: contactAddressCity,
+            contact_address_state: contactAddressState,
+            contact_address_zip: contactAddressZip,
             social_links: socialLinks,
         };
 
@@ -290,6 +305,70 @@ const Settings = () => {
                                     )}
                                 </div>
                             )}
+                        </div>
+                    </section>
+
+                    {/* Contact Information */}
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 text-primary font-bold border-b border-slate-100 dark:border-white/5 pb-2">
+                            <Mail size={20} />
+                            <h2>Contact Information</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Phone Number</label>
+                                <input
+                                    type="tel"
+                                    value={contactPhone}
+                                    onChange={e => setContactPhone(e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
+                                    placeholder="+1 (555) 012-3456"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Street Address</label>
+                                <input
+                                    type="text"
+                                    value={contactAddressStreet}
+                                    onChange={e => setContactAddressStreet(e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
+                                    placeholder="123 Lens Avenue"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">City</label>
+                                <input
+                                    type="text"
+                                    value={contactAddressCity}
+                                    onChange={e => setContactAddressCity(e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
+                                    placeholder="Creative District"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">State</label>
+                                <input
+                                    type="text"
+                                    value={contactAddressState}
+                                    onChange={e => setContactAddressState(e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
+                                    placeholder="NY"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">ZIP Code</label>
+                                <input
+                                    type="text"
+                                    value={contactAddressZip}
+                                    onChange={e => setContactAddressZip(e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
+                                    placeholder="10012"
+                                />
+                            </div>
                         </div>
                     </section>
 

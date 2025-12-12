@@ -1,8 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageLayout } from '../components/Layout';
 import { StudioAssistant } from '../components/StudioAssistant';
+import { supabase } from '../services/supabaseClient';
 
 const ContactPage = () => {
+    const [settings, setSettings] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchSettings();
+    }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('settings')
+                .select('*')
+                .eq('id', 1)
+                .single();
+
+            if (data) {
+                setSettings(data);
+            }
+        } catch (error) {
+            console.error('Error fetching settings:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Fallback values
+    const email = settings?.contact_email || 'hello@linaphoto.com';
+    const phone = settings?.contact_phone || '+1 (555) 012-3456';
+    const addressStreet = settings?.contact_address_street || '123 Lens Avenue';
+    const addressCity = settings?.contact_address_city || 'Creative District';
+    const addressState = settings?.contact_address_state || 'NY';
+    const addressZip = settings?.contact_address_zip || '10012';
+
     return (
         <PageLayout>
             <StudioAssistant />
@@ -92,13 +126,13 @@ const ContactPage = () => {
                             <div className="rounded-3xl bg-slate-100 dark:bg-[#1a2232] p-8 lg:p-10 border border-transparent dark:border-white/5 shadow-xl">
                                 <h3 className="mb-8 text-2xl font-bold text-slate-900 dark:text-white">Contact Info</h3>
                                 <div className="space-y-8">
-                                    <a className="flex items-start gap-6 transition-all hover:translate-x-2 group" href="#">
+                                    <a className="flex items-start gap-6 transition-all hover:translate-x-2 group" href={`mailto:${email}`}>
                                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-[#243047] text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors">
                                             <span className="material-symbols-outlined text-2xl">alternate_email</span>
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-slate-500 dark:text-[#93a5c8] uppercase tracking-wide mb-1">Email</p>
-                                            <p className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">hello@linaphoto.com</p>
+                                            <p className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{email}</p>
                                         </div>
                                     </a>
                                     <div className="flex items-start gap-6">
@@ -107,18 +141,20 @@ const ContactPage = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-slate-500 dark:text-[#93a5c8] uppercase tracking-wide mb-1">Studio</p>
-                                            <p className="text-lg font-bold text-slate-900 dark:text-white leading-snug">123 Lens Avenue<br/>Creative District, NY 10012</p>
+                                            <p className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                                                {addressStreet}<br/>{addressCity}, {addressState} {addressZip}
+                                            </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-6">
-                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-[#243047] text-primary shadow-sm">
+                                    <a className="flex items-start gap-6 transition-all hover:translate-x-2 group" href={`tel:${phone.replace(/\s/g, '')}`}>
+                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-[#243047] text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors">
                                             <span className="material-symbols-outlined text-2xl">call</span>
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-slate-500 dark:text-[#93a5c8] uppercase tracking-wide mb-1">Phone</p>
-                                            <p className="text-lg font-bold text-slate-900 dark:text-white leading-snug">+1 (555) 012-3456</p>
+                                            <p className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">{phone}</p>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
