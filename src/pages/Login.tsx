@@ -10,7 +10,7 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { signIn } = useAuth(); // If we used custom sign in, but let's use direct supabase for real feel
+    const { signIn } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,17 +18,13 @@ const LoginPage = () => {
         setError('');
 
         try {
-            // Attempt real login first
             const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             });
 
             if (error) {
-                 // Fallback for Demo/Mock mode if real auth fails or isn't set up
                  if (email === 'admin@lensandlight.com' && password === 'admin') {
-                     // Manually set mock user in context (this requires context to expose a setter, 
-                     // or we rely on the `signIn` simulation method in AuthContext)
                      await signIn(email); 
                      navigate('/admin');
                      return;
@@ -41,6 +37,20 @@ const LoginPage = () => {
             setError(err.message || 'Failed to login');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/admin`
+                }
+            });
+            if (error) throw error;
+        } catch (err: any) {
+            setError(err.message || 'Failed to initiate Google Login');
         }
     };
 
@@ -90,6 +100,20 @@ const LoginPage = () => {
                             {loading ? 'Authenticating...' : 'Sign In'}
                         </button>
                     </form>
+
+                    <div className="relative my-8">
+                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200 dark:border-white/10"></div></div>
+                        <div className="relative flex justify-center text-sm"><span className="px-2 bg-white dark:bg-[#1a2232] text-slate-500">Or continue with</span></div>
+                    </div>
+
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="w-full flex items-center justify-center gap-3 py-3 bg-white dark:bg-[#111722] border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-white font-bold rounded-lg transition-all"
+                    >
+                        <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
+                        Sign in with Google
+                    </button>
+
                     <div className="mt-6 text-center">
                         <p className="text-xs text-slate-400">Mock Creds: admin@lensandlight.com / admin</p>
                     </div>
