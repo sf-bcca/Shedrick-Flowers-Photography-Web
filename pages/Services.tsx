@@ -5,7 +5,7 @@ import { ServiceTier } from '../types';
 
 const ServicesPage = () => {
     const [services, setServices] = useState<ServiceTier[]>([]);
-    
+
     useEffect(() => {
         fetchData('services').then((data: any) => setServices(data));
     }, []);
@@ -15,8 +15,8 @@ const ServicesPage = () => {
              {/* Header Hero */}
              <section className="relative px-4 md:px-10 lg:px-40 py-10">
                 <div className="relative w-full rounded-2xl overflow-hidden min-h-[500px] flex items-center justify-center text-center p-8 group">
-                    <img 
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj4Qc39c1Bdpp5z1iM8AGRx9atflrxxF0IxJLEXqjGcOlUTBdYyuCCLiBT5p7Bd8a9ONhVvlMbqThgup4DCT-kz2g1gL0EtnxEOePnl1oSuS77mOCW3rZV2H4ClPddn2JeF5Ir5rnxu_ND_XSa6NcbiJ0Xo7TgNTZzp7Q-L9I3xB_XW0Jv0OR9ysr5wGf2UXK5DBDe0J9WRWo-QawcHZAYPxECIb6qgxyQej94lIc4ImRwsDDHDAbPeJ65kCuC9WSqZioqEEypm2zC" 
+                    <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj4Qc39c1Bdpp5z1iM8AGRx9atflrxxF0IxJLEXqjGcOlUTBdYyuCCLiBT5p7Bd8a9ONhVvlMbqThgup4DCT-kz2g1gL0EtnxEOePnl1oSuS77mOCW3rZV2H4ClPddn2JeF5Ir5rnxu_ND_XSa6NcbiJ0Xo7TgNTZzp7Q-L9I3xB_XW0Jv0OR9ysr5wGf2UXK5DBDe0J9WRWo-QawcHZAYPxECIb6qgxyQej94lIc4ImRwsDDHDAbPeJ65kCuC9WSqZioqEEypm2zC"
                         alt="Services Hero Background"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[30s] hover:scale-110"
                     />
@@ -43,8 +43,8 @@ const ServicesPage = () => {
                             {services.map((item, idx) => (
                                 <div key={idx} className="group flex flex-col overflow-hidden rounded-2xl bg-surface-dark shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 border border-white/5 hover:border-primary/50 relative">
                                     <div className="relative w-full aspect-[4/3] overflow-hidden">
-                                        <img 
-                                            src={item.image} 
+                                        <img
+                                            src={item.image}
                                             alt={item.title}
                                             loading="lazy"
                                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

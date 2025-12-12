@@ -19,7 +19,7 @@ const HomePage = () => {
     // SEO Meta Tags
     useEffect(() => {
         document.title = "Lens & Light | Premium NYC Wedding & Portrait Photography";
-        
+
         const updateMeta = (name: string, content: string) => {
             let element = document.querySelector(`meta[name="${name}"]`);
             if (!element) {
@@ -39,8 +39,8 @@ const HomePage = () => {
             {/* Hero Section */}
             <section className="relative h-[90vh] -mt-16 w-full flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
-                    <img 
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P" 
+                    <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"
                         alt="Dramatic landscape photography background"
                         className="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105"
                         // Eager load hero image for LCP
@@ -81,7 +81,7 @@ const HomePage = () => {
                             <p className="text-slate-600 dark:text-slate-400 max-w-lg text-lg">A curated collection of recent projects highlighting natural light and raw emotion.</p>
                         </div>
                         <Link to="/blog" className="group flex items-center gap-2 text-primary font-bold hover:text-blue-400 transition-colors text-lg">
-                            View Full Portfolio 
+                            View Full Portfolio
                             <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
                         </Link>
                     </div>
@@ -91,8 +91,8 @@ const HomePage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {portfolioItems.map((item, idx) => (
                                 <div key={idx} className={`group relative overflow-hidden rounded-xl aspect-[4/5] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 ${item.marginTop ? 'lg:mt-16' : ''} ${item.marginTopInverse ? 'lg:-mt-16' : ''}`}>
-                                    <img 
-                                        src={item.image} 
+                                    <img
+                                        src={item.image}
                                         alt={item.title}
                                         loading="lazy"
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -119,7 +119,7 @@ const HomePage = () => {
                         "Photography is the story I fail to put into words. It's about capturing the soul of the moment."
                     </h2>
                     <div className="flex flex-col items-center gap-6 mb-12">
-                        <img 
+                        <img
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"
                             alt="Alex Morgan - Lead Photographer"
                             loading="lazy"

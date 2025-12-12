@@ -73,9 +73,9 @@ const ContactPage = () => {
                     <div className="lg:col-span-5 flex flex-col h-full animate-fade-in-up delay-300">
                         <div className="flex flex-col gap-8 sticky top-24">
                             <div className="relative hidden h-80 w-full overflow-hidden rounded-3xl sm:block lg:h-96 group shadow-2xl">
-                                <img 
-                                    alt="Photographer holding a camera" 
-                                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                <img
+                                    alt="Photographer holding a camera"
+                                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     loading="lazy"
                                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPKNL63uKUTPIARy2j1jcjGCeVA-LiZt3b4eqYu3-XxAmXdLaNAmVjADGzs6TyZQiLwYiIPU8XVrND09Q_GG5c6IMiOoSXrlAkXrK-NNrTZSWUCP-_dY-mVe44uFRGQC6RJijoDDy4v9CrXFD4bFl-FwQ9rClXT_RfDKWWKMW7zclRInwFQRh8uGpVQXXqNhByispoVF0az9WLhBJ6NwpkJWUx3G_7EQAjwwjOuzoujFfogBJElD0T_GuIn3ueCNxkbEm6WbX_rT9Y"
                                 />
