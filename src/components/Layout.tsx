@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { NavLinks, MobileMenu } from './Navigation';
 import { supabase } from '../services/supabaseClient';
+import { Facebook, Instagram, Linkedin } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -66,21 +67,41 @@ export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = fals
     );
 };
 
+const XIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+);
+
 export const Footer: React.FC = () => {
     const [logoUrl, setLogoUrl] = useState('');
     const [siteTitle, setSiteTitle] = useState('Lens & Light');
+    const [socialLinks, setSocialLinks] = useState({
+        facebook: '',
+        twitter: '',
+        instagram: '',
+        linkedin: ''
+    });
 
     useEffect(() => {
         const fetchSettings = async () => {
             const { data } = await supabase
                 .from('settings')
-                .select('logo_url, site_title')
+                .select('logo_url, site_title, social_links')
                 .eq('id', 1)
                 .single();
             
             if (data) {
                 if (data.logo_url) setLogoUrl(data.logo_url);
                 if (data.site_title) setSiteTitle(data.site_title);
+                if (data.social_links) {
+                    setSocialLinks({
+                        facebook: data.social_links.facebook || '',
+                        twitter: data.social_links.twitter || '',
+                        instagram: data.social_links.instagram || '',
+                        linkedin: data.social_links.linkedin || ''
+                    });
+                }
             }
         };
         fetchSettings();
@@ -108,14 +129,17 @@ export const Footer: React.FC = () => {
                         <p className="text-slate-400 text-sm max-w-xs">Capturing the soul of the moment with professional photography services worldwide.</p>
                      </div>
                      <div className="flex gap-4">
-                        <a href="#" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
-                             <span className="text-xs font-bold">IG</span>
+                        <a href={socialLinks.instagram || '#'} target={socialLinks.instagram ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                             <Instagram size={20} />
                         </a>
-                        <a href="#" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
-                             <span className="text-xs font-bold">TW</span>
+                        <a href={socialLinks.facebook || '#'} target={socialLinks.facebook ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                             <Facebook size={20} />
                         </a>
-                        <a href="#" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
-                             <span className="text-xs font-bold">LI</span>
+                        <a href={socialLinks.twitter || '#'} target={socialLinks.twitter ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                             <XIcon size={18} />
+                        </a>
+                        <a href={socialLinks.linkedin || '#'} target={socialLinks.linkedin ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                             <Linkedin size={20} />
                         </a>
                      </div>
                 </div>
