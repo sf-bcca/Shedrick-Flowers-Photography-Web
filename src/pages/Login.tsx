@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
-import { useAuth } from '../context/AuthContext';
 import { PageLayout } from '../components/Layout';
 
 const LoginPage = () => {
@@ -10,7 +9,6 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { signIn } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,14 +21,7 @@ const LoginPage = () => {
                 password,
             });
 
-            if (error) {
-                 if (email === 'admin@lensandlight.com' && password === 'admin') {
-                     await signIn(email); 
-                     navigate('/admin');
-                     return;
-                 }
-                 throw error;
-            }
+            if (error) throw error;
             
             navigate('/admin');
         } catch (err: any) {
@@ -113,10 +104,6 @@ const LoginPage = () => {
                         <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
                         Sign in with Google
                     </button>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-xs text-slate-400">Mock Creds: admin@lensandlight.com / admin</p>
-                    </div>
                 </div>
             </div>
         </PageLayout>

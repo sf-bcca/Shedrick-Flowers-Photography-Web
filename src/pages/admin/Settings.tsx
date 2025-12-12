@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
-import { Save, Globe, Mail, Image as ImageIcon, Share2 } from 'lucide-react';
+import { Save, Globe, Mail, Image as ImageIcon, Share2, Upload, Loader2, X } from 'lucide-react';
+import { useDropzone } from 'react-dropzone';
+import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
 const Settings = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploadingLogo, setUploadingLogo] = useState(false);
 
     // Form State
     const [siteTitle, setSiteTitle] = useState('Lens & Light');
@@ -54,17 +57,90 @@ const Settings = () => {
             logo_url: logoUrl,
             contact_email: contactEmail,
             social_links: socialLinks,
-            updated_at: new Date(),
         };
 
         const { error } = await supabase.from('settings').upsert({ id: 1, ...updates });
 
         if (error) {
-            alert('Error saving settings');
-            console.error(error);
+            const errorMsg = `Error saving settings: ${error.message}\nDetails: ${error.details || 'N/A'}\nHint: ${error.hint || 'N/A'}`;
+            alert(errorMsg);
+            console.error('Full error:', error);
+        } else {
+            alert('Settings saved successfully!');
         }
         setSaving(false);
     };
+
+    const handleLogoUpload = async (files: File[]) => {
+        if (files.length === 0) return;
+
+        const file = files[0];
+        
+        // Validate file type
+        if (!isValidImageFile(file)) {
+            alert('Please upload a valid image file (JPG, PNG, WebP, or GIF)');
+            return;
+        }
+
+        setUploadingLogo(true);
+
+        try {
+            // Optimize the image
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 800,
+                maxHeight: 400,
+                quality: 0.85,
+                format: 'webp'
+            });
+
+            console.log(`Original size: ${formatFileSize(file.size)}, Optimized size: ${formatFileSize(optimizedFile.size)}`);
+
+            // Generate unique filename
+            const fileExt = 'webp';
+            const fileName = `logo-${Date.now()}.${fileExt}`;
+
+            // Upload to Supabase Storage
+            const { error: uploadError } = await supabase.storage
+                .from('images')
+                .upload(fileName, optimizedFile, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('images')
+                .getPublicUrl(fileName);
+
+            // Update logo URL in state
+            setLogoUrl(publicUrl);
+
+            // Optionally delete old logo from storage
+            // You can add that logic here if needed
+
+        } catch (error) {
+            console.error('Error uploading logo:', error);
+            alert('Failed to upload logo. Please try again.');
+        } finally {
+            setUploadingLogo(false);
+        }
+    };
+
+    const handleRemoveLogo = () => {
+        setLogoUrl('');
+    };
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop: handleLogoUpload,
+        accept: {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+        },
+        multiple: false
+    });
 
     if (loading) return <div className="p-8">Loading settings...</div>;
 
@@ -135,20 +211,83 @@ const Settings = () => {
                             <h2>Branding</h2>
                         </div>
 
-                        <div className="flex flex-col md:flex-row gap-6 items-start">
-                            <div className="flex-1 w-full">
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Logo URL</label>
-                                <input
-                                    value={logoUrl}
-                                    onChange={e => setLogoUrl(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
-                                />
-                            </div>
+                        <div className="space-y-4">
+                            {logoUrl ? (
+                                <div className="space-y-4">
+                                    {/* Current Logo Display */}
+                                    <div className="p-6 bg-slate-100 dark:bg-black/20 rounded-xl border border-slate-200 dark:border-white/5">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-xs font-bold uppercase text-slate-500">Current Logo</span>
+                                            <button
+                                                onClick={handleRemoveLogo}
+                                                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                                title="Remove logo"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
+                                        <div className="flex justify-center p-4 bg-white dark:bg-[#111722] rounded-lg">
+                                            <img src={logoUrl} alt="Site Logo" className="h-20 object-contain" />
+                                        </div>
+                                    </div>
 
-                            {logoUrl && (
-                                <div className="p-4 bg-slate-100 dark:bg-black/20 rounded-xl border border-slate-200 dark:border-white/5 flex flex-col items-center gap-2">
-                                    <span className="text-xs font-bold uppercase text-slate-400">Preview</span>
-                                    <img src={logoUrl} alt="Logo Preview" className="h-16 object-contain" />
+                                    {/* Upload New Logo Button */}
+                                    <div
+                                        {...getRootProps()}
+                                        className={`
+                                            border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
+                                            ${isDragActive
+                                                ? 'border-primary bg-primary/10 text-primary'
+                                                : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                            }
+                                            ${uploadingLogo ? 'opacity-50 cursor-not-allowed' : ''}
+                                        `}
+                                    >
+                                        <input {...getInputProps()} />
+                                        {uploadingLogo ? (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Loader2 className="animate-spin" size={24} />
+                                                <p className="text-sm font-semibold">Optimizing and uploading...</p>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Upload size={24} />
+                                                <p className="text-sm font-semibold">Upload New Logo</p>
+                                                <p className="text-xs opacity-70">Drag & drop or click to browse</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                /* No Logo - Upload Dropzone */
+                                <div
+                                    {...getRootProps()}
+                                    className={`
+                                        border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all
+                                        ${isDragActive
+                                            ? 'border-primary bg-primary/10 text-primary'
+                                            : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                        }
+                                        ${uploadingLogo ? 'opacity-50 cursor-not-allowed' : ''}
+                                    `}
+                                >
+                                    <input {...getInputProps()} />
+                                    {uploadingLogo ? (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <Loader2 className="animate-spin" size={32} />
+                                            <p className="font-semibold">Optimizing and uploading...</p>
+                                            <p className="text-sm opacity-70">This may take a moment</p>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <ImageIcon size={32} />
+                                            <div>
+                                                <p className="font-semibold text-lg">Upload Site Logo</p>
+                                                <p className="text-sm opacity-70 mt-1">Drag & drop your logo here, or click to browse</p>
+                                            </div>
+                                            <p className="text-xs opacity-60">Supports JPG, PNG, WebP • Max 800x400px</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

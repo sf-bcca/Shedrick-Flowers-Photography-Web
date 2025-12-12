@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { NavLinks, MobileMenu } from './Navigation';
+import { supabase } from '../services/supabaseClient';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -9,7 +10,25 @@ interface LayoutProps {
 
 export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = false }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [logoUrl, setLogoUrl] = useState('');
+    const [siteTitle, setSiteTitle] = useState('Lens & Light');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const { data } = await supabase
+                .from('settings')
+                .select('logo_url, site_title')
+                .eq('id', 1)
+                .single();
+            
+            if (data) {
+                if (data.logo_url) setLogoUrl(data.logo_url);
+                if (data.site_title) setSiteTitle(data.site_title);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     return (
         <>
@@ -17,10 +36,20 @@ export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = fals
             <header className={`fixed top-0 left-0 right-0 z-50 border-b border-white/10 transition-colors duration-300 ${transparent ? 'bg-transparent backdrop-blur-sm' : 'bg-background-dark/90 backdrop-blur-md'}`}>
                 <div className="px-4 md:px-10 py-4 flex items-center justify-between w-full max-w-[1440px] mx-auto">
                     <Link to="/" className="flex items-center gap-3 text-white group">
-                        <div className="size-8 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span className="material-symbols-outlined text-3xl">camera</span>
-                        </div>
-                        <h2 className="text-white text-lg font-bold leading-tight tracking-tight">Lens & Light</h2>
+                        {logoUrl ? (
+                            <img 
+                                src={logoUrl} 
+                                alt={siteTitle}
+                                className="h-8 w-auto object-contain group-hover:scale-110 transition-transform"
+                            />
+                        ) : (
+                            <>
+                                <div className="size-8 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                                    <span className="material-symbols-outlined text-3xl">camera</span>
+                                </div>
+                                <h2 className="text-white text-lg font-bold leading-tight tracking-tight">{siteTitle}</h2>
+                            </>
+                        )}
                     </Link>
                     <div className="hidden md:flex flex-1 justify-end gap-8 items-center text-slate-300">
                         <NavLinks />
@@ -38,14 +67,43 @@ export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = fals
 };
 
 export const Footer: React.FC = () => {
+    const [logoUrl, setLogoUrl] = useState('');
+    const [siteTitle, setSiteTitle] = useState('Lens & Light');
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const { data } = await supabase
+                .from('settings')
+                .select('logo_url, site_title')
+                .eq('id', 1)
+                .single();
+            
+            if (data) {
+                if (data.logo_url) setLogoUrl(data.logo_url);
+                if (data.site_title) setSiteTitle(data.site_title);
+            }
+        };
+        fetchSettings();
+    }, []);
+
     return (
         <footer className="bg-surface-dark border-t border-white/10 pt-16 pb-8 px-4 md:px-10 mt-auto w-full">
             <div className="max-w-[1200px] mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
                      <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-white font-bold text-xl">
-                             <span className="material-symbols-outlined text-primary">camera</span>
-                             Lens & Light
+                            {logoUrl ? (
+                                <img 
+                                    src={logoUrl} 
+                                    alt={siteTitle}
+                                    className="h-8 w-auto object-contain"
+                                />
+                            ) : (
+                                <>
+                                    <span className="material-symbols-outlined text-primary">camera</span>
+                                    {siteTitle}
+                                </>
+                            )}
                         </div>
                         <p className="text-slate-400 text-sm max-w-xs">Capturing the soul of the moment with professional photography services worldwide.</p>
                      </div>
@@ -62,7 +120,7 @@ export const Footer: React.FC = () => {
                      </div>
                 </div>
                 <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
-                    <p>© 2024 Lens & Light Photography. All rights reserved.</p>
+                    <p>© 2024 {siteTitle} Photography. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link to="/about" className="hover:text-white transition-colors">About</Link>
                         <Link to="/services" className="hover:text-white transition-colors">Services</Link>
