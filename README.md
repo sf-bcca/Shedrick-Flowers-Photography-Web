@@ -1,20 +1,49 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Shedrick Flowers Photography Web
 
-# Run and deploy your AI Studio app
+![Development Status](https://img.shields.io/badge/Status-Development-orange)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
-This contains everything you need to run your app locally.
+A professional photography portfolio website built with React, Vite, and Supabase. This application features a dynamic portfolio, blog with commenting system, service listings, and a comprehensive admin dashboard for content management.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1t2QKSuZDR_2eQHDdJ8ZUKwkCIktUfjF7
+## Table of Contents
+*   [Key Features](#key-features)
+*   [Quick Start](#quick-start)
+*   [Documentation](#documentation)
+*   [Technologies](#technologies)
 
-## Run Locally
+## Key Features
+*   **Dynamic Portfolio**: Showcase photography with categorization and custom layout options.
+*   **Blog System**: Rich text blogging platform with user comments and moderation.
+*   **Service Listings**: Display pricing tiers and service details.
+*   **Admin Dashboard**: Protected area to manage all content, site settings, and media.
+*   **Responsive Design**: Optimized for all devices using Tailwind CSS.
+*   **Dark Mode**: Native dark mode support.
 
-**Prerequisites:**  Node.js
+## Quick Start
 
+**Prerequisites**: Node.js v18+
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1.  Clone the repository.
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Set up environment variables (see [INSTALL.md](INSTALL.md)).
+4.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+
+## Documentation
+For detailed instructions, please refer to the following guides:
+
+*   [**Installation Guide (INSTALL.md)**](INSTALL.md) - Detailed setup, database configuration, and Docker deployment.
+*   [**Usage Guide (USAGE.md)**](USAGE.md) - How to run, build, and use the application features.
+*   [**Contributing Guide (CONTRIBUTING.md)**](CONTRIBUTING.md) - Guidelines for developers.
+
+## Technologies
+*   **Frontend**: React 19, React Router v7, Vite
+*   **Styling**: Tailwind CSS
+*   **Backend/Database**: Supabase (PostgreSQL, Auth, Storage)
+*   **Icons**: Lucide React, Material Symbols
+*   **Rich Text**: React Quill
