@@ -35,9 +35,14 @@ const AboutPage = () => {
                                 About the Artist
                             </div>
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-[-0.033em]">Capturing Life's <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">Unscripted</span> Moments.</h1>
-                            <p className="text-slate-600 dark:text-slate-300 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                                Hi, I'm Alex. I don't just take photos; I tell stories. My work focuses on the raw, human connection that exists in the in-between moments. With over a decade behind the lens, I strive to create timeless visual narratives that resonate long after the shutter clicks.
-                            </p>
+                            <div className="text-slate-600 dark:text-slate-300 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto lg:mx-0 flex flex-col gap-4">
+                                <p>
+                                    My heart beats in the rhythm of Grenada, MS, where I’ve woven my passion for photography into the fabric of countless lives for over a decade. With every click of the shutter, I become a witness to life’s most beautiful chapters: the seasoned wisdom etched in a senior’s smile, the love story unfolding in a couple’s gaze, the unrestrained joy erupting at a celebration. But more than just capturing moments, I capture emotions. I paint with light, sculpting memories that shimmer with laughter, glisten with tears, and echo with the unfiltered melody of the soul.
+                                </p>
+                                <p>
+                                    Whether you’re a senior embracing a new chapter, a family etching your love in a timeless portrait, or planning an event that promises to ignite a lifetime of stories, I invite you to join me on this journey of light and memory. Let’s weave your story, together.
+                                </p>
+                            </div>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-6 justify-center lg:justify-start pt-4">
@@ -100,7 +105,7 @@ const AboutPage = () => {
                                         {[1,2,3,4,5].map(i => <span key={i} className="material-symbols-outlined text-[20px] fill-current">star</span>)}
                                     </div>
                                 </div>
-                                <p className="text-slate-700 dark:text-slate-300 text-xl italic leading-relaxed">"Alex has an incredible eye for detail. The session felt so natural and the results were breathtaking. I've never felt more comfortable in front of a camera."</p>
+                                <p className="text-slate-700 dark:text-slate-300 text-xl italic leading-relaxed">"Shedrick has an incredible eye for detail. The session felt so natural and the results were breathtaking. I've never felt more comfortable in front of a camera."</p>
                             </div>
                             <div className="flex flex-col gap-8 rounded-2xl bg-surface-light dark:bg-[#1A202C] p-10 transition-all hover:bg-white dark:hover:bg-[#202837] border border-transparent hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5">
                                 <div className="flex items-center gap-4">
