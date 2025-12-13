@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lens & Light - Complete Photography Experience</title>
 
+    <!-- Favicon - dynamically loaded -->
+    <link id="favicon" rel="icon" type="image/png" />
+
+    <!-- Load favicon from localStorage immediately to prevent flash -->
+    <script>
+      (function () {
+        const cachedFavicon = localStorage.getItem("site_favicon_url");
+        if (cachedFavicon) {
+          document.getElementById("favicon").href = cachedFavicon;
+        }
+      })();
+    </script>
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -139,35 +152,45 @@
     <script type="module" src="/index.tsx"></script>
     <!-- Emergency Error Logger -->
     <script>
-        window.onerror = function(msg, url, line, col, error) {
-            const div = document.createElement('div');
-            div.style.position = 'fixed';
-            div.style.top = '0';
-            div.style.left = '0';
-            div.style.width = '100%';
-            div.style.backgroundColor = 'red';
-            div.style.color = 'white';
-            div.style.padding = '20px';
-            div.style.zIndex = '99999';
-            div.style.whiteSpace = 'pre-wrap';
-            div.innerText = 'Runtime Error:\n' + msg + '\n' + url + ':' + line + ':' + col + '\n' + (error ? error.stack : '');
-            document.body.appendChild(div);
-            return false;
-        };
-        window.addEventListener('unhandledrejection', function(event) {
-             const div = document.createElement('div');
-            div.style.position = 'fixed';
-            div.style.bottom = '0';
-            div.style.left = '0';
-            div.style.width = '100%';
-            div.style.backgroundColor = 'darkorange';
-            div.style.color = 'white';
-            div.style.padding = '20px';
-            div.style.zIndex = '99999';
-            div.style.whiteSpace = 'pre-wrap';
-            div.innerText = 'Promise Rejection:\n' + event.reason;
-            document.body.appendChild(div);
-        });
+      window.onerror = function (msg, url, line, col, error) {
+        const div = document.createElement("div");
+        div.style.position = "fixed";
+        div.style.top = "0";
+        div.style.left = "0";
+        div.style.width = "100%";
+        div.style.backgroundColor = "red";
+        div.style.color = "white";
+        div.style.padding = "20px";
+        div.style.zIndex = "99999";
+        div.style.whiteSpace = "pre-wrap";
+        div.innerText =
+          "Runtime Error:\n" +
+          msg +
+          "\n" +
+          url +
+          ":" +
+          line +
+          ":" +
+          col +
+          "\n" +
+          (error ? error.stack : "");
+        document.body.appendChild(div);
+        return false;
+      };
+      window.addEventListener("unhandledrejection", function (event) {
+        const div = document.createElement("div");
+        div.style.position = "fixed";
+        div.style.bottom = "0";
+        div.style.left = "0";
+        div.style.width = "100%";
+        div.style.backgroundColor = "darkorange";
+        div.style.color = "white";
+        div.style.padding = "20px";
+        div.style.zIndex = "99999";
+        div.style.whiteSpace = "pre-wrap";
+        div.innerText = "Promise Rejection:\n" + event.reason;
+        document.body.appendChild(div);
+      });
     </script>
-</body>
+  </body>
 </html>

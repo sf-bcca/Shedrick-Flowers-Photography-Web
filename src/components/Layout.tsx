@@ -19,7 +19,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = fals
         const fetchSettings = async () => {
             const { data } = await supabase
                 .from('settings')
-                .select('logo_url, site_title')
+                .select('logo_url, site_title, favicon_url')
                 .eq('id', 1)
                 .single();
             
@@ -31,6 +31,15 @@ export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = fals
                 if (data.site_title) {
                     setSiteTitle(data.site_title);
                     localStorage.setItem('site_title', data.site_title);
+                }
+                if (data.favicon_url) {
+                    // Update favicon in DOM
+                    const faviconLink = document.getElementById('favicon') as HTMLLinkElement;
+                    if (faviconLink) {
+                        faviconLink.href = data.favicon_url;
+                    }
+                    // Update localStorage cache
+                    localStorage.setItem('site_favicon_url', data.favicon_url);
                 }
             }
         };
