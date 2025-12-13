@@ -1,19 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
-import { fetchData } from '../services/supabaseClient';
+import { fetchData, supabase } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
 
 const HomePage = () => {
     const navigate = useNavigate();
     const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [heroImageUrl, setHeroImageUrl] = useState(localStorage.getItem('hero_image_url') || '');
+    const [avatarUrl, setAvatarUrl] = useState(localStorage.getItem('avatar_url') || '');
 
     useEffect(() => {
+        // Fetch portfolio items
         fetchData('portfolio').then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
         });
+
+        // Fetch hero image and avatar from settings
+        const fetchSettings = async () => {
+            const { data } = await supabase
+                .from('settings')
+                .select('hero_image_url, avatar_url')
+                .eq('id', 1)
+                .single();
+            
+            if (data) {
+                if (data.hero_image_url) {
+                    setHeroImageUrl(data.hero_image_url);
+                    localStorage.setItem('hero_image_url', data.hero_image_url);
+                }
+                if (data.avatar_url) {
+                    setAvatarUrl(data.avatar_url);
+                    localStorage.setItem('avatar_url', data.avatar_url);
+                }
+            }
+        };
+        fetchSettings();
     }, []);
 
     // SEO Meta Tags
@@ -40,7 +64,7 @@ const HomePage = () => {
             <section className="relative h-[90vh] -mt-16 w-full flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"
+                        src={heroImageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"}
                         alt="Dramatic landscape photography background"
                         className="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105"
                         // Eager load hero image for LCP
@@ -120,7 +144,7 @@ const HomePage = () => {
                     </h2>
                     <div className="flex flex-col items-center gap-6 mb-12">
                         <img
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"
+                            src={avatarUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"}
                             alt="Shedrick Flowers - Lead Photographer"
                             loading="lazy"
                             className="w-20 h-20 rounded-full object-cover border-4 border-background-dark ring-2 ring-primary"

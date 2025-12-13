@@ -8,11 +8,15 @@ const Settings = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploadingLogo, setUploadingLogo] = useState(false);
+    const [uploadingHero, setUploadingHero] = useState(false);
+    const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
     // Form State
     const [siteTitle, setSiteTitle] = useState('Lens & Light');
     const [siteDesc, setSiteDesc] = useState('');
     const [logoUrl, setLogoUrl] = useState('');
+    const [heroImageUrl, setHeroImageUrl] = useState('');
+    const [avatarUrl, setAvatarUrl] = useState('');
     const [contactEmail, setContactEmail] = useState('');
     const [contactPhone, setContactPhone] = useState('');
     const [contactAddressStreet, setContactAddressStreet] = useState('');
@@ -41,6 +45,8 @@ const Settings = () => {
             setSiteTitle(data.site_title || '');
             setSiteDesc(data.site_description || '');
             setLogoUrl(data.logo_url || '');
+            setHeroImageUrl(data.hero_image_url || '');
+            setAvatarUrl(data.avatar_url || '');
             setContactEmail(data.contact_email || '');
             setContactPhone(data.contact_phone || '');
             setContactAddressStreet(data.contact_address_street || '');
@@ -65,6 +71,8 @@ const Settings = () => {
             site_title: siteTitle,
             site_description: siteDesc,
             logo_url: logoUrl,
+            hero_image_url: heroImageUrl,
+            avatar_url: avatarUrl,
             contact_email: contactEmail,
             contact_phone: contactPhone,
             contact_address_street: contactAddressStreet,
@@ -145,12 +153,148 @@ const Settings = () => {
         }
     };
 
+    const handleHeroUpload = async (files: File[]) => {
+        if (files.length === 0) return;
+
+        const file = files[0];
+        
+        // Validate file type
+        if (!isValidImageFile(file)) {
+            alert('Please upload a valid image file (JPG, PNG, WebP, or GIF)');
+            return;
+        }
+
+        setUploadingHero(true);
+
+        try {
+            // Optimize the image for hero display
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 1920,
+                maxHeight: 1080,
+                quality: 0.9,
+                format: 'webp'
+            });
+
+            console.log(`Original size: ${formatFileSize(file.size)}, Optimized size: ${formatFileSize(optimizedFile.size)}`);
+
+            // Generate unique filename
+            const fileExt = 'webp';
+            const fileName = `hero-${Date.now()}.${fileExt}`;
+
+            // Upload to Supabase Storage
+            const { error: uploadError } = await supabase.storage
+                .from('images')
+                .upload(fileName, optimizedFile, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('images')
+                .getPublicUrl(fileName);
+
+            // Update hero image URL in state
+            setHeroImageUrl(publicUrl);
+
+        } catch (error) {
+            console.error('Error uploading hero image:', error);
+            alert('Failed to upload hero image. Please try again.');
+        } finally {
+            setUploadingHero(false);
+        }
+    };
+
+    const handleAvatarUpload = async (files: File[]) => {
+        if (files.length === 0) return;
+
+        const file = files[0];
+        
+        // Validate file type
+        if (!isValidImageFile(file)) {
+            alert('Please upload a valid image file (JPG, PNG, WebP, or GIF)');
+            return;
+        }
+
+        setUploadingAvatar(true);
+
+        try {
+            // Optimize the image for avatar display
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 400,
+                maxHeight: 400,
+                quality: 0.9,
+                format: 'webp'
+            });
+
+            console.log(`Original size: ${formatFileSize(file.size)}, Optimized size: ${formatFileSize(optimizedFile.size)}`);
+
+            // Generate unique filename
+            const fileExt = 'webp';
+            const fileName = `avatar-${Date.now()}.${fileExt}`;
+
+            // Upload to Supabase Storage
+            const { error: uploadError } = await supabase.storage
+                .from('images')
+                .upload(fileName, optimizedFile, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('images')
+                .getPublicUrl(fileName);
+
+            // Update avatar URL in state
+            setAvatarUrl(publicUrl);
+
+        } catch (error) {
+            console.error('Error uploading avatar:', error);
+            alert('Failed to upload avatar. Please try again.');
+        } finally {
+            setUploadingAvatar(false);
+        }
+    };
+
     const handleRemoveLogo = () => {
         setLogoUrl('');
     };
 
+    const handleRemoveHero = () => {
+        setHeroImageUrl('');
+    };
+
+    const handleRemoveAvatar = () => {
+        setAvatarUrl('');
+    };
+
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: handleLogoUpload,
+        accept: {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+        },
+        multiple: false
+    });
+
+    const { getRootProps: getHeroRootProps, getInputProps: getHeroInputProps, isDragActive: isHeroDragActive } = useDropzone({
+        onDrop: handleHeroUpload,
+        accept: {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+        },
+        multiple: false
+    });
+
+    const { getRootProps: getAvatarRootProps, getInputProps: getAvatarInputProps, isDragActive: isAvatarDragActive } = useDropzone({
+        onDrop: handleAvatarUpload,
         accept: {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         },
@@ -301,6 +445,188 @@ const Settings = () => {
                                                 <p className="text-sm opacity-70 mt-1">Drag & drop your logo here, or click to browse</p>
                                             </div>
                                             <p className="text-xs opacity-60">Supports JPG, PNG, WebP • Max 800x400px</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* Hero Image */}
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 text-primary font-bold border-b border-slate-100 dark:border-white/5 pb-2">
+                            <ImageIcon size={20} />
+                            <h2>Hero Image</h2>
+                        </div>
+
+                        <div className="space-y-4">
+                            {heroImageUrl ? (
+                                <div className="space-y-4">
+                                    {/* Current Hero Image Display */}
+                                    <div className="p-6 bg-slate-100 dark:bg-black/20 rounded-xl border border-slate-200 dark:border-white/5">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-xs font-bold uppercase text-slate-500">Current Hero Image</span>
+                                            <button
+                                                onClick={handleRemoveHero}
+                                                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                                title="Remove hero image"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
+                                        <div className="flex justify-center p-4 bg-white dark:bg-[#111722] rounded-lg">
+                                            <img src={heroImageUrl} alt="Hero Image" className="max-h-64 object-contain rounded-lg" />
+                                        </div>
+                                    </div>
+
+                                    {/* Upload New Hero Image Button */}
+                                    <div
+                                        {...getHeroRootProps()}
+                                        className={`
+                                            border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
+                                            ${
+                                                isHeroDragActive
+                                                    ? 'border-primary bg-primary/10 text-primary'
+                                                    : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                            }
+                                            ${uploadingHero ? 'opacity-50 cursor-not-allowed' : ''}
+                                        `}
+                                    >
+                                        <input {...getHeroInputProps()} />
+                                        {uploadingHero ? (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Loader2 className="animate-spin" size={24} />
+                                                <p className="text-sm font-semibold">Optimizing and uploading...</p>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Upload size={24} />
+                                                <p className="text-sm font-semibold">Upload New Hero Image</p>
+                                                <p className="text-xs opacity-70">Drag & drop or click to browse</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                /* No Hero Image - Upload Dropzone */
+                                <div
+                                    {...getHeroRootProps()}
+                                    className={`
+                                        border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all
+                                        ${
+                                            isHeroDragActive
+                                                ? 'border-primary bg-primary/10 text-primary'
+                                                : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                        }
+                                        ${uploadingHero ? 'opacity-50 cursor-not-allowed' : ''}
+                                    `}
+                                >
+                                    <input {...getHeroInputProps()} />
+                                    {uploadingHero ? (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <Loader2 className="animate-spin" size={32} />
+                                            <p className="font-semibold">Optimizing and uploading...</p>
+                                            <p className="text-sm opacity-70">This may take a moment</p>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <ImageIcon size={32} />
+                                            <div>
+                                                <p className="font-semibold text-lg">Upload Hero Image</p>
+                                                <p className="text-sm opacity-70 mt-1">Drag & drop your hero image here, or click to browse</p>
+                                            </div>
+                                            <p className="text-xs opacity-60">Supports JPG, PNG, WebP • Max 1920x1080px</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* Avatar Photo */}
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 text-primary font-bold border-b border-slate-100 dark:border-white/5 pb-2">
+                            <ImageIcon size={20} />
+                            <h2>Avatar Photo</h2>
+                        </div>
+
+                        <div className="space-y-4">
+                            {avatarUrl ? (
+                                <div className="space-y-4">
+                                    {/* Current Avatar Display */}
+                                    <div className="p-6 bg-slate-100 dark:bg-black/20 rounded-xl border border-slate-200 dark:border-white/5">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-xs font-bold uppercase text-slate-500">Current Avatar</span>
+                                            <button
+                                                onClick={handleRemoveAvatar}
+                                                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                                title="Remove avatar"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
+                                        <div className="flex justify-center p-4 bg-white dark:bg-[#111722] rounded-lg">
+                                            <img src={avatarUrl} alt="Avatar" className="w-32 h-32 rounded-full object-cover border-4 border-background-dark ring-2 ring-primary" />
+                                        </div>
+                                    </div>
+
+                                    {/* Upload New Avatar Button */}
+                                    <div
+                                        {...getAvatarRootProps()}
+                                        className={`
+                                            border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
+                                            ${
+                                                isAvatarDragActive
+                                                    ? 'border-primary bg-primary/10 text-primary'
+                                                    : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                            }
+                                            ${uploadingAvatar ? 'opacity-50 cursor-not-allowed' : ''}
+                                        `}
+                                    >
+                                        <input {...getAvatarInputProps()} />
+                                        {uploadingAvatar ? (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Loader2 className="animate-spin" size={24} />
+                                                <p className="text-sm font-semibold">Optimizing and uploading...</p>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Upload size={24} />
+                                                <p className="text-sm font-semibold">Upload New Avatar</p>
+                                                <p className="text-xs opacity-70">Drag & drop or click to browse</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                /* No Avatar - Upload Dropzone */
+                                <div
+                                    {...getAvatarRootProps()}
+                                    className={`
+                                        border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all
+                                        ${
+                                            isAvatarDragActive
+                                                ? 'border-primary bg-primary/10 text-primary'
+                                                : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                        }
+                                        ${uploadingAvatar ? 'opacity-50 cursor-not-allowed' : ''}
+                                    `}
+                                >
+                                    <input {...getAvatarInputProps()} />
+                                    {uploadingAvatar ? (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <Loader2 className="animate-spin" size={32} />
+                                            <p className="font-semibold">Optimizing and uploading...</p>
+                                            <p className="text-sm opacity-70">This may take a moment</p>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <ImageIcon size={32} />
+                                            <div>
+                                                <p className="font-semibold text-lg">Upload Avatar Photo</p>
+                                                <p className="text-sm opacity-70 mt-1">Drag & drop your avatar here, or click to browse</p>
+                                            </div>
+                                            <p className="text-xs opacity-60">Supports JPG, PNG, WebP • Max 400x400px</p>
                                         </div>
                                     )}
                                 </div>
