@@ -11,7 +11,8 @@ import {
     Menu,
     X,
     Layers,
-    MessageSquare
+    MessageSquare,
+    Star
 } from 'lucide-react';
 
 export const AdminLayout = () => {
@@ -32,6 +33,7 @@ export const AdminLayout = () => {
         { icon: FileText, label: 'Blog Posts', path: '/admin/blog' },
         { icon: Layers, label: 'Services', path: '/admin/services' },
         { icon: MessageSquare, label: 'Comments', path: '/admin/comments' },
+        { icon: Star, label: 'Testimonials', path: '/admin/testimonials' },
         { icon: Settings, label: 'Settings', path: '/admin/settings' },
     ];
 

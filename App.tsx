@@ -15,6 +15,7 @@ import PortfolioManager from './src/pages/admin/PortfolioManager';
 import BlogManager from './src/pages/admin/BlogManager';
 import ServiceManager from './src/pages/admin/ServiceManager';
 import CommentsManager from './src/pages/admin/CommentsManager';
+import TestimonialsManager from './src/pages/admin/TestimonialsManager';
 import Settings from './src/pages/admin/Settings';
 import ProtectedRoute from './src/components/ProtectedRoute';
 
@@ -41,6 +42,7 @@ const App = () => {
                 <Route path="blog" element={<BlogManager />} />
                 <Route path="services" element={<ServiceManager />} />
                 <Route path="comments" element={<CommentsManager />} />
+                <Route path="testimonials" element={<TestimonialsManager />} />
                 <Route path="settings" element={<Settings />} />
             </Route>
         </Routes>
