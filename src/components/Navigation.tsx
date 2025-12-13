@@ -12,22 +12,22 @@ const NAV_ITEMS: NavItem[] = [
 
 export const NavLinks: React.FC<{ mobile?: boolean }> = ({ mobile = false }) => {
     const location = useLocation();
-    
-    const baseClasses = mobile 
-        ? "flex flex-col gap-6 text-xl text-center" 
+
+    const baseClasses = mobile
+        ? "flex flex-col gap-6 text-xl text-center"
         : "hidden md:flex items-center gap-8 text-sm font-medium";
-    
+
     return (
         <nav className={baseClasses}>
             {NAV_ITEMS.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
-                    <Link 
-                        key={item.path} 
-                        to={item.path} 
+                    <Link
+                        key={item.path}
+                        to={item.path}
                         className={`transition-colors duration-200 ${
-                            isActive 
-                            ? 'text-primary font-bold' 
+                            isActive
+                            ? 'text-primary font-bold'
                             : 'text-slate-300 hover:text-white'
                         } ${mobile ? 'text-white' : ''}`}
                     >

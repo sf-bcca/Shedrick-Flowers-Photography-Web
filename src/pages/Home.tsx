@@ -1,25 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
-import { fetchData } from '../services/supabaseClient';
+import { fetchData, supabase } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
 
 const HomePage = () => {
     const navigate = useNavigate();
     const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [heroImageUrl, setHeroImageUrl] = useState(localStorage.getItem('hero_image_url') || '');
+    const [avatarUrl, setAvatarUrl] = useState(localStorage.getItem('avatar_url') || '');
 
     useEffect(() => {
+        // Fetch portfolio items
         fetchData('portfolio').then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
         });
+
+        // Fetch hero image and avatar from settings
+        const fetchSettings = async () => {
+            const { data } = await supabase
+                .from('settings')
+                .select('hero_image_url, avatar_url')
+                .eq('id', 1)
+                .single();
+
+            if (data) {
+                if (data.hero_image_url) {
+                    setHeroImageUrl(data.hero_image_url);
+                    localStorage.setItem('hero_image_url', data.hero_image_url);
+                }
+                if (data.avatar_url) {
+                    setAvatarUrl(data.avatar_url);
+                    localStorage.setItem('avatar_url', data.avatar_url);
+                }
+            }
+        };
+        fetchSettings();
     }, []);
 
     // SEO Meta Tags
     useEffect(() => {
-        document.title = "Lens & Light | Premium NYC Wedding & Portrait Photography";
-        
+        document.title = "Shedrick Flowers Photography | Grenada, MS Wedding & Portrait Photographer";
+
         const updateMeta = (name: string, content: string) => {
             let element = document.querySelector(`meta[name="${name}"]`);
             if (!element) {
@@ -30,8 +54,8 @@ const HomePage = () => {
             element.setAttribute('content', content);
         };
 
-        updateMeta('description', "Award-winning NYC photography studio specializing in weddings, editorials, and soulful portraits. Capturing authentic, unscripted moments.");
-        updateMeta('keywords', "NYC photographer, wedding photography, portrait studio, editorial photography, Lens & Light, authentic storytelling");
+        updateMeta('description', "Award-winning Grenada, MS photography studio specializing in weddings, editorials, and soulful portraits. Capturing authentic, unscripted moments.");
+        updateMeta('keywords', "Grenada MS photographer, Mississippi wedding photography, portrait studio, editorial photography, Shedrick Flowers Photography, authentic storytelling");
     }, []);
 
     return (
@@ -39,8 +63,8 @@ const HomePage = () => {
             {/* Hero Section */}
             <section className="relative h-[90vh] -mt-16 w-full flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
-                    <img 
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P" 
+                    <img
+                        src={heroImageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"}
                         alt="Dramatic landscape photography background"
                         className="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105"
                         // Eager load hero image for LCP
@@ -50,7 +74,7 @@ const HomePage = () => {
                 <div className="relative z-10 container mx-auto px-4 md:px-10 max-w-[1200px] flex flex-col items-center text-center gap-8 animate-fade-in-up">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold uppercase tracking-wider text-white shadow-xl">
                         <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                        Now booking for 2024 Season
+                        Now booking for 2026 Season
                     </div>
                     <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight max-w-5xl drop-shadow-2xl">
                         Capturing Life's <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-white to-blue-200">Fleeting Moments</span>
@@ -73,7 +97,7 @@ const HomePage = () => {
             </section>
 
             {/* Selected Works */}
-            <section id="portfolio" className="py-24 px-4 md:px-10 w-full bg-background-light dark:bg-background-dark relative">
+            <section id="portfolio" className="pt-24 pb-12 px-4 md:px-10 w-full bg-background-light dark:bg-background-dark relative">
                 <div className="max-w-[1200px] mx-auto">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
                         <div>
@@ -81,7 +105,7 @@ const HomePage = () => {
                             <p className="text-slate-600 dark:text-slate-400 max-w-lg text-lg">A curated collection of recent projects highlighting natural light and raw emotion.</p>
                         </div>
                         <Link to="/blog" className="group flex items-center gap-2 text-primary font-bold hover:text-blue-400 transition-colors text-lg">
-                            View Full Portfolio 
+                            View Full Portfolio
                             <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
                         </Link>
                     </div>
@@ -91,8 +115,8 @@ const HomePage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {portfolioItems.map((item, idx) => (
                                 <div key={idx} className={`group relative overflow-hidden rounded-xl aspect-[4/5] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 ${item.marginTop ? 'lg:mt-16' : ''} ${item.marginTopInverse ? 'lg:-mt-16' : ''}`}>
-                                    <img 
-                                        src={item.image} 
+                                    <img
+                                        src={item.image}
                                         alt={item.title}
                                         loading="lazy"
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -109,7 +133,7 @@ const HomePage = () => {
             </section>
 
             {/* About / CTA */}
-            <section className="py-32 px-4 md:px-10 bg-background-light dark:bg-background-dark relative overflow-hidden border-t border-white/5">
+            <section className="pt-16 pb-32 px-4 md:px-10 bg-background-light dark:bg-background-dark relative overflow-hidden border-t border-white/5">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-surface-dark/20 to-transparent pointer-events-none"></div>
                 <div className="max-w-[1000px] mx-auto text-center relative z-10">
                     <div className="mb-10">
@@ -119,9 +143,9 @@ const HomePage = () => {
                         "Photography is the story I fail to put into words. It's about capturing the soul of the moment."
                     </h2>
                     <div className="flex flex-col items-center gap-6 mb-12">
-                        <img 
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"
-                            alt="Alex Morgan - Lead Photographer"
+                        <img
+                            src={avatarUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"}
+                            alt="Shedrick Flowers - Lead Photographer"
                             loading="lazy"
                             className="w-20 h-20 rounded-full object-cover border-4 border-background-dark ring-2 ring-primary"
                         />

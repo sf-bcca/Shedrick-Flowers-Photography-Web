@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 
-const SYSTEM_INSTRUCTION = `You are the dedicated Studio Concierge for 'Lens & Light', a premium photography studio based in NYC led by Shedrick Flowers.
+const SYSTEM_INSTRUCTION = `You are the dedicated Studio Concierge for 'Shedrick Flowers Photography', a premium photography studio based in Grenada, Mississippi led by Shedrick Flowers.
 Your role is to assist potential clients with warmth, sophistication, and brevity.
 
 **Studio Information:**
 - **Photographer:** Shedrick Flowers (12+ years exp, Sony A7R V gear).
 - **Style:** Authentic, unscripted, natural light, "soul of the moment".
-- **Location:** NYC (Creative District), but available for worldwide travel (travel fees apply).
+- **Location:** Grenada, Mississippi, but available for travel throughout Mississippi and beyond (travel fees apply).
 
 **Services & Pricing:**
 - **Wedding & Engagement:** Starts at $2,400. Includes cinematic storytelling, 20-50+ retouched images.
@@ -115,8 +115,8 @@ export const StudioAssistant: React.FC = () => {
                     {messages.map((msg, idx) => (
                         <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                                msg.role === 'user' 
-                                    ? 'bg-primary text-white rounded-br-none' 
+                                msg.role === 'user'
+                                    ? 'bg-primary text-white rounded-br-none'
                                     : 'bg-white dark:bg-[#243047] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/5 rounded-bl-none shadow-sm'
                             }`}>
                                 {msg.text}
@@ -148,7 +148,7 @@ export const StudioAssistant: React.FC = () => {
                             placeholder="Ask about pricing, style..."
                             className="w-full bg-slate-100 dark:bg-[#111722] text-slate-900 dark:text-white placeholder-slate-500 rounded-xl pl-4 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                         />
-                        <button 
+                        <button
                             onClick={handleSend}
                             disabled={!inputValue.trim() || isLoading}
                             className="absolute right-2 p-1.5 text-primary hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
