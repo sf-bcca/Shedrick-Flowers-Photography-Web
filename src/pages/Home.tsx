@@ -11,12 +11,29 @@ const HomePage = () => {
     const [heroImageUrl, setHeroImageUrl] = useState(localStorage.getItem('hero_image_url') || '');
     const [avatarUrl, setAvatarUrl] = useState(localStorage.getItem('avatar_url') || '');
 
-    useEffect(() => {
-        // Fetch portfolio items
+    const fetchPortfolio = () => {
         fetchData('portfolio').then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
+            sessionStorage.setItem('portfolioItems', JSON.stringify(data));
         });
+    };
+
+    useEffect(() => {
+        // Fetch portfolio items with caching
+        const cachedPortfolio = sessionStorage.getItem('portfolioItems');
+        if (cachedPortfolio) {
+            try {
+                setPortfolioItems(JSON.parse(cachedPortfolio));
+                setLoading(false);
+            } catch (e) {
+                console.error("Error parsing cached portfolio items", e);
+                // Fallback to fetch if parse fails
+                fetchPortfolio();
+            }
+        } else {
+            fetchPortfolio();
+        }
 
         // Fetch hero image and avatar from settings
         const fetchSettings = async () => {
