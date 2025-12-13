@@ -25,7 +25,7 @@ const AboutPage = () => {
                                 <span className="material-symbols-outlined fill-current">star</span>
                                 <span className="material-symbols-outlined fill-current">star</span>
                             </div>
-                            <span className="text-white font-bold text-sm">Top Rated NYC Photographer</span>
+                            <span className="text-white font-bold text-sm">Top Rated MS Photographer</span>
                         </div>
                     </div>
                     <div className="w-full lg:w-7/12 flex flex-col gap-8 text-center lg:text-left">
