@@ -37,9 +37,13 @@ const TestimonialsManager = () => {
 
             if (error) throw error;
             setTestimonials(data || []);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error fetching testimonials:', error);
-            alert('Error fetching testimonials');
+            if (error.code === 'PGRST205' || error.code === '42P01') {
+                alert('Testimonials table not found. Please run the "create_testimonials_table.sql" migration or update "supabase_schema.sql" in your Supabase SQL Editor.');
+            } else {
+                alert('Error fetching testimonials');
+            }
         } finally {
             setLoading(false);
         }
