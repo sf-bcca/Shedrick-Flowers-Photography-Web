@@ -97,7 +97,7 @@ const HomePage = () => {
             </section>
 
             {/* Selected Works */}
-            <section id="portfolio" className="py-24 px-4 md:px-10 w-full bg-background-light dark:bg-background-dark relative">
+            <section id="portfolio" className="pt-24 pb-12 px-4 md:px-10 w-full bg-background-light dark:bg-background-dark relative">
                 <div className="max-w-[1200px] mx-auto">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
                         <div>
@@ -133,7 +133,7 @@ const HomePage = () => {
             </section>
 
             {/* About / CTA */}
-            <section className="py-32 px-4 md:px-10 bg-background-light dark:bg-background-dark relative overflow-hidden border-t border-white/5">
+            <section className="pt-16 pb-32 px-4 md:px-10 bg-background-light dark:bg-background-dark relative overflow-hidden border-t border-white/5">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-surface-dark/20 to-transparent pointer-events-none"></div>
                 <div className="max-w-[1000px] mx-auto text-center relative z-10">
                     <div className="mb-10">

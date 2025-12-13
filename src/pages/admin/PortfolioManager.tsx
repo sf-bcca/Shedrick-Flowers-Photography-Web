@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
-import { Plus, Edit, Trash2, Search, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { useDropzone } from 'react-dropzone';
+import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
 const PortfolioManager = () => {
     const [items, setItems] = useState<any[]>([]);
@@ -8,6 +10,8 @@ const PortfolioManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editItem, setEditItem] = useState<any | null>(null);
     const [search, setSearch] = useState('');
+    const [uploadingImage, setUploadingImage] = useState(false);
+    const [imagePreview, setImagePreview] = useState('');
 
     useEffect(() => {
         fetchItems();
@@ -35,20 +39,50 @@ const PortfolioManager = () => {
         const formData = new FormData(e.target as HTMLFormElement);
         const values = Object.fromEntries(formData.entries());
 
+        // Use imagePreview for the image URL
         // @ts-ignore
-        values.marginTop = formData.get('marginTop') === 'on';
-        // @ts-ignore
-        values.marginTopInverse = formData.get('marginTopInverse') === 'on';
-
-        if (editItem?.id) {
-            await supabase.from('portfolio').update(values).eq('id', editItem.id);
-        } else {
-            await supabase.from('portfolio').insert([values]);
+        values.image = imagePreview || editItem?.image || '';
+        
+        // Validate that an image exists
+        if (!values.image) {
+            alert('Please upload an image before saving.');
+            return;
         }
+        
+        // @ts-ignore
+        values.margin_top = formData.get('marginTop') === 'on';
+        // @ts-ignore
+        values.margin_top_inverse = formData.get('marginTopInverse') === 'on';
 
-        setIsModalOpen(false);
-        setEditItem(null);
-        fetchItems();
+        console.log('Saving portfolio item with values:', values);
+
+        try {
+            if (editItem?.id) {
+                const { data, error } = await supabase.from('portfolio').update(values).eq('id', editItem.id);
+                if (error) {
+                    console.error('Error updating portfolio item:', error);
+                    alert(`Failed to update item: ${error.message}`);
+                    return;
+                }
+                console.log('Updated portfolio item:', data);
+            } else {
+                const { data, error } = await supabase.from('portfolio').insert([values]);
+                if (error) {
+                    console.error('Error creating portfolio item:', error);
+                    alert(`Failed to create item: ${error.message}`);
+                    return;
+                }
+                console.log('Created portfolio item:', data);
+            }
+
+            setIsModalOpen(false);
+            setEditItem(null);
+            setImagePreview('');
+            fetchItems();
+        } catch (error) {
+            console.error('Unexpected error saving portfolio item:', error);
+            alert('An unexpected error occurred while saving.');
+        }
     };
 
     const filteredItems = items.filter(item =>
@@ -56,12 +90,80 @@ const PortfolioManager = () => {
         item.category.toLowerCase().includes(search.toLowerCase())
     );
 
+    const handleImageUpload = async (files: File[]) => {
+        if (files.length === 0) return;
+
+        const file = files[0];
+        
+        // Validate file type
+        if (!isValidImageFile(file)) {
+            alert('Please upload a valid image file (JPG, PNG, WebP, or GIF)');
+            return;
+        }
+
+        setUploadingImage(true);
+
+        try {
+            // Optimize the image for portfolio display
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 1200,
+                maxHeight: 1500,
+                quality: 0.9,
+                format: 'webp'
+            });
+
+            console.log(`Original size: ${formatFileSize(file.size)}, Optimized size: ${formatFileSize(optimizedFile.size)}`);
+
+            // Generate unique filename
+            const fileExt = 'webp';
+            const fileName = `portfolio-${Date.now()}.${fileExt}`;
+
+            // Upload to Supabase Storage
+            const { error: uploadError } = await supabase.storage
+                .from('images')
+                .upload(fileName, optimizedFile, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('images')
+                .getPublicUrl(fileName);
+
+            // Update image preview
+            setImagePreview(publicUrl);
+
+        } catch (error) {
+            console.error('Error uploading portfolio image:', error);
+            alert('Failed to upload image. Please try again.');
+        } finally {
+            setUploadingImage(false);
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setImagePreview('');
+    };
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop: handleImageUpload,
+        accept: {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+        },
+        multiple: false
+    });
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <h1 className="text-3xl font-black text-slate-900 dark:text-white">Portfolio</h1>
                 <button
-                    onClick={() => { setEditItem(null); setIsModalOpen(true); }}
+                    onClick={() => { setEditItem(null); setImagePreview(''); setIsModalOpen(true); }}
                     className="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-primary/20"
                 >
                     <Plus size={20} /> Add New Item
@@ -112,7 +214,7 @@ const PortfolioManager = () => {
                                         <td className="px-6 py-3 text-right">
                                             <div className="flex justify-end gap-2">
                                                 <button
-                                                    onClick={() => { setEditItem(item); setIsModalOpen(true); }}
+                                                    onClick={() => { setEditItem(item); setImagePreview(item.image); setIsModalOpen(true); }}
                                                     className="p-2 text-slate-400 hover:text-primary transition-colors"
                                                 >
                                                     <Edit size={18} />
@@ -151,9 +253,86 @@ const PortfolioManager = () => {
                                 <input name="category" defaultValue={editItem?.category} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Image URL</label>
-                                <input name="image" defaultValue={editItem?.image} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
-                                <p className="text-xs text-slate-400 mt-1">Tip: Use the Media Library to copy an image URL.</p>
+                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Portfolio Image</label>
+                                {imagePreview ? (
+                                    <div className="space-y-4">
+                                        {/* Current Image Preview */}
+                                        <div className="p-4 bg-slate-100 dark:bg-black/20 rounded-xl border border-slate-200 dark:border-white/5">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <span className="text-xs font-bold uppercase text-slate-500">Current Image</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleRemoveImage}
+                                                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                                    title="Remove image"
+                                                >
+                                                    <X size={18} />
+                                                </button>
+                                            </div>
+                                            <div className="flex justify-center p-4 bg-white dark:bg-[#111722] rounded-lg">
+                                                <img src={imagePreview} alt="Preview" className="max-h-48 object-contain rounded-lg" />
+                                            </div>
+                                        </div>
+
+                                        {/* Upload New Image Button */}
+                                        <div
+                                            {...getRootProps()}
+                                            className={`
+                                                border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all
+                                                ${isDragActive
+                                                    ? 'border-primary bg-primary/10 text-primary'
+                                                    : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                                }
+                                                ${uploadingImage ? 'opacity-50 cursor-not-allowed' : ''}
+                                            `}
+                                        >
+                                            <input {...getInputProps()} />
+                                            {uploadingImage ? (
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <Loader2 className="animate-spin" size={24} />
+                                                    <p className="text-sm font-semibold">Optimizing and uploading...</p>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <Upload size={24} />
+                                                    <p className="text-sm font-semibold">Upload New Image</p>
+                                                    <p className="text-xs opacity-70">Drag & drop or click to browse</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    /* No Image - Upload Dropzone */
+                                    <div
+                                        {...getRootProps()}
+                                        className={`
+                                            border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
+                                            ${isDragActive
+                                                ? 'border-primary bg-primary/10 text-primary'
+                                                : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                            }
+                                            ${uploadingImage ? 'opacity-50 cursor-not-allowed' : ''}
+                                        `}
+                                    >
+                                        <input {...getInputProps()} />
+                                        {uploadingImage ? (
+                                            <div className="flex flex-col items-center gap-3">
+                                                <Loader2 className="animate-spin" size={32} />
+                                                <p className="font-semibold">Optimizing and uploading...</p>
+                                                <p className="text-sm opacity-70">This may take a moment</p>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-3">
+                                                <ImageIcon size={32} />
+                                                <div>
+                                                    <p className="font-semibold text-lg">Upload Portfolio Image</p>
+                                                    <p className="text-sm opacity-70 mt-1">Drag & drop your image here, or click to browse</p>
+                                                </div>
+                                                <p className="text-xs opacity-60">Supports JPG, PNG, WebP • Max 1200x1500px</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                             <div className="flex gap-6 pt-2">
                                 <label className="flex items-center gap-2 text-sm text-slate-300">
