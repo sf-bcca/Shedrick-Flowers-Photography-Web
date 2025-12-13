@@ -42,7 +42,7 @@ const HomePage = () => {
 
     // SEO Meta Tags
     useEffect(() => {
-        document.title = "Lens & Light | Premium NYC Wedding & Portrait Photography";
+        document.title = "Shedrick Flowers Photography | Grenada, MS Wedding & Portrait Photographer";
 
         const updateMeta = (name: string, content: string) => {
             let element = document.querySelector(`meta[name="${name}"]`);
@@ -54,8 +54,8 @@ const HomePage = () => {
             element.setAttribute('content', content);
         };
 
-        updateMeta('description', "Award-winning NYC photography studio specializing in weddings, editorials, and soulful portraits. Capturing authentic, unscripted moments.");
-        updateMeta('keywords', "NYC photographer, wedding photography, portrait studio, editorial photography, Lens & Light, authentic storytelling");
+        updateMeta('description', "Award-winning Grenada, MS photography studio specializing in weddings, editorials, and soulful portraits. Capturing authentic, unscripted moments.");
+        updateMeta('keywords', "Grenada MS photographer, Mississippi wedding photography, portrait studio, editorial photography, Shedrick Flowers Photography, authentic storytelling");
     }, []);
 
     return (
