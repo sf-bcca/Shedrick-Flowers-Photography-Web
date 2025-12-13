@@ -11,8 +11,8 @@ interface LayoutProps {
 
 export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = false }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [logoUrl, setLogoUrl] = useState('');
-    const [siteTitle, setSiteTitle] = useState('Lens & Light');
+    const [logoUrl, setLogoUrl] = useState(localStorage.getItem('site_logo_url') || '');
+    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Lens & Light');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,8 +24,14 @@ export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = fals
                 .single();
             
             if (data) {
-                if (data.logo_url) setLogoUrl(data.logo_url);
-                if (data.site_title) setSiteTitle(data.site_title);
+                if (data.logo_url) {
+                    setLogoUrl(data.logo_url);
+                    localStorage.setItem('site_logo_url', data.logo_url);
+                }
+                if (data.site_title) {
+                    setSiteTitle(data.site_title);
+                    localStorage.setItem('site_title', data.site_title);
+                }
             }
         };
         fetchSettings();
@@ -74,8 +80,8 @@ const XIcon = ({ size = 24, className = "" }: { size?: number, className?: strin
 );
 
 export const Footer: React.FC = () => {
-    const [logoUrl, setLogoUrl] = useState('');
-    const [siteTitle, setSiteTitle] = useState('Lens & Light');
+    const [logoUrl, setLogoUrl] = useState(localStorage.getItem('site_logo_url') || '');
+    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Lens & Light');
     const [socialLinks, setSocialLinks] = useState({
         facebook: '',
         twitter: '',
@@ -92,8 +98,14 @@ export const Footer: React.FC = () => {
                 .single();
             
             if (data) {
-                if (data.logo_url) setLogoUrl(data.logo_url);
-                if (data.site_title) setSiteTitle(data.site_title);
+                if (data.logo_url) {
+                    setLogoUrl(data.logo_url);
+                    localStorage.setItem('site_logo_url', data.logo_url);
+                }
+                if (data.site_title) {
+                    setSiteTitle(data.site_title);
+                    localStorage.setItem('site_title', data.site_title);
+                }
                 if (data.social_links) {
                     setSocialLinks({
                         facebook: data.social_links.facebook || '',
