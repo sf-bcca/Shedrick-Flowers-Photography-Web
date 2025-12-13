@@ -11,6 +11,7 @@ const Settings = () => {
     const [uploadingHero, setUploadingHero] = useState(false);
     const [uploadingAvatar, setUploadingAvatar] = useState(false);
     const [uploadingFavicon, setUploadingFavicon] = useState(false);
+    const [uploadingAboutPhoto, setUploadingAboutPhoto] = useState(false);
 
     // Form State
     const [siteTitle, setSiteTitle] = useState('Lens & Light');
@@ -19,6 +20,7 @@ const Settings = () => {
     const [heroImageUrl, setHeroImageUrl] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
     const [faviconUrl, setFaviconUrl] = useState('');
+    const [aboutPhotoUrl, setAboutPhotoUrl] = useState('');
     const [contactEmail, setContactEmail] = useState('');
     const [contactPhone, setContactPhone] = useState('');
     const [contactAddressStreet, setContactAddressStreet] = useState('');
@@ -50,6 +52,7 @@ const Settings = () => {
             setHeroImageUrl(data.hero_image_url || '');
             setAvatarUrl(data.avatar_url || '');
             setFaviconUrl(data.favicon_url || '');
+            setAboutPhotoUrl(data.about_photo_url || '');
             setContactEmail(data.contact_email || '');
             setContactPhone(data.contact_phone || '');
             setContactAddressStreet(data.contact_address_street || '');
@@ -77,6 +80,7 @@ const Settings = () => {
             hero_image_url: heroImageUrl,
             avatar_url: avatarUrl,
             favicon_url: faviconUrl,
+            about_photo_url: aboutPhotoUrl,
             contact_email: contactEmail,
             contact_phone: contactPhone,
             contact_address_street: contactAddressStreet,
@@ -341,6 +345,66 @@ const Settings = () => {
         setFaviconUrl('');
     };
 
+    const handleAboutPhotoUpload = async (files: File[]) => {
+        if (files.length === 0) return;
+
+        const file = files[0];
+        
+        // Validate file type
+        if (!isValidImageFile(file)) {
+            alert('Please upload a valid image file (JPG, PNG, WebP, or GIF)');
+            return;
+        }
+
+        setUploadingAboutPhoto(true);
+
+        try {
+            // Optimize the image for About page display
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 600,
+                maxHeight: 800,
+                quality: 0.9,
+                format: 'webp'
+            });
+
+            console.log(`Original size: ${formatFileSize(file.size)}, Optimized size: ${formatFileSize(optimizedFile.size)}`);
+
+            // Generate unique filename
+            const fileExt = 'webp';
+            const fileName = `about-photo-${Date.now()}.${fileExt}`;
+
+            // Upload to Supabase Storage
+            const { error: uploadError } = await supabase.storage
+                .from('images')
+                .upload(fileName, optimizedFile, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('images')
+                .getPublicUrl(fileName);
+
+            // Update About photo URL in state
+            setAboutPhotoUrl(publicUrl);
+
+        } catch (error) {
+            console.error('Error uploading About photo:', error);
+            alert('Failed to upload About photo. Please try again.');
+        } finally {
+            setUploadingAboutPhoto(false);
+        }
+    };
+
+    const handleRemoveAboutPhoto = () => {
+        setAboutPhotoUrl('');
+    };
+
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: handleLogoUpload,
         accept: {
@@ -369,6 +433,14 @@ const Settings = () => {
         onDrop: handleFaviconUpload,
         accept: {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico']
+        },
+        multiple: false
+    });
+
+    const { getRootProps: getAboutPhotoRootProps, getInputProps: getAboutPhotoInputProps, isDragActive: isAboutPhotoDragActive } = useDropzone({
+        onDrop: handleAboutPhotoUpload,
+        accept: {
+            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         },
         multiple: false
     });
@@ -790,6 +862,97 @@ const Settings = () => {
                                                 <p className="text-sm opacity-70 mt-1">Drag & drop your favicon here, or click to browse</p>
                                             </div>
                                             <p className="text-xs opacity-60">Supports JPG, PNG, ICO • Optimized to 32x32px</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* About Photo */}
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 text-primary font-bold border-b border-slate-100 dark:border-white/5 pb-2">
+                            <ImageIcon size={20} />
+                            <h2>About Photo</h2>
+                        </div>
+
+                        <div className="space-y-4">
+                            {aboutPhotoUrl ? (
+                                <div className="space-y-4">
+                                    {/* Current About Photo Display */}
+                                    <div className="p-6 bg-slate-100 dark:bg-black/20 rounded-xl border border-slate-200 dark:border-white/5">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-xs font-bold uppercase text-slate-500">Current About Photo</span>
+                                            <button
+                                                onClick={handleRemoveAboutPhoto}
+                                                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                                title="Remove about photo"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
+                                        <div className="flex justify-center p-4 bg-white dark:bg-[#111722] rounded-lg">
+                                            <img src={aboutPhotoUrl} alt="About Photo" className="max-h-80 object-contain rounded-lg" />
+                                        </div>
+                                    </div>
+
+                                    {/* Upload New About Photo Button */}
+                                    <div
+                                        {...getAboutPhotoRootProps()}
+                                        className={`
+                                            border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
+                                            ${
+                                                isAboutPhotoDragActive
+                                                    ? 'border-primary bg-primary/10 text-primary'
+                                                    : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                            }
+                                            ${uploadingAboutPhoto ? 'opacity-50 cursor-not-allowed' : ''}
+                                        `}
+                                    >
+                                        <input {...getAboutPhotoInputProps()} />
+                                        {uploadingAboutPhoto ? (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Loader2 className="animate-spin" size={24} />
+                                                <p className="text-sm font-semibold">Optimizing and uploading...</p>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Upload size={24} />
+                                                <p className="text-sm font-semibold">Upload New About Photo</p>
+                                                <p className="text-xs opacity-70">Drag & drop or click to browse</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                /* No About Photo - Upload Dropzone */
+                                <div
+                                    {...getAboutPhotoRootProps()}
+                                    className={`
+                                        border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all
+                                        ${
+                                            isAboutPhotoDragActive
+                                                ? 'border-primary bg-primary/10 text-primary'
+                                                : 'border-slate-300 dark:border-white/10 hover:border-primary hover:text-primary text-slate-500'
+                                        }
+                                        ${uploadingAboutPhoto ? 'opacity-50 cursor-not-allowed' : ''}
+                                    `}
+                                >
+                                    <input {...getAboutPhotoInputProps()} />
+                                    {uploadingAboutPhoto ? (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <Loader2 className="animate-spin" size={32} />
+                                            <p className="font-semibold">Optimizing and uploading...</p>
+                                            <p className="text-sm opacity-70">This may take a moment</p>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center gap-3">
+                                            <ImageIcon size={32} />
+                                            <div>
+                                                <p className="font-semibold text-lg">Upload About Photo</p>
+                                                <p className="text-sm opacity-70 mt-1">Drag & drop your photo here, or click to browse</p>
+                                            </div>
+                                            <p className="text-xs opacity-60">Supports JPG, PNG, WebP • Max 600x800px</p>
                                         </div>
                                     )}
                                 </div>

@@ -74,7 +74,7 @@ const HomePage = () => {
                 <div className="relative z-10 container mx-auto px-4 md:px-10 max-w-[1200px] flex flex-col items-center text-center gap-8 animate-fade-in-up">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold uppercase tracking-wider text-white shadow-xl">
                         <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                        Now booking for 2024 Season
+                        Now booking for 2026 Season
                     </div>
                     <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight max-w-5xl drop-shadow-2xl">
                         Capturing Life's <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-white to-blue-200">Fleeting Moments</span>

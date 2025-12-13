@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageLayout } from '../components/Layout';
 import { Link } from 'react-router-dom';
+import { supabase } from '../services/supabaseClient';
 
 const AboutPage = () => {
+    const [aboutPhotoUrl, setAboutPhotoUrl] = useState(() => {
+        // Initialize from localStorage to prevent flash
+        return localStorage.getItem('aboutPhotoUrl') || '';
+    });
+
+    useEffect(() => {
+        const fetchAboutPhoto = async () => {
+            const { data } = await supabase
+                .from('settings')
+                .select('about_photo_url')
+                .eq('id', 1)
+                .single();
+
+            if (data?.about_photo_url) {
+                setAboutPhotoUrl(data.about_photo_url);
+                localStorage.setItem('aboutPhotoUrl', data.about_photo_url);
+            }
+        };
+
+        fetchAboutPhoto();
+    }, []);
+
+    // Use custom photo if available, otherwise fall back to default
+    const photoUrl = aboutPhotoUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuAmHoj0vChTuwRwtj4WMJB_K9TL4vBvRxb_58w3tE5hI_0c3EwhXM9rL2oijC2VuLBvc_jwud3uawTIwKumgLE2K5Q4dE_Od4MedX3mtrYD3GSqkQvPH8yIXSM3FL_b4p2JWH8MyXuYXMZzweYwVq9gCKCYw7w604pT9jzzQRO3fkWympgDWXcKtFKKShQam2j3w3IU7Rx76HyQGOGoj7IqOVdmtn09BJDlOUF-ZtB5BCvw3xtLyABS8s6G_2gxQd2bq-C1T5E9zmod";
+
     return (
         <PageLayout>
              <div className="w-full max-w-7xl mx-auto px-4 md:px-10 lg:px-20 py-12 flex flex-col gap-20">
@@ -12,7 +38,7 @@ const AboutPage = () => {
                         <div className="absolute -inset-4 bg-gradient-to-tr from-primary to-purple-600 rounded-3xl blur-xl opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
                         <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-2xl rotate-y-12">
                             <img
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmHoj0vChTuwRwtj4WMJB_K9TL4vBvRxb_58w3tE5hI_0c3EwhXM9rL2oijC2VuLBvc_jwud3uawTIwKumgLE2K5Q4dE_Od4MedX3mtrYD3GSqkQvPH8yIXSM3FL_b4p2JWH8MyXuYXMZzweYwVq9gCKCYw7w604pT9jzzQRO3fkWympgDWXcKtFKKShQam2j3w3IU7Rx76HyQGOGoj7IqOVdmtn09BJDlOUF-ZtB5BCvw3xtLyABS8s6G_2gxQd2bq-C1T5E9zmod"
+                                src={photoUrl}
                                 alt="Shedrick Flowers Portrait"
                                 className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
                             />
