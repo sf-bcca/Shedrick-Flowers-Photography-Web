@@ -5,7 +5,6 @@ import { User } from '@supabase/supabase-js';
 interface AuthContextType {
     user: User | null;
     loading: boolean;
-    signIn: (email: string) => Promise<void>; // Simple simulation for demo if mock
     signOut: () => Promise<void>;
 }
 
@@ -16,12 +15,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check active session
+        // Check for existing session on mount
         supabase.auth.getSession().then(({ data: { session } }) => {
             setUser(session?.user ?? null);
             setLoading(false);
         });
 
+        // Listen for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null);
             setLoading(false);
@@ -30,26 +30,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => subscription.unsubscribe();
     }, []);
 
-    const signIn = async (email: string) => {
-        // In a real app, you would pass password and call signInWithPassword
-        // For this demo (Mock Mode), we simulate a successful login if keys are missing
-        if (supabase['authUrl']) { // Rough check if real
-             // Real Auth logic would go here
-             // const { error } = await supabase.auth.signInWithPassword({ email, password });
-             // if (error) throw error;
-        } else {
-            // Mock Login
-            setUser({ id: 'mock-admin', email } as User);
+    const signOut = async () => {
+        setLoading(true);
+        try {
+            await supabase.auth.signOut();
+            setUser(null);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const signOut = async () => {
-        await supabase.auth.signOut();
-        setUser(null);
-    };
-
     return (
-        <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+        <AuthContext.Provider value={{ user, loading, signOut }}>
             {children}
         </AuthContext.Provider>
     );
