@@ -37,9 +37,9 @@ const App = () => {
 
                 {/* Admin Routes (Nested) */}
                 <Route path="/admin" element={
-                    <ProtectedRoute>
+                     <ProtectedRoute>
                         <AdminLayout />
-                    </ProtectedRoute>
+                     </ProtectedRoute>
                 }>
                     <Route index element={<DashboardHome />} />
                     <Route path="media" element={<MediaLibrary />} />
