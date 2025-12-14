@@ -24,6 +24,7 @@ const BlogManager = () => {
     const [image, setImage] = useState('');
     const [excerpt, setExcerpt] = useState('');
     const [content, setContent] = useState('');
+    const [tags, setTags] = useState<string[]>([]);
     const [status, setStatus] = useState<'Draft' | 'Published'>('Draft');
     const [saving, setSaving] = useState(false);
 
@@ -53,6 +54,7 @@ const BlogManager = () => {
         setImage(item.image);
         setExcerpt(item.excerpt || '');
         setContent(item.content || item.excerpt || '');
+        setTags(item.tags || []);
         setStatus(item.status || 'Draft'); // Graceful fallback if status column missing
         setView('editor');
     };
@@ -65,6 +67,7 @@ const BlogManager = () => {
         setImage('');
         setExcerpt('');
         setContent('');
+        setTags([]);
         setStatus('Draft');
         setView('editor');
     };
@@ -78,7 +81,8 @@ const BlogManager = () => {
             image,
             excerpt,
             content,
-            status // This might fail if column doesn't exist, we should handle error or user needs migration
+            tags,
+            status
         };
 
         try {
@@ -94,7 +98,7 @@ const BlogManager = () => {
             alert('Saved successfully!');
         } catch (error) {
             console.error(error);
-            alert('Error saving post. If this is a new feature, you might need to run a database migration to add the "status" column.');
+            alert('Error saving post. Please run the database migration "add_blog_status_and_tags.sql".');
         } finally {
             setSaving(false);
         }
@@ -102,7 +106,6 @@ const BlogManager = () => {
 
     const handlePublish = async () => {
         setStatus('Published');
-        // We need to wait for the state to update or just pass 'Published' directly
         const itemData = {
             title,
             category,
@@ -110,6 +113,7 @@ const BlogManager = () => {
             image,
             excerpt,
             content,
+            tags,
             status: 'Published'
         };
 
@@ -126,7 +130,7 @@ const BlogManager = () => {
             setView('list');
         } catch (error) {
              console.error(error);
-             alert('Error publishing post.');
+             alert('Error publishing post. Please check database migrations.');
         } finally {
              setSaving(false);
         }
@@ -218,7 +222,7 @@ const BlogManager = () => {
                             saving={saving}
                         />
                         <CategoryCard category={category} setCategory={setCategory} />
-                        <TagsCard />
+                        <TagsCard tags={tags} setTags={setTags} />
                         <FeaturedImageCard image={image} setImage={setImage} />
 
                         {/* Excerpt Card */}

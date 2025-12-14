@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
-const TagsCard: React.FC = () => {
-    // Note: This is purely visual as requested by the user ("Can you do this?"),
-    // since the database schema currently lacks a 'tags' column.
-    // In a real implementation, we would need to migrate the DB or store this in a JSON column.
-    const [tags, setTags] = useState<string[]>(['Iceland', 'Sony Alpha', 'Winter']);
+interface TagsCardProps {
+    tags: string[];
+    setTags: (tags: string[]) => void;
+}
+
+const TagsCard: React.FC<TagsCardProps> = ({ tags = [], setTags }) => {
     const [input, setInput] = useState('');
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -40,7 +41,7 @@ const TagsCard: React.FC = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Separate tags with commas..."
+                placeholder="Type and press Enter..."
                 className="w-full bg-[#111722] border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-primary/50 placeholder:text-slate-600"
              />
         </div>
