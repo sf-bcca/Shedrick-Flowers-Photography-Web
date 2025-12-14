@@ -50,14 +50,14 @@ The application relies on specific database tables in Supabase.
 
 1.  Go to the **SQL Editor** in your Supabase dashboard.
 2.  Open the `supabase_schema.sql` file provided in this repository.
-3.  Copy the contents and paste them into the SQL Editor.
-4.  Run the script to create the tables (`portfolio`, `blog`, `services`, `settings`, `comments`).
+3.  Copy the entire contents and paste them into the SQL Editor.
+4.  Run the script to create all necessary tables, functions, and policies (`portfolio`, `blog`, `services`, `settings`, `comments`, `testimonials`).
 
 ### Storage Setup
 1.  Go to **Storage** in Supabase.
 2.  Create a new bucket named `images`.
 3.  Set the bucket to **Public**.
-4.  Add a policy to allow authenticated users to upload/delete files, and anyone to read files.
+4.  Add a policy to allow authenticated users to upload/update/delete files, and anyone to read files.
 
 ## 5. Docker Setup (Self-Hosting)
 
@@ -67,7 +67,7 @@ If you intend to self-host this application using Docker (e.g., on Proxmox LXC),
 
 Create a `Dockerfile` in the root (if not present) or use the following command to build a production image using a standard Node/Nginx setup.
 
-*Example Build Command (assuming a standard Nginx Dockerfile):*
+*Example Build Command:*
 
 ```bash
 docker build -t shedrick-photography-web .

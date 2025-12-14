@@ -20,9 +20,24 @@ CREATE TABLE IF NOT EXISTS blog (
     date DATE NOT NULL,
     image TEXT NOT NULL,
     excerpt TEXT,
-    content TEXT, -- Assumed content field for rich text
+    content TEXT,
+    status TEXT DEFAULT 'Draft',
+    tags TEXT[] DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Enable RLS on blog
+ALTER TABLE blog ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view published blog posts"
+ON blog
+FOR SELECT
+USING (true); -- Application level filtering for drafts
+
+CREATE POLICY "Authenticated users can manage blog posts"
+ON blog
+FOR ALL
+USING (auth.role() = 'authenticated');
 
 -- Table: services
 CREATE TABLE IF NOT EXISTS services (
@@ -31,26 +46,72 @@ CREATE TABLE IF NOT EXISTS services (
     description TEXT NOT NULL,
     price TEXT NOT NULL,
     image TEXT NOT NULL,
-    features TEXT[], -- Array of strings
+    features TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Table: settings
+-- Global configuration for the site
 CREATE TABLE IF NOT EXISTS settings (
-    id BIGINT PRIMARY KEY DEFAULT 1, -- Single row for global settings
+    id INTEGER PRIMARY KEY DEFAULT 1,
     site_title TEXT,
     site_description TEXT,
     logo_url TEXT,
+    hero_image_url TEXT,
+    avatar_url TEXT,
+    favicon_url TEXT,
+    about_photo_url TEXT,
     contact_email TEXT,
+    contact_phone TEXT,
+    contact_address_street TEXT,
+    contact_address_city TEXT,
+    contact_address_state TEXT,
+    contact_address_zip TEXT,
     social_links JSONB DEFAULT '{}'::jsonb,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    CONSTRAINT single_row_check CHECK (id = 1)
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT single_settings_row CHECK (id = 1)
 );
 
 -- Initialize default settings row
-INSERT INTO settings (id, site_title, site_description)
-VALUES (1, 'Shedrick Flowers Photography', 'Capturing moments in time.')
+INSERT INTO settings (id, site_title, site_description, contact_email)
+VALUES (1, 'Shedrick Flowers Photography', 'Capturing moments in time.', 'admin@lensandlight.com')
 ON CONFLICT (id) DO NOTHING;
+
+-- Auto-update updated_at for settings
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_settings_updated_at
+    BEFORE UPDATE ON settings
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Enable RLS on settings
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read settings"
+ON settings
+FOR SELECT
+USING (true);
+
+CREATE POLICY "Authenticated users can update settings"
+ON settings
+FOR UPDATE
+TO authenticated
+USING (id = 1)
+WITH CHECK (id = 1);
+
+CREATE POLICY "Authenticated users can insert settings"
+ON settings
+FOR INSERT
+TO authenticated
+WITH CHECK (id = 1);
 
 -- Table: comments
 CREATE TABLE IF NOT EXISTS comments (
@@ -59,7 +120,7 @@ CREATE TABLE IF NOT EXISTS comments (
     author_email TEXT NOT NULL,
     content TEXT NOT NULL,
     status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
-    post_id UUID REFERENCES blog(id) ON DELETE CASCADE, -- Assuming comments are linked to blog posts
+    post_id UUID REFERENCES blog(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -75,7 +136,7 @@ CREATE TABLE IF NOT EXISTS testimonials (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- RLS Policies for testimonials
+-- Enable RLS on testimonials
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Public can view testimonials"
@@ -88,6 +149,16 @@ ON testimonials
 FOR ALL
 USING (auth.role() = 'authenticated');
 
--- Storage Bucket: images
--- Note: You must create a storage bucket named 'images' in the Supabase dashboard manually if it doesn't exist.
--- Set appropriate RLS policies to allow public read and authenticated upload.
+-- Storage Bucket Policies (SQL representation)
+-- Note: These policies assume a bucket named 'images' exists.
+-- You must create the bucket in Supabase Dashboard -> Storage.
+
+-- Allow authenticated uploads to 'images' bucket
+-- CREATE POLICY "Allow authenticated uploads" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'images' AND auth.role() = 'authenticated');
+
+-- Allow public reads from 'images' bucket
+-- CREATE POLICY "Allow public reads" ON storage.objects FOR SELECT USING (bucket_id = 'images');
+
+-- Allow authenticated updates/deletes
+-- CREATE POLICY "Allow authenticated deletes" ON storage.objects FOR DELETE USING (bucket_id = 'images' AND auth.role() = 'authenticated');
+-- CREATE POLICY "Allow authenticated updates" ON storage.objects FOR UPDATE USING (bucket_id = 'images' AND auth.role() = 'authenticated');

@@ -39,6 +39,7 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Portfolio Manager**: Upload images, set categories, and manage display order.
 *   **Blog Manager**: Write and edit posts using the rich text editor.
 *   **Services Manager**: Update pricing tiers and features.
+*   **Testimonials Manager**: Manage client testimonials and reviews.
 *   **Settings**: Configure site title, logo, and social media links.
 *   **Comments**: Approve or reject user comments on blog posts.
 
@@ -51,7 +52,8 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 ## Configuration Options
 
 ### Tailwind CSS
-The visual theme is configured in `tailwind.config.js` (embedded in `index.html` for this project or a separate file). You can customize colors, fonts, and animations there.
+This project uses the **Tailwind CSS Play CDN** for runtime styling, included directly in `index.html`.
+*   **Note**: This setup is convenient for rapid development but differs from a standard build-time Tailwind configuration. Custom styles and theme extensions are defined within the `<script>` tag in `index.html`.
 
 ### Port Configuration
 By default, Vite runs on port 3000. You can change this in `vite.config.ts`:
