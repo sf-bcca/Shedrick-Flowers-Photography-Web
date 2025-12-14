@@ -63,7 +63,13 @@ const BlogManager = () => {
         setEditItem(null);
         setTitle('');
         setCategory('');
-        setDate(new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+        // Initialize with ISO date for better DB compatibility, though display might need formatting
+        // Or if we want to keep the display as "MMM DD, YYYY", we must handle conversion before save.
+        // For now, let's stick to the current format but ensure we convert it if needed or use a safe format.
+        // Actually, the best way is to use YYYY-MM-DD for consistency.
+        // But the UI expects a text string. Let's use ISO YYYY-MM-DD which is universally accepted.
+        const today = new Date().toISOString().split('T')[0];
+        setDate(today);
         setImage('');
         setExcerpt('');
         setContent('');
@@ -77,7 +83,7 @@ const BlogManager = () => {
         const itemData = {
             title,
             category,
-            date,
+            date, // Ensure this is valid DATE format (YYYY-MM-DD) or Postgres compatible string
             image,
             excerpt,
             content,
@@ -87,7 +93,8 @@ const BlogManager = () => {
 
         try {
             if (editItem?.id) {
-                await supabase.from('blog').update(itemData).eq('id', editItem.id);
+                const { error } = await supabase.from('blog').update(itemData).eq('id', editItem.id);
+                if (error) throw error;
             } else {
                 const { data, error } = await supabase.from('blog').insert([itemData]).select().single();
                 if (error) throw error;
@@ -96,9 +103,10 @@ const BlogManager = () => {
             // Optional: Don't exit editor immediately on save, just show success
             // setView('list');
             alert('Saved successfully!');
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert('Error saving post. Please run the database migration "add_blog_status_and_tags.sql".');
+            // Display the actual error message to help debugging
+            alert(`Error saving post: ${error.message || 'Unknown error'}. \n\nIf the error mentions missing columns (status, tags, content), please run the migration scripts in Supabase.`);
         } finally {
             setSaving(false);
         }
