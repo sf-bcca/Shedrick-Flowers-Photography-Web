@@ -7,8 +7,10 @@ import CategoryCard from '../../components/admin/Editor/Sidebar/CategoryCard';
 import FeaturedImageCard from '../../components/admin/Editor/Sidebar/FeaturedImageCard';
 import TagsCard from '../../components/admin/Editor/Sidebar/TagsCard';
 import { BlogPost } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 const BlogManager = () => {
+    const { user } = useAuth();
     const [view, setView] = useState<'list' | 'editor'>('list');
     const [items, setItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -83,7 +85,9 @@ const BlogManager = () => {
             if (editItem?.id) {
                 await supabase.from('blog').update(itemData).eq('id', editItem.id);
             } else {
-                await supabase.from('blog').insert([itemData]);
+                const { data, error } = await supabase.from('blog').insert([itemData]).select().single();
+                if (error) throw error;
+                if (data) setEditItem(data);
             }
             // Optional: Don't exit editor immediately on save, just show success
             // setView('list');
@@ -114,7 +118,9 @@ const BlogManager = () => {
              if (editItem?.id) {
                 await supabase.from('blog').update(itemData).eq('id', editItem.id);
             } else {
-                await supabase.from('blog').insert([itemData]);
+                const { data, error } = await supabase.from('blog').insert([itemData]).select().single();
+                if (error) throw error;
+                if (data) setEditItem(data);
             }
             alert('Published successfully!');
             setView('list');
@@ -126,7 +132,19 @@ const BlogManager = () => {
         }
     };
 
+    const handlePreview = () => {
+        if (editItem?.id) {
+            window.open(`/#/blog/${editItem.id}`, '_blank');
+        } else {
+            alert('Please save the draft first to preview.');
+        }
+    };
+
     const filteredItems = items.filter(item => item.title.toLowerCase().includes(search.toLowerCase()));
+
+    // Avatar Logic
+    const userInitials = user?.email?.substring(0, 2).toUpperCase() || 'AD';
+    const userAvatar = user?.user_metadata?.avatar_url;
 
     if (view === 'editor') {
         return (
@@ -148,12 +166,20 @@ const BlogManager = () => {
                          <div className="text-sm text-slate-500">
                              Autosaved just now
                          </div>
-                         <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors text-sm font-bold">
+                         <button
+                            onClick={handlePreview}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors text-sm font-bold"
+                         >
                              <Eye size={16} /> Preview
                          </button>
-                         <div className="w-8 h-8 rounded-full bg-white text-black font-bold flex items-center justify-center text-xs">
-                             JD
-                         </div>
+
+                         {userAvatar ? (
+                             <img src={userAvatar} alt="User" className="w-8 h-8 rounded-full object-cover border border-white/10" />
+                         ) : (
+                             <div className="w-8 h-8 rounded-full bg-white text-black font-bold flex items-center justify-center text-xs">
+                                 {userInitials}
+                             </div>
+                         )}
                     </div>
                 </div>
 
