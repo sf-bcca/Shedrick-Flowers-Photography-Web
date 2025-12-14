@@ -1,19 +1,11 @@
--- Create testimonials table if it doesn't exist
-CREATE TABLE IF NOT EXISTS testimonials (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    client_name TEXT NOT NULL,
-    subtitle TEXT,
-    quote TEXT NOT NULL,
-    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-    image_url TEXT,
-    display_order INTEGER DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- Fix Supabase Performance Warnings for testimonials table
+-- Run this in Supabase SQL Editor to optimize RLS policies
 
--- Enable Row Level Security
-ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+-- Drop existing overlapping policies
+DROP POLICY IF EXISTS "Public can view testimonials" ON testimonials;
+DROP POLICY IF EXISTS "Authenticated users can manage testimonials" ON testimonials;
 
--- Create optimized RLS policies (no overlapping policies)
+-- Create optimized non-overlapping policies
 -- Public read access
 CREATE POLICY "Anyone can view testimonials"
 ON testimonials
