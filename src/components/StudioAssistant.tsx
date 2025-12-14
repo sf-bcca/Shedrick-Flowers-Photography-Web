@@ -1,27 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
+import { supabase } from '../services/supabaseClient';
 
-const SYSTEM_INSTRUCTION = `You are the dedicated Studio Concierge for 'Shedrick Flowers Photography', a premium photography studio based in Grenada, Mississippi led by Shedrick Flowers.
-Your role is to assist potential clients with warmth, sophistication, and brevity.
-
-**Studio Information:**
-- **Photographer:** Shedrick Flowers (12+ years exp, Sony A7R V gear).
-- **Style:** Authentic, unscripted, natural light, "soul of the moment".
-- **Location:** Grenada, Mississippi, but available for travel throughout Mississippi and beyond (travel fees apply).
-
-**Services & Pricing:**
-- **Wedding & Engagement:** Starts at $2,400. Includes cinematic storytelling, 20-50+ retouched images.
-- **Portraiture:** Starts at $350. Studio or outdoor options.
-- **Commercial:** Custom quoting based on usage and scope.
-
-**Booking Policy:**
-- A 30% non-refundable retainer is required to secure a date.
-- The remaining balance is due 2 weeks before the event.
-
-**Guidelines:**
-- If asked about specific date availability, politely encourage them to fill out the contact form to check the calendar.
-- Keep responses concise (under 3 sentences) unless asked for details.
-- Maintain a helpful, high-end professional tone.`;
 
 interface Message {
     role: 'user' | 'model';
@@ -35,20 +14,7 @@ export const StudioAssistant: React.FC = () => {
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [chat, setChat] = useState<Chat | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    // Initialize Gemini Chat
-    useEffect(() => {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const newChat = ai.chats.create({
-            model: 'gemini-2.5-flash',
-            config: {
-                systemInstruction: SYSTEM_INSTRUCTION,
-            }
-        });
-        setChat(newChat);
-    }, []);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -56,16 +22,27 @@ export const StudioAssistant: React.FC = () => {
     }, [messages, isOpen]);
 
     const handleSend = async () => {
-        if (!inputValue.trim() || !chat) return;
+        if (!inputValue.trim()) return;
 
         const userText = inputValue;
+        const newUserMessage: Message = { role: 'user', text: userText };
+        
         setInputValue('');
-        setMessages(prev => [...prev, { role: 'user', text: userText }]);
+        setMessages(prev => [...prev, newUserMessage]);
         setIsLoading(true);
 
         try {
-            const response: GenerateContentResponse = await chat.sendMessage({ message: userText });
-            const aiText = response.text || "I apologize, I'm having trouble connecting to the studio right now.";
+            // Send entire message history + new message to maintain context
+            // Note: Cloud function handles the system instruction and Gemini API interaction securely
+            const historyToSend = [...messages, newUserMessage];
+            
+            const { data, error } = await supabase.functions.invoke('gemini-chat', {
+                body: { messages: historyToSend }
+            });
+
+            if (error) throw error;
+
+            const aiText = data.text || "I apologize, I'm having trouble connecting to the studio right now.";
             setMessages(prev => [...prev, { role: 'model', text: aiText }]);
         } catch (error) {
             console.error("Chat error:", error);
