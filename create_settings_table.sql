@@ -26,7 +26,7 @@ BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ language 'plpgsql' SET search_path = '';
 
 -- Create trigger to auto-update updated_at
 DROP TRIGGER IF EXISTS update_settings_updated_at ON settings;
