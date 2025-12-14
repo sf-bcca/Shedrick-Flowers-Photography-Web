@@ -1,4 +1,5 @@
 import React from 'react';
+import ScrollToTop from './src/components/ScrollToTop';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './src/pages/Home';
 import BlogPage from './src/pages/Blog';
@@ -22,32 +23,35 @@ import ProtectedRoute from './src/components/ProtectedRoute';
 
 const App = () => {
     return (
-        <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:id" element={<BlogPostDetail />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/login" element={<LoginPage />} />
+        <>
+            <ScrollToTop />
+            <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/blog/:id" element={<BlogPostDetail />} />
+                <Route path="/services" element={<ServicesPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/login" element={<LoginPage />} />
 
-            {/* Admin Routes (Nested) */}
-            <Route path="/admin" element={
-                <ProtectedRoute>
-                    <AdminLayout />
-                </ProtectedRoute>
-            }>
-                <Route index element={<DashboardHome />} />
-                <Route path="media" element={<MediaLibrary />} />
-                <Route path="portfolio" element={<PortfolioManager />} />
-                <Route path="blog" element={<BlogManager />} />
-                <Route path="services" element={<ServiceManager />} />
-                <Route path="comments" element={<CommentsManager />} />
-                <Route path="testimonials" element={<TestimonialsManager />} />
-                <Route path="settings" element={<Settings />} />
-            </Route>
-        </Routes>
+                {/* Admin Routes (Nested) */}
+                <Route path="/admin" element={
+                    <ProtectedRoute>
+                        <AdminLayout />
+                    </ProtectedRoute>
+                }>
+                    <Route index element={<DashboardHome />} />
+                    <Route path="media" element={<MediaLibrary />} />
+                    <Route path="portfolio" element={<PortfolioManager />} />
+                    <Route path="blog" element={<BlogManager />} />
+                    <Route path="services" element={<ServiceManager />} />
+                    <Route path="comments" element={<CommentsManager />} />
+                    <Route path="testimonials" element={<TestimonialsManager />} />
+                    <Route path="settings" element={<Settings />} />
+                </Route>
+            </Routes>
+        </>
     );
 };
 
