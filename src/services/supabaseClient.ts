@@ -42,3 +42,58 @@ export const updateItem = async (table: 'portfolio' | 'blog' | 'services', id: s
 export const deleteItem = async (table: 'portfolio' | 'blog' | 'services', id: string) => {
     return await supabase.from(table).delete().eq('id', id);
 };
+
+export const fetchPostById = async (id: string): Promise<BlogPost | null> => {
+    const { data, error } = await supabase.from('blog').select('*').eq('id', id).single();
+    if (error) {
+        console.error('Error fetching blog post:', error);
+        return null;
+    }
+    return data;
+};
+
+export const fetchRelatedPosts = async (currentPostId: string, category: string): Promise<BlogPost[]> => {
+    let relatedPosts: BlogPost[] = [];
+    const LIMIT = 3;
+
+    // 1. Fetch posts with the same category, excluding current post
+    const { data: categoryData, error: categoryError } = await supabase
+        .from('blog')
+        .select('*')
+        .eq('category', category)
+        .neq('id', currentPostId)
+        .limit(LIMIT);
+
+    if (categoryError) {
+        console.error('Error fetching related posts (category):', categoryError);
+    } else if (categoryData) {
+        relatedPosts = categoryData;
+    }
+
+    // 2. If we don't have enough posts, fill with recent posts
+    if (relatedPosts.length < LIMIT) {
+        const remaining = LIMIT - relatedPosts.length;
+        const existingIds = [currentPostId, ...relatedPosts.map(p => p.id)];
+
+        // We use not.in to exclude current post and already fetched related posts
+        // Note: Supabase JS library syntax for 'not.in' might be filter('id', 'not.in', '(' + list + ')') or similar depending on version,
+        // but .not('id', 'in', '(' + existingIds.join(',') + ')') is standard.
+        // Actually, Supabase JS uses .not('column', 'operator', value). Operator 'in' expects array in ().
+        // Safer way is .not('id', 'in', existingIds) if the library supports array directly, which v2 does.
+
+        const { data: recentData, error: recentError } = await supabase
+            .from('blog')
+            .select('*')
+            .not('id', 'in', `(${existingIds.map(id => `"${id}"`).join(',')})`) // Format for Postgres IN
+            .order('created_at', { ascending: false })
+            .limit(remaining);
+
+        if (recentError) {
+            console.error('Error fetching related posts (recent fallback):', recentError);
+        } else if (recentData) {
+            relatedPosts = [...relatedPosts, ...recentData];
+        }
+    }
+
+    return relatedPosts;
+};

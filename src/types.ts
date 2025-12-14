@@ -19,6 +19,7 @@ export interface BlogPost {
   date: string;
   image: string;
   excerpt?: string;
+  content?: string;
 }
 
 export interface ServiceTier {

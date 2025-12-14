@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './src/pages/Home';
 import BlogPage from './src/pages/Blog';
+import BlogPostDetail from './src/pages/BlogPostDetail';
 import ServicesPage from './src/pages/Services';
 import AboutPage from './src/pages/About';
 import ContactPage from './src/pages/Contact';
@@ -25,6 +26,7 @@ const App = () => {
             {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:id" element={<BlogPostDetail />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />

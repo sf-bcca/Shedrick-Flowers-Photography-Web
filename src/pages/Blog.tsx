@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
+import { BlogCard } from '../components/BlogCard';
 import { fetchData } from '../services/supabaseClient';
 import { BlogPost } from '../types';
 
@@ -39,20 +41,10 @@ const BlogPage = () => {
                     <div className="flex justify-center"><div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div></div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-                        {blogPosts.map((item, idx) => (
-                            <article key={idx} className="flex flex-col gap-5 group cursor-pointer">
-                                <div className="w-full aspect-[3/2] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark relative shadow-md group-hover:shadow-xl transition-all duration-300">
-                                    <img
-                                        src={item.image}
-                                        alt={item.title}
-                                        loading="lazy"
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-3">
-                                    <h3 className="text-2xl font-bold leading-tight text-slate-900 dark:text-white group-hover:text-primary transition-colors">{item.title}</h3>
-                                </div>
-                            </article>
+                        {blogPosts.map((item) => (
+                            <Link key={item.id} to={`/blog/${item.id}`}>
+                                <BlogCard post={item} />
+                            </Link>
                         ))}
                     </div>
                 )}
