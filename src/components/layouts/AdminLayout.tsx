@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../services/supabaseClient';
 import {
     LayoutDashboard,
     Image as ImageIcon,
@@ -25,6 +26,32 @@ export const AdminLayout = () => {
         typeof window !== 'undefined' ? window.innerWidth >= 768 : false
     );
     const location = useLocation();
+
+    // Branding State
+    const [logoUrl, setLogoUrl] = useState(localStorage.getItem('site_logo_url') || '');
+    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Lens & Light');
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const { data } = await supabase
+                .from('settings')
+                .select('logo_url, site_title')
+                .eq('id', 1)
+                .single();
+
+            if (data) {
+                if (data.logo_url) {
+                    setLogoUrl(data.logo_url);
+                    localStorage.setItem('site_logo_url', data.logo_url);
+                }
+                if (data.site_title) {
+                    setSiteTitle(data.site_title);
+                    localStorage.setItem('site_title', data.site_title);
+                }
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const handleSignOut = async () => {
         await signOut();
@@ -197,7 +224,18 @@ export const AdminLayout = () => {
                     >
                         <Menu size={24} />
                     </button>
-                    <span className="font-bold text-lg text-slate-900 dark:text-white">Lens & Light</span>
+
+                    <div className="flex items-center gap-2">
+                         {logoUrl ? (
+                             <img
+                                src={logoUrl}
+                                alt={siteTitle}
+                                className="h-8 w-auto object-contain"
+                            />
+                        ) : (
+                            <span className="font-bold text-lg text-slate-900 dark:text-white">{siteTitle}</span>
+                        )}
+                    </div>
                 </header>
 
                 <div className="flex-1 overflow-auto p-4 md:p-8 relative scrollbar-hide">
