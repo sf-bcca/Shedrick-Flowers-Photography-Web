@@ -38,6 +38,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('bold') ? 'text-primary bg-primary/10' : ''}`}
                 title="Bold"
+                aria-label="Bold"
             >
                 <Bold size={18} />
             </button>
@@ -45,6 +46,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('italic') ? 'text-primary bg-primary/10' : ''}`}
                 title="Italic"
+                aria-label="Italic"
             >
                 <Italic size={18} />
             </button>
@@ -52,6 +54,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleUnderline().run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('underline') ? 'text-primary bg-primary/10' : ''}`}
                 title="Underline"
+                aria-label="Underline"
             >
                 <UnderlineIcon size={18} />
             </button>
@@ -59,6 +62,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors`}
                 title="Clear Formatting"
+                aria-label="Clear Formatting"
             >
                 <RemoveFormatting size={18} />
             </button>
@@ -70,6 +74,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('heading', { level: 2 }) ? 'text-primary bg-primary/10' : ''}`}
                 title="Heading 2"
+                aria-label="Heading 2"
             >
                 <Heading1 size={18} />
             </button>
@@ -77,6 +82,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('heading', { level: 3 }) ? 'text-primary bg-primary/10' : ''}`}
                 title="Heading 3"
+                aria-label="Heading 3"
             >
                 <Heading2 size={18} />
             </button>
@@ -87,6 +93,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleBlockquote().run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('blockquote') ? 'text-primary bg-primary/10' : ''}`}
                 title="Quote"
+                aria-label="Quote"
             >
                 <Quote size={18} />
             </button>
@@ -94,6 +101,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('bulletList') ? 'text-primary bg-primary/10' : ''}`}
                 title="Bullet List"
+                aria-label="Bullet List"
             >
                 <List size={18} />
             </button>
@@ -101,6 +109,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('orderedList') ? 'text-primary bg-primary/10' : ''}`}
                 title="Ordered List"
+                aria-label="Ordered List"
             >
                 <ListOrdered size={18} />
             </button>
@@ -111,6 +120,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={setLink}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors ${editor.isActive('link') ? 'text-primary bg-primary/10' : ''}`}
                 title="Link"
+                aria-label="Link"
             >
                 <LinkIcon size={18} />
             </button>
@@ -118,6 +128,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={addImage}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors`}
                 title="Image"
+                aria-label="Image"
             >
                 <ImageIcon size={18} />
             </button>
@@ -126,6 +137,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
                 onClick={() => alert("Video embedding not configured yet.")}
                 className={`flex-shrink-0 p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors`}
                 title="Video"
+                aria-label="Video"
             >
                 <Video size={18} />
             </button>
