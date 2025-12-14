@@ -109,7 +109,7 @@ const HomePage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce-slow text-white/50 cursor-pointer" onClick={() => document.getElementById('portfolio')?.scrollIntoView()}>
+                <div className="absolute bottom-10 w-full flex justify-center animate-bounce-slow text-white/50 cursor-pointer" onClick={() => document.getElementById('portfolio')?.scrollIntoView()}>
                     <span className="material-symbols-outlined text-5xl">keyboard_arrow_down</span>
                 </div>
             </section>
