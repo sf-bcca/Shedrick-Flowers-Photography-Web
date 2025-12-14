@@ -19,11 +19,36 @@ const TiptapEditor: React.FC<TiptapEditorProps> = ({ content, onChange }) => {
 
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                heading: {
+                    levels: [1, 2, 3],
+                    HTMLAttributes: {
+                        class: 'text-white font-bold',
+                    },
+                },
+                bulletList: {
+                    HTMLAttributes: {
+                        class: 'list-disc list-outside ml-4',
+                    },
+                },
+                orderedList: {
+                    HTMLAttributes: {
+                        class: 'list-decimal list-outside ml-4',
+                    },
+                },
+                blockquote: {
+                    HTMLAttributes: {
+                        class: 'border-l-4 border-primary pl-4 italic text-slate-300',
+                    },
+                },
+            }),
             Image,
             Underline,
             Link.configure({
                 openOnClick: false,
+                HTMLAttributes: {
+                    class: 'text-blue-500 underline cursor-pointer hover:text-blue-400',
+                },
             }),
             Placeholder.configure({
                 placeholder: 'Write your story...',

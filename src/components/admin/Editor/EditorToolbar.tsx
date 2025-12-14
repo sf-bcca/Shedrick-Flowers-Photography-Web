@@ -3,7 +3,7 @@ import { Editor } from '@tiptap/react';
 import {
     Bold, Italic, Underline as UnderlineIcon, Heading1, Heading2,
     Quote, List, ListOrdered, Link as LinkIcon, Image as ImageIcon, Video,
-    Undo, Redo
+    Undo, Redo, RemoveFormatting
 } from 'lucide-react';
 
 interface EditorToolbarProps {
@@ -55,6 +55,14 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor, addImage }) => {
             >
                 <UnderlineIcon size={18} />
             </button>
+            <button
+                onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
+                className={`p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors`}
+                title="Clear Formatting"
+            >
+                <RemoveFormatting size={18} />
+            </button>
+
 
             <div className="w-px h-6 bg-white/10 mx-1 self-center" />
 
