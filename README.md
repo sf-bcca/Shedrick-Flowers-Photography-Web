@@ -48,4 +48,4 @@ For detailed instructions, please refer to the following guides:
 *   **Styling**: Tailwind CSS
 *   **Backend/Database**: Supabase (PostgreSQL, Auth, Storage)
 *   **Icons**: Lucide React, Material Symbols
-*   **Rich Text**: React Quill
+*   **Rich Text**: @tiptap/react
