@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { supabase } from '../../services/supabaseClient';
 import { Trash2, Copy, Upload, Check, Loader2 } from 'lucide-react';
 
@@ -71,7 +71,7 @@ const MediaLibrary = () => {
         accept: {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         }
-    });
+    } as unknown as DropzoneOptions);
 
     const getPublicUrl = (path: string) => {
         const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
