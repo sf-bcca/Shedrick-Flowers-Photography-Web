@@ -63,6 +63,31 @@ CREATE TABLE IF NOT EXISTS comments (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Table: testimonials
+CREATE TABLE IF NOT EXISTS testimonials (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    client_name TEXT NOT NULL,
+    subtitle TEXT,
+    quote TEXT NOT NULL,
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    image_url TEXT,
+    display_order INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS Policies for testimonials
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view testimonials"
+ON testimonials
+FOR SELECT
+USING (true);
+
+CREATE POLICY "Authenticated users can manage testimonials"
+ON testimonials
+FOR ALL
+USING (auth.role() = 'authenticated');
+
 -- Storage Bucket: images
 -- Note: You must create a storage bucket named 'images' in the Supabase dashboard manually if it doesn't exist.
 -- Set appropriate RLS policies to allow public read and authenticated upload.
