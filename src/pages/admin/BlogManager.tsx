@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
-import { Plus, Edit, Trash2, Search, ChevronLeft, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, ChevronLeft, Eye, Settings, X } from 'lucide-react';
 import TiptapEditor from '../../components/admin/Editor/TiptapEditor';
 import PublishCard from '../../components/admin/Editor/Sidebar/PublishCard';
 import CategoryCard from '../../components/admin/Editor/Sidebar/CategoryCard';
@@ -27,6 +27,9 @@ const BlogManager = () => {
     const [tags, setTags] = useState<string[]>([]);
     const [status, setStatus] = useState<'Draft' | 'Published'>('Draft');
     const [saving, setSaving] = useState(false);
+
+    // Mobile Settings Drawer State
+    const [showMobileSettings, setShowMobileSettings] = useState(false);
 
     useEffect(() => {
         if (view === 'list') fetchItems();
@@ -158,9 +161,38 @@ const BlogManager = () => {
     const userInitials = user?.email?.substring(0, 2).toUpperCase() || 'AD';
     const userAvatar = user?.user_metadata?.avatar_url;
 
+    const renderSidebarContent = () => (
+        <div className="space-y-6">
+            <PublishCard
+                status={status}
+                setStatus={setStatus}
+                date={date}
+                setDate={setDate}
+                onSave={handleSave}
+                onPublish={handlePublish}
+                saving={saving}
+            />
+            <CategoryCard category={category} setCategory={setCategory} />
+            <TagsCard tags={tags} setTags={setTags} />
+            <FeaturedImageCard image={image} setImage={setImage} />
+
+            {/* Excerpt Card */}
+            <div className="bg-[#1a2232] rounded-xl border border-white/10 p-4 space-y-4">
+                 <h3 className="font-bold text-white">Excerpt</h3>
+                 <textarea
+                    value={excerpt}
+                    onChange={e => setExcerpt(e.target.value)}
+                    rows={4}
+                    className="w-full bg-[#111722] border border-white/10 rounded-lg p-2.5 text-sm text-white resize-none placeholder:text-slate-600"
+                    placeholder="Write a short summary..."
+                />
+            </div>
+        </div>
+    );
+
     if (view === 'editor') {
         return (
-            <div className="flex flex-col h-[calc(100vh-100px)]">
+            <div className="flex flex-col h-[calc(100vh-100px)] relative">
                 {/* Editor Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
@@ -168,27 +200,35 @@ const BlogManager = () => {
                             onClick={() => setView('list')}
                             className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors"
                         >
-                            <ChevronLeft size={20} /> Back to Posts
+                            <ChevronLeft size={20} /> <span className="hidden sm:inline">Back to Posts</span>
                         </button>
-                        <h1 className="text-xl font-black text-white">
-                            {editItem ? 'Edit Post' : 'Add New Post'}
+                        <h1 className="text-xl font-black text-white truncate">
+                            {editItem ? 'Edit' : 'New'}
                         </h1>
                     </div>
                     <div className="flex items-center gap-3">
-                         <div className="text-sm text-slate-500">
+                         <div className="hidden sm:block text-sm text-slate-500">
                              Autosaved just now
                          </div>
                          <button
                             onClick={handlePreview}
                             className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors text-sm font-bold"
                          >
-                             <Eye size={16} /> Preview
+                             <Eye size={16} /> <span className="hidden sm:inline">Preview</span>
+                         </button>
+
+                         {/* Mobile Settings Button */}
+                         <button
+                            onClick={() => setShowMobileSettings(true)}
+                            className="lg:hidden p-2 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors"
+                         >
+                             <Settings size={20} />
                          </button>
 
                          {userAvatar ? (
-                             <img src={userAvatar} alt="User" className="w-8 h-8 rounded-full object-cover border border-white/10" />
+                             <img src={userAvatar} alt="User" className="w-8 h-8 rounded-full object-cover border border-white/10 hidden sm:block" />
                          ) : (
-                             <div className="w-8 h-8 rounded-full bg-white text-black font-bold flex items-center justify-center text-xs">
+                             <div className="w-8 h-8 rounded-full bg-white text-black font-bold items-center justify-center text-xs hidden sm:flex">
                                  {userInitials}
                              </div>
                          )}
@@ -196,7 +236,7 @@ const BlogManager = () => {
                 </div>
 
                 {/* Editor Layout: Main + Sidebar */}
-                <div className="flex flex-col lg:flex-row gap-6 h-full overflow-hidden">
+                <div className="flex flex-col lg:flex-row gap-6 h-full overflow-hidden relative">
                     {/* Main Content Area */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-20">
                          {/* Title Input */}
@@ -206,7 +246,7 @@ const BlogManager = () => {
                                 placeholder="Post Title"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="w-full bg-transparent text-4xl font-black text-white placeholder:text-slate-600 border-none outline-none focus:ring-0 px-0"
+                                className="w-full bg-transparent text-3xl sm:text-4xl font-black text-white placeholder:text-slate-600 border-none outline-none focus:ring-0 px-0"
                             />
                         </div>
 
@@ -218,34 +258,32 @@ const BlogManager = () => {
                         </div>
                     </div>
 
-                    {/* Sidebar */}
-                    <div className="w-full lg:w-80 flex-shrink-0 space-y-6 overflow-y-auto custom-scrollbar pb-20">
-                        <PublishCard
-                            status={status}
-                            setStatus={setStatus}
-                            date={date}
-                            setDate={setDate}
-                            onSave={handleSave}
-                            onPublish={handlePublish}
-                            saving={saving}
-                        />
-                        <CategoryCard category={category} setCategory={setCategory} />
-                        <TagsCard tags={tags} setTags={setTags} />
-                        <FeaturedImageCard image={image} setImage={setImage} />
-
-                        {/* Excerpt Card */}
-                        <div className="bg-[#1a2232] rounded-xl border border-white/10 p-4 space-y-4">
-                             <h3 className="font-bold text-white">Excerpt</h3>
-                             <textarea
-                                value={excerpt}
-                                onChange={e => setExcerpt(e.target.value)}
-                                rows={4}
-                                className="w-full bg-[#111722] border border-white/10 rounded-lg p-2.5 text-sm text-white resize-none placeholder:text-slate-600"
-                                placeholder="Write a short summary..."
-                            />
-                        </div>
+                    {/* Sidebar (Desktop) */}
+                    <div className="hidden lg:block w-80 flex-shrink-0 overflow-y-auto custom-scrollbar pb-20">
+                        {renderSidebarContent()}
                     </div>
                 </div>
+
+                {/* Mobile Settings Drawer */}
+                {showMobileSettings && (
+                    <div className="lg:hidden fixed inset-0 z-50 flex flex-col bg-[#0f1523]">
+                        {/* Drawer Header */}
+                        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#1a2232]">
+                            <h2 className="text-xl font-bold text-white">Post Settings</h2>
+                            <button
+                                onClick={() => setShowMobileSettings(false)}
+                                className="p-2 text-slate-400 hover:text-white transition-colors"
+                            >
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        {/* Drawer Content */}
+                        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                            {renderSidebarContent()}
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
@@ -258,7 +296,7 @@ const BlogManager = () => {
                     onClick={handleCreate}
                     className="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-primary/20"
                 >
-                    <Plus size={20} /> New Post
+                    <Plus size={20} /> <span className="hidden sm:inline">New Post</span>
                 </button>
             </div>
 
