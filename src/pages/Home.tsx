@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
+import { BlurImage } from '../components/BlurImage';
 import { fetchData, supabase } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
 
@@ -11,12 +12,29 @@ const HomePage = () => {
     const [heroImageUrl, setHeroImageUrl] = useState(localStorage.getItem('hero_image_url') || '');
     const [avatarUrl, setAvatarUrl] = useState(localStorage.getItem('avatar_url') || '');
 
-    useEffect(() => {
-        // Fetch portfolio items
+    const fetchPortfolio = () => {
         fetchData('portfolio').then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
+            sessionStorage.setItem('portfolioItems', JSON.stringify(data));
         });
+    };
+
+    useEffect(() => {
+        // Fetch portfolio items with caching
+        const cachedPortfolio = sessionStorage.getItem('portfolioItems');
+        if (cachedPortfolio) {
+            try {
+                setPortfolioItems(JSON.parse(cachedPortfolio));
+                setLoading(false);
+            } catch (e) {
+                console.error("Error parsing cached portfolio items", e);
+                // Fallback to fetch if parse fails
+                fetchPortfolio();
+            }
+        } else {
+            fetchPortfolio();
+        }
 
         // Fetch hero image and avatar from settings
         const fetchSettings = async () => {
@@ -63,11 +81,11 @@ const HomePage = () => {
             {/* Hero Section */}
             <section className="relative h-[90vh] -mt-16 w-full flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
-                    <img
+                    <BlurImage
                         src={heroImageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"}
                         alt="Dramatic landscape photography background"
                         className="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105"
-                        // Eager load hero image for LCP
+                        containerClassName="w-full h-full"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40 to-black/30"></div>
                 </div>
@@ -91,7 +109,7 @@ const HomePage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce-slow text-white/50 cursor-pointer" onClick={() => document.getElementById('portfolio')?.scrollIntoView()}>
+                <div className="absolute bottom-10 w-full flex justify-center animate-bounce-slow text-white/50 cursor-pointer" onClick={() => document.getElementById('portfolio')?.scrollIntoView()}>
                     <span className="material-symbols-outlined text-5xl">keyboard_arrow_down</span>
                 </div>
             </section>

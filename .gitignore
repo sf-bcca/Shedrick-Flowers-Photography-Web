@@ -33,3 +33,8 @@ id_rsa
 id_rsa.pub
 *_backup
 *.bak
+
+# Supabase Local Development
+supabase/.branches
+supabase/.temp
+supabase/functions/**/.env

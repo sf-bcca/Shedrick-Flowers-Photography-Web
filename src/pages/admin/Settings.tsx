@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Save, Globe, Mail, Image as ImageIcon, Share2, Upload, Loader2, X } from 'lucide-react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
 const Settings = () => {
@@ -411,7 +411,7 @@ const Settings = () => {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         },
         multiple: false
-    });
+    } as unknown as DropzoneOptions);
 
     const { getRootProps: getHeroRootProps, getInputProps: getHeroInputProps, isDragActive: isHeroDragActive } = useDropzone({
         onDrop: handleHeroUpload,
@@ -419,7 +419,7 @@ const Settings = () => {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         },
         multiple: false
-    });
+    } as unknown as DropzoneOptions);
 
     const { getRootProps: getAvatarRootProps, getInputProps: getAvatarInputProps, isDragActive: isAvatarDragActive } = useDropzone({
         onDrop: handleAvatarUpload,
@@ -427,7 +427,7 @@ const Settings = () => {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         },
         multiple: false
-    });
+    } as unknown as DropzoneOptions);
 
     const { getRootProps: getFaviconRootProps, getInputProps: getFaviconInputProps, isDragActive: isFaviconDragActive } = useDropzone({
         onDrop: handleFaviconUpload,
@@ -435,7 +435,7 @@ const Settings = () => {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico']
         },
         multiple: false
-    });
+    } as unknown as DropzoneOptions);
 
     const { getRootProps: getAboutPhotoRootProps, getInputProps: getAboutPhotoInputProps, isDragActive: isAboutPhotoDragActive } = useDropzone({
         onDrop: handleAboutPhotoUpload,
@@ -443,7 +443,7 @@ const Settings = () => {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         },
         multiple: false
-    });
+    } as unknown as DropzoneOptions);
 
     if (loading) return <div className="p-8">Loading settings...</div>;
 

@@ -73,7 +73,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = fals
                             Book a Session
                         </button>
                     </div>
-                    <button onClick={() => setMobileMenuOpen(true)} className="md:hidden text-white p-2">
+                    <button onClick={() => setMobileMenuOpen(true)} className="md:hidden text-white p-2" aria-label="Open main menu">
                         <span className="material-symbols-outlined">menu</span>
                     </button>
                 </div>
@@ -150,16 +150,16 @@ export const Footer: React.FC = () => {
                         <p className="text-slate-400 text-sm max-w-xs">Capturing the soul of the moment with professional photography services worldwide.</p>
                      </div>
                      <div className="flex gap-4">
-                        <a href={socialLinks.instagram || '#'} target={socialLinks.instagram ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                        <a href={socialLinks.instagram || '#'} target={socialLinks.instagram ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all" aria-label="Visit Instagram">
                              <Instagram size={20} />
                         </a>
-                        <a href={socialLinks.facebook || '#'} target={socialLinks.facebook ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                        <a href={socialLinks.facebook || '#'} target={socialLinks.facebook ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all" aria-label="Visit Facebook">
                              <Facebook size={20} />
                         </a>
-                        <a href={socialLinks.twitter || '#'} target={socialLinks.twitter ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                        <a href={socialLinks.twitter || '#'} target={socialLinks.twitter ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all" aria-label="Visit Twitter">
                              <XIcon size={18} />
                         </a>
-                        <a href={socialLinks.linkedin || '#'} target={socialLinks.linkedin ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all">
+                        <a href={socialLinks.linkedin || '#'} target={socialLinks.linkedin ? "_blank" : "_self"} rel="noreferrer" className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all" aria-label="Visit LinkedIn">
                              <Linkedin size={20} />
                         </a>
                      </div>

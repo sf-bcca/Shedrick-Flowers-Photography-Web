@@ -3,11 +3,21 @@ import { PageLayout } from '../components/Layout';
 import { Link } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 
+interface Testimonial {
+    id: string;
+    client_name: string;
+    subtitle: string;
+    quote: string;
+    rating: number;
+    image_url: string;
+}
+
 const AboutPage = () => {
     const [aboutPhotoUrl, setAboutPhotoUrl] = useState(() => {
         // Initialize from localStorage to prevent flash
         return localStorage.getItem('aboutPhotoUrl') || '';
     });
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
     useEffect(() => {
         const fetchAboutPhoto = async () => {
@@ -23,7 +33,19 @@ const AboutPage = () => {
             }
         };
 
+        const fetchTestimonials = async () => {
+            const { data } = await supabase
+                .from('testimonials')
+                .select('*')
+                .order('display_order', { ascending: true });
+
+            if (data) {
+                setTestimonials(data);
+            }
+        };
+
         fetchAboutPhoto();
+        fetchTestimonials();
     }, []);
 
     // Use custom photo if available, otherwise fall back to default
@@ -110,47 +132,51 @@ const AboutPage = () => {
                     <div className="flex flex-col gap-12">
                         <div className="flex items-center justify-between border-b border-white/10 pb-6">
                             <h3 className="text-3xl font-bold text-white">Latest Words</h3>
-                            <a className="text-sm text-primary hover:text-white transition-colors flex items-center gap-1 font-bold uppercase tracking-wide" href="#">
+                            {/* <a className="text-sm text-primary hover:text-white transition-colors flex items-center gap-1 font-bold uppercase tracking-wide" href="#">
                                 View all <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                            </a>
+                            </a> */}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="flex flex-col gap-8 rounded-2xl bg-surface-light dark:bg-[#1A202C] p-10 transition-all hover:bg-white dark:hover:bg-[#202837] border border-transparent hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5">
-                                <div className="flex items-center gap-4">
-                                    <img
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvj9gjErwbye8NeL4fDM3FwLax1Uoh2rCm1SW4wVq8DQCrglJN8oHnGO6QHUNuZfY5tJORlVE3rF81EOkZThcheVeoHdvBQPud-cwrTDoKFjIJ4Vwb0g5x6ETCxZnjKS2Kho-5qxdRc0TIcdP7rnt6Hr9EPdr-Uw5fWhU-L7-QYAHy-Vh7MqVYr5grfLNapEM3ergSkPboWP5wU87QGWh_xwSA-YoaioV45wVER7SFgeO0tqqFayCbYClVWXU05E3nybNqG-hPS7Xf"
-                                        alt="Sarah Jenkins"
-                                        loading="lazy"
-                                        className="size-14 rounded-full object-cover ring-2 ring-primary/20"
-                                    />
-                                    <div>
-                                        <p className="text-lg font-bold text-slate-900 dark:text-white">Sarah Jenkins</p>
-                                        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Wedding Photography</p>
+                            {testimonials.length > 0 ? (
+                                testimonials.map((testimonial) => (
+                                    <div key={testimonial.id} className="flex flex-col gap-8 rounded-2xl bg-surface-light dark:bg-[#1A202C] p-10 transition-all hover:bg-white dark:hover:bg-[#202837] border border-transparent hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5">
+                                        <div className="flex items-center gap-4">
+                                            {testimonial.image_url ? (
+                                                <img
+                                                    src={testimonial.image_url}
+                                                    alt={testimonial.client_name}
+                                                    loading="lazy"
+                                                    className="size-14 rounded-full object-cover ring-2 ring-primary/20"
+                                                />
+                                            ) : (
+                                                <div className="size-14 rounded-full bg-slate-700 flex items-center justify-center ring-2 ring-primary/20">
+                                                     <span className="material-symbols-outlined text-slate-400">person</span>
+                                                </div>
+                                            )}
+
+                                            <div>
+                                                <p className="text-lg font-bold text-slate-900 dark:text-white">{testimonial.client_name}</p>
+                                                {testimonial.subtitle && (
+                                                    <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">{testimonial.subtitle}</p>
+                                                )}
+                                            </div>
+                                            <div className="ml-auto flex text-yellow-500 gap-0.5">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className={`material-symbols-outlined text-[20px] ${i < testimonial.rating ? 'fill-current' : 'text-slate-600'}`}
+                                                    >
+                                                        star
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <p className="text-slate-700 dark:text-slate-300 text-xl italic leading-relaxed">"{testimonial.quote}"</p>
                                     </div>
-                                    <div className="ml-auto flex text-yellow-500 gap-0.5">
-                                        {[1,2,3,4,5].map(i => <span key={i} className="material-symbols-outlined text-[20px] fill-current">star</span>)}
-                                    </div>
-                                </div>
-                                <p className="text-slate-700 dark:text-slate-300 text-xl italic leading-relaxed">"Shedrick has an incredible eye for detail. The session felt so natural and the results were breathtaking. I've never felt more comfortable in front of a camera."</p>
-                            </div>
-                            <div className="flex flex-col gap-8 rounded-2xl bg-surface-light dark:bg-[#1A202C] p-10 transition-all hover:bg-white dark:hover:bg-[#202837] border border-transparent hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5">
-                                <div className="flex items-center gap-4">
-                                    <img
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2_HmFxEpRY12XdjgeZuNL2vLwftaxbtBkmOx9HZI3xzbCbC86lVaaQtZUQ8NnCE3jPWOWWwF77MeyTLRzX8qkXwhXe73aFMEGlEQJuXRLp94n910iAQ96HxJdONFBNUnhuzq5gk6__5ovvjJFs9i8GxKCMmR028LQ9E_8QBaaCc8d1Trrf71s3-tS-IYMwuCTAs4aygE8m1xfokwQboG3PTBoOnt4vtDfgE9ncZ-gDQmEGqsGmkh082v7f7gGGPqvR4T-gt3I-LlL"
-                                        alt="Mark Thompson"
-                                        loading="lazy"
-                                        className="size-14 rounded-full object-cover ring-2 ring-primary/20"
-                                    />
-                                    <div>
-                                        <p className="text-lg font-bold text-slate-900 dark:text-white">Mark Thompson</p>
-                                        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Brand Editorial</p>
-                                    </div>
-                                    <div className="ml-auto flex text-yellow-500 gap-0.5">
-                                        {[1,2,3,4,5].map(i => <span key={i} className="material-symbols-outlined text-[20px] fill-current">star</span>)}
-                                    </div>
-                                </div>
-                                <p className="text-slate-700 dark:text-slate-300 text-xl italic leading-relaxed">"Professional, creative, and efficient. The photos elevated our brand identity significantly. Highly recommended for any commercial work."</p>
-                            </div>
+                                ))
+                            ) : (
+                                <p className="text-slate-500 italic">No testimonials yet.</p>
+                            )}
                         </div>
                     </div>
                 </section>

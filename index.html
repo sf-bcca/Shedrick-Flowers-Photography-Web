@@ -33,7 +33,7 @@
     />
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
 
     <!-- Polyfill process for libraries that expect it -->
     <script>
@@ -74,6 +74,41 @@
                 "100%": { opacity: "1", transform: "translateY(0)" },
               },
             },
+            typography: (theme) => ({
+                DEFAULT: {
+                    css: {
+                        color: theme('colors.slate.300'),
+                        a: {
+                            color: theme('colors.primary'),
+                            '&:hover': {
+                                color: '#60a5fa', // blue-400
+                            },
+                        },
+                        strong: {
+                            color: 'white',
+                        },
+                        h1: {
+                            color: 'white',
+                        },
+                        h2: {
+                            color: 'white',
+                        },
+                        h3: {
+                            color: 'white',
+                        },
+                        h4: {
+                            color: 'white',
+                        },
+                        blockquote: {
+                            color: theme('colors.slate.300'),
+                            borderLeftColor: theme('colors.primary'),
+                        },
+                        code: {
+                            color: 'white',
+                        },
+                    },
+                },
+            }),
           },
         },
       };
@@ -150,47 +185,5 @@
   >
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
-    <!-- Emergency Error Logger -->
-    <script>
-      window.onerror = function (msg, url, line, col, error) {
-        const div = document.createElement("div");
-        div.style.position = "fixed";
-        div.style.top = "0";
-        div.style.left = "0";
-        div.style.width = "100%";
-        div.style.backgroundColor = "red";
-        div.style.color = "white";
-        div.style.padding = "20px";
-        div.style.zIndex = "99999";
-        div.style.whiteSpace = "pre-wrap";
-        div.innerText =
-          "Runtime Error:\n" +
-          msg +
-          "\n" +
-          url +
-          ":" +
-          line +
-          ":" +
-          col +
-          "\n" +
-          (error ? error.stack : "");
-        document.body.appendChild(div);
-        return false;
-      };
-      window.addEventListener("unhandledrejection", function (event) {
-        const div = document.createElement("div");
-        div.style.position = "fixed";
-        div.style.bottom = "0";
-        div.style.left = "0";
-        div.style.width = "100%";
-        div.style.backgroundColor = "darkorange";
-        div.style.color = "white";
-        div.style.padding = "20px";
-        div.style.zIndex = "99999";
-        div.style.whiteSpace = "pre-wrap";
-        div.innerText = "Promise Rejection:\n" + event.reason;
-        document.body.appendChild(div);
-      });
-    </script>
   </body>
 </html>

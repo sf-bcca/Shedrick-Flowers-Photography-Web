@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
 const PortfolioManager = () => {
@@ -156,7 +156,7 @@ const PortfolioManager = () => {
             'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
         },
         multiple: false
-    });
+    } as unknown as DropzoneOptions);
 
     return (
         <div className="space-y-6">
