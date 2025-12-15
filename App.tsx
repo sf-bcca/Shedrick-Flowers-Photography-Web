@@ -1,56 +1,61 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import ScrollToTop from './src/components/ScrollToTop';
 import { Routes, Route } from 'react-router-dom';
-import HomePage from './src/pages/Home';
-import BlogPage from './src/pages/Blog';
-import BlogPostDetail from './src/pages/BlogPostDetail';
-import ServicesPage from './src/pages/Services';
-import AboutPage from './src/pages/About';
-import ContactPage from './src/pages/Contact';
-import LoginPage from './src/pages/Login';
-
-// Admin Imports
-import { AdminLayout } from './src/components/layouts/AdminLayout';
-import DashboardHome from './src/pages/admin/DashboardHome';
-import MediaLibrary from './src/pages/admin/MediaLibrary';
-import PortfolioManager from './src/pages/admin/PortfolioManager';
-import BlogManager from './src/pages/admin/BlogManager';
-import ServiceManager from './src/pages/admin/ServiceManager';
-import CommentsManager from './src/pages/admin/CommentsManager';
-import TestimonialsManager from './src/pages/admin/TestimonialsManager';
-import Settings from './src/pages/admin/Settings';
+import LoadingSpinner from './src/components/LoadingSpinner';
 import ProtectedRoute from './src/components/ProtectedRoute';
+import { AdminLayout } from './src/components/layouts/AdminLayout';
+
+// Lazy load Public Pages
+const HomePage = lazy(() => import('./src/pages/Home'));
+const BlogPage = lazy(() => import('./src/pages/Blog'));
+const BlogPostDetail = lazy(() => import('./src/pages/BlogPostDetail'));
+const ServicesPage = lazy(() => import('./src/pages/Services'));
+const AboutPage = lazy(() => import('./src/pages/About'));
+const ContactPage = lazy(() => import('./src/pages/Contact'));
+const LoginPage = lazy(() => import('./src/pages/Login'));
+
+// Lazy load Admin Pages
+const DashboardHome = lazy(() => import('./src/pages/admin/DashboardHome'));
+const MediaLibrary = lazy(() => import('./src/pages/admin/MediaLibrary'));
+const PortfolioManager = lazy(() => import('./src/pages/admin/PortfolioManager'));
+const BlogManager = lazy(() => import('./src/pages/admin/BlogManager'));
+const ServiceManager = lazy(() => import('./src/pages/admin/ServiceManager'));
+const CommentsManager = lazy(() => import('./src/pages/admin/CommentsManager'));
+const TestimonialsManager = lazy(() => import('./src/pages/admin/TestimonialsManager'));
+const Settings = lazy(() => import('./src/pages/admin/Settings'));
 
 const App = () => {
     return (
         <>
             <ScrollToTop />
-            <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<HomePage />} />
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/blog/:id" element={<BlogPostDetail />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/login" element={<LoginPage />} />
+            <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/blog" element={<BlogPage />} />
+                    <Route path="/blog/:id" element={<BlogPostDetail />} />
+                    <Route path="/services" element={<ServicesPage />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route path="/login" element={<LoginPage />} />
 
-                {/* Admin Routes (Nested) */}
-                <Route path="/admin" element={
-                     <ProtectedRoute>
-                        <AdminLayout />
-                     </ProtectedRoute>
-                }>
-                    <Route index element={<DashboardHome />} />
-                    <Route path="media" element={<MediaLibrary />} />
-                    <Route path="portfolio" element={<PortfolioManager />} />
-                    <Route path="blog" element={<BlogManager />} />
-                    <Route path="services" element={<ServiceManager />} />
-                    <Route path="comments" element={<CommentsManager />} />
-                    <Route path="testimonials" element={<TestimonialsManager />} />
-                    <Route path="settings" element={<Settings />} />
-                </Route>
-            </Routes>
+                    {/* Admin Routes (Nested) */}
+                    <Route path="/admin" element={
+                        <ProtectedRoute>
+                            <AdminLayout />
+                        </ProtectedRoute>
+                    }>
+                        <Route index element={<DashboardHome />} />
+                        <Route path="media" element={<MediaLibrary />} />
+                        <Route path="portfolio" element={<PortfolioManager />} />
+                        <Route path="blog" element={<BlogManager />} />
+                        <Route path="services" element={<ServiceManager />} />
+                        <Route path="comments" element={<CommentsManager />} />
+                        <Route path="testimonials" element={<TestimonialsManager />} />
+                        <Route path="settings" element={<Settings />} />
+                    </Route>
+                </Routes>
+            </Suspense>
         </>
     );
 };
