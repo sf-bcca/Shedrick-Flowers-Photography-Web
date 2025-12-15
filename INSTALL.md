@@ -38,13 +38,21 @@ npm install --legacy-peer-deps
     ```env
     VITE_SUPABASE_URL=https://your-project-ref.supabase.co
     VITE_SUPABASE_ANON_KEY=your-anon-public-key
-    GEMINI_API_KEY=your-gemini-api-key
     ```
 
     *   **Supabase URL/Key**: Found in your Supabase Project Settings > API.
-    *   **Gemini API Key**: Required for AI-powered features (e.g., auto-generating descriptions).
 
-## 4. Database Setup (Supabase)
+## 4. Edge Function Secrets (AI Features)
+
+The "Studio Assistant" feature uses Google Gemini AI. To enable this, you must store your API key in Supabase Secrets (not in your local `.env` file).
+
+1.  Get a Gemini API Key from [Google AI Studio](https://aistudio.google.com/).
+2.  Go to your **Supabase Dashboard** > **Edge Functions**.
+3.  Add a new Secret:
+    *   **Name**: `GEMINI_API_KEY`
+    *   **Value**: `your-actual-api-key`
+
+## 5. Database Setup (Supabase)
 
 The application relies on specific database tables in Supabase.
 
@@ -59,7 +67,7 @@ The application relies on specific database tables in Supabase.
 3.  Set the bucket to **Public**.
 4.  Add a policy to allow authenticated users to upload/update/delete files, and anyone to read files.
 
-## 5. Docker Setup (Self-Hosting)
+## 6. Docker Setup (Self-Hosting)
 
 If you intend to self-host this application using Docker (e.g., on Proxmox LXC), follow these steps.
 
