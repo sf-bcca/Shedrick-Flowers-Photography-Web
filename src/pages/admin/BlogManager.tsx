@@ -199,6 +199,7 @@ const BlogManager = () => {
                         <button
                             onClick={() => setView('list')}
                             className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors"
+                            aria-label="Back to posts list"
                         >
                             <ChevronLeft size={20} /> <span className="hidden sm:inline">Back to Posts</span>
                         </button>
@@ -213,6 +214,8 @@ const BlogManager = () => {
                          <button
                             onClick={handlePreview}
                             className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors text-sm font-bold"
+                            aria-label="Preview post in new tab"
+                            title="Preview"
                          >
                              <Eye size={16} /> <span className="hidden sm:inline">Preview</span>
                          </button>
@@ -221,6 +224,8 @@ const BlogManager = () => {
                          <button
                             onClick={() => setShowMobileSettings(true)}
                             className="lg:hidden p-2 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors"
+                            aria-label="Open post settings"
+                            title="Settings"
                          >
                              <Settings size={20} />
                          </button>
@@ -273,6 +278,7 @@ const BlogManager = () => {
                             <button
                                 onClick={() => setShowMobileSettings(false)}
                                 className="p-2 text-slate-400 hover:text-white transition-colors"
+                                aria-label="Close settings"
                             >
                                 <X size={24} />
                             </button>
@@ -295,6 +301,7 @@ const BlogManager = () => {
                 <button
                     onClick={handleCreate}
                     className="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-primary/20"
+                    aria-label="Create new post"
                 >
                     <Plus size={20} /> <span className="hidden sm:inline">New Post</span>
                 </button>
@@ -307,6 +314,7 @@ const BlogManager = () => {
                         <input
                             type="text"
                             placeholder="Search posts..."
+                            aria-label="Search posts"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white"
@@ -349,12 +357,16 @@ const BlogManager = () => {
                                     <button
                                         onClick={() => handleEdit(item)}
                                         className="p-2 text-slate-400 hover:text-primary transition-colors"
+                                        aria-label={`Edit ${item.title}`}
+                                        title="Edit"
                                     >
                                         <Edit size={18} />
                                     </button>
                                     <button
                                         onClick={() => handleDelete(item.id)}
                                         className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                                        aria-label={`Delete ${item.title}`}
+                                        title="Delete"
                                     >
                                         <Trash2 size={18} />
                                     </button>
