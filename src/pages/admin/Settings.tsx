@@ -14,7 +14,7 @@ const Settings = () => {
     const [uploadingAboutPhoto, setUploadingAboutPhoto] = useState(false);
 
     // Form State
-    const [siteTitle, setSiteTitle] = useState('Lens & Light');
+    const [siteTitle, setSiteTitle] = useState('Shedrick Flowers Photography');
     const [siteDesc, setSiteDesc] = useState('');
     const [logoUrl, setLogoUrl] = useState('');
     const [heroImageUrl, setHeroImageUrl] = useState('');
@@ -985,7 +985,7 @@ const Settings = () => {
                                     value={contactAddressStreet}
                                     onChange={e => setContactAddressStreet(e.target.value)}
                                     className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
-                                    placeholder="123 Lens Avenue"
+                                    placeholder="123 Flowers Avenue"
                                 />
                             </div>
                         </div>
