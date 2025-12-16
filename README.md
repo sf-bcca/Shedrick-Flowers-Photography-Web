@@ -34,7 +34,7 @@ A professional photography portfolio website built with React, Vite, and Supabas
     npm run dev
     ```
 5.  Verify Connection
-    Run `node verify-supabase.js` to confirm your local environment is correctly connected to Supabase.
+    Run `node --env-file=.env verify-supabase.js` to confirm your local environment is correctly connected to Supabase.
 
 ## Documentation
 For detailed instructions, please refer to the following guides:

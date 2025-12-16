@@ -4,6 +4,13 @@ import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } fr
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
+/**
+ * PortfolioManager Component
+ *
+ * Manages the photography portfolio items.
+ * Allows adding/editing images, titles, categories, and layout options (margins).
+ * Includes image optimization and uploading.
+ */
 const PortfolioManager = () => {
     const [items, setItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -17,6 +24,9 @@ const PortfolioManager = () => {
         fetchItems();
     }, []);
 
+    /**
+     * Fetches portfolio items from Supabase.
+     */
     const fetchItems = async () => {
         setLoading(true);
         const { data, error } = await supabase
@@ -28,12 +38,19 @@ const PortfolioManager = () => {
         setLoading(false);
     };
 
+    /**
+     * Deletes a portfolio item.
+     */
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure? This cannot be undone.')) return;
         await supabase.from('portfolio').delete().eq('id', id);
         fetchItems();
     };
 
+    /**
+     * Creates or updates a portfolio item.
+     * Handles complex logic for margins and image association.
+     */
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
@@ -90,6 +107,9 @@ const PortfolioManager = () => {
         item.category.toLowerCase().includes(search.toLowerCase())
     );
 
+    /**
+     * Uploads and optimizes a portfolio image.
+     */
     const handleImageUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
