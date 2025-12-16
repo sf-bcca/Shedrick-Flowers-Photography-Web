@@ -162,6 +162,44 @@ ON testimonials
 FOR ALL
 USING (auth.role() = 'authenticated');
 
+-- Table: contact_submissions
+-- Stores contact form submissions from website visitors
+CREATE TABLE IF NOT EXISTS contact_submissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    date_preference DATE,
+    shoot_type TEXT NOT NULL,
+    message TEXT,
+    status TEXT DEFAULT 'new',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS on contact_submissions
+ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to submit (INSERT)
+CREATE POLICY "Anyone can submit contact form"
+ON contact_submissions
+FOR INSERT
+TO anon, authenticated
+WITH CHECK (true);
+
+-- Only authenticated users can view submissions
+CREATE POLICY "Authenticated users can view submissions"
+ON contact_submissions
+FOR SELECT
+TO authenticated
+USING (true);
+
+-- Only authenticated users can update submissions
+CREATE POLICY "Authenticated users can update submissions"
+ON contact_submissions
+FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
 -- Storage Bucket Policies (SQL representation)
 -- Note: These policies assume a bucket named 'images' exists.
 -- You must create the bucket in Supabase Dashboard -> Storage.
