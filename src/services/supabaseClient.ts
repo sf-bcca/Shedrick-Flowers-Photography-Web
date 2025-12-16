@@ -40,9 +40,10 @@ export const fetchData = async (table: 'portfolio' | 'blog' | 'services') => {
  * @returns {Promise<BlogPost[]>} List of published blog posts.
  */
 export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
+    // Select specific fields to avoid fetching large 'content' field
     const { data, error } = await supabase
         .from('blog')
-        .select('*')
+        .select('id, title, category, date, image, excerpt')
         .eq('status', 'Published')
         .order('date', { ascending: false }); // Use publish date for ordering
 
@@ -118,7 +119,7 @@ export const fetchRelatedPosts = async (currentPostId: string, category: string)
     // 1. Fetch posts with the same category, excluding current post AND only Published
     const { data: categoryData, error: categoryError } = await supabase
         .from('blog')
-        .select('*')
+        .select('id, title, category, date, image, excerpt')
         .eq('status', 'Published') // Security: Only show published posts
         .eq('category', category)
         .neq('id', currentPostId)
@@ -137,7 +138,7 @@ export const fetchRelatedPosts = async (currentPostId: string, category: string)
 
         const { data: recentData, error: recentError } = await supabase
             .from('blog')
-            .select('*')
+            .select('id, title, category, date, image, excerpt')
             .eq('status', 'Published') // Security: Only show published posts
             .not('id', 'in', `(${existingIds.map(id => `"${id}"`).join(',')})`) // Format for Postgres IN
             .order('created_at', { ascending: false })
