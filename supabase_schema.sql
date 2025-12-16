@@ -50,6 +50,19 @@ CREATE TABLE IF NOT EXISTS services (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Enable RLS on services
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view services"
+ON services
+FOR SELECT
+USING (true);
+
+CREATE POLICY "Authenticated users can manage services"
+ON services
+FOR ALL
+USING (auth.role() = 'authenticated');
+
 -- Table: settings
 -- Global configuration for the site
 CREATE TABLE IF NOT EXISTS settings (
