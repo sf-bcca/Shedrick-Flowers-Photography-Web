@@ -3,9 +3,30 @@ import { PageLayout } from '../components/Layout';
 import { StudioAssistant } from '../components/StudioAssistant';
 import { supabase } from '../services/supabaseClient';
 
+interface FormData {
+    name: string;
+    email: string;
+    datePreference: string;
+    shootType: string;
+    message: string;
+}
+
+type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
+
 const ContactPage = () => {
     const [settings, setSettings] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    
+    // Form state
+    const [formData, setFormData] = useState<FormData>({
+        name: '',
+        email: '',
+        datePreference: '',
+        shootType: 'Portrait Session',
+        message: ''
+    });
+    const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         fetchSettings();
@@ -26,6 +47,92 @@ const ContactPage = () => {
             console.error('Error fetching settings:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        // Basic validation
+        if (!formData.name.trim() || !formData.email.trim()) {
+            setErrorMessage('Please fill in your name and email.');
+            setSubmitStatus('error');
+            return;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setErrorMessage('Please enter a valid email address.');
+            setSubmitStatus('error');
+            return;
+        }
+
+        setSubmitStatus('submitting');
+        setErrorMessage('');
+
+        try {
+            // 1. Save to Supabase (Backup)
+            const { error: supabaseError } = await supabase
+                .from('contact_submissions')
+                .insert({
+                    name: formData.name.trim(),
+                    email: formData.email.trim(),
+                    date_preference: formData.datePreference || null,
+                    shoot_type: formData.shootType,
+                    message: formData.message.trim() || null
+                });
+
+            if (supabaseError) {
+                console.error('Supabase error:', supabaseError);
+                // We continue to email even if DB fails, or throw? 
+                // Let's decide to Log but try email anyway, as email is the priority for the user.
+            }
+
+            // 2. Send Email via Web3Forms
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    access_key: "3cdfa349-771c-43e9-ba81-4882fae3b76f",
+                    name: formData.name,
+                    email: formData.email,
+                    message: formData.message,
+                    subject: `New Inquiry: ${formData.shootType} - ${formData.name}`,
+                    from_name: "Shedrick Flowers Photography Website",
+                    // Custom fields for the email body
+                    "Shoot Type": formData.shootType,
+                    "Date Preference": formData.datePreference || "No date specificed"
+                }),
+            });
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.message || 'Failed to send email');
+            }
+
+            setSubmitStatus('success');
+            // Reset form
+            setFormData({
+                name: '',
+                email: '',
+                datePreference: '',
+                shootType: 'Portrait Session',
+                message: ''
+            });
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setErrorMessage('Something went wrong. Please try again later.');
+            setSubmitStatus('error');
         }
     };
 
@@ -52,56 +159,128 @@ const ContactPage = () => {
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-20">
                     {/* Form */}
                     <div className="lg:col-span-7 animate-fade-in-up delay-200">
-                        <form className="space-y-8 rounded-3xl bg-white dark:bg-[#1a2232] p-8 shadow-2xl ring-1 ring-slate-900/5 dark:ring-white/5 sm:p-12" onSubmit={(e) => e.preventDefault()}>
-                            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                <label className="block group">
-                                    <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Your Name</span>
-                                    <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">person</span></div>
-                                        <input className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] h-14 transition-all" placeholder="Jane Doe" type="text"/>
-                                    </div>
-                                </label>
-                                <label className="block group">
-                                    <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Email Address</span>
-                                    <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">mail</span></div>
-                                        <input className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] h-14 transition-all" placeholder="jane@example.com" type="email"/>
-                                    </div>
-                                </label>
-                            </div>
-                            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                <label className="block group">
-                                    <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Date Preference</span>
-                                    <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">calendar_month</span></div>
-                                        <input className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:[color-scheme:dark] h-14 transition-all" type="date"/>
-                                    </div>
-                                </label>
-                                <label className="block group">
-                                    <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Type of Shoot</span>
-                                    <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">photo_camera</span></div>
-                                        <select className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white h-14 transition-all appearance-none">
-                                            <option>Portrait Session</option>
-                                            <option>Wedding / Engagement</option>
-                                            <option>Event Coverage</option>
-                                            <option>Commercial / Product</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4"><span className="material-symbols-outlined text-slate-400">expand_more</span></div>
-                                    </div>
-                                </label>
-                            </div>
-                            <label className="block group">
-                                <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Your Vision</span>
-                                <textarea className="block w-full rounded-xl border-slate-200 bg-slate-50 p-6 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] resize-none transition-all" placeholder="Tell me a bit about what you are looking for..." rows={5}></textarea>
-                            </label>
-                            <div className="pt-4">
-                                <button className="group flex w-full items-center justify-center gap-3 rounded-xl bg-primary px-8 py-5 text-lg font-bold text-white transition-all hover:bg-blue-600 hover:shadow-lg hover:shadow-primary/30 sm:w-auto transform hover:-translate-y-0.5" type="button">
-                                    <span>Send Message</span>
-                                    <span className="material-symbols-outlined transition-transform group-hover:translate-x-1 text-xl">send</span>
+                        {submitStatus === 'success' ? (
+                            <div className="rounded-3xl bg-white dark:bg-[#1a2232] p-8 shadow-2xl ring-1 ring-slate-900/5 dark:ring-white/5 sm:p-12 text-center">
+                                <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 dark:bg-green-900/30">
+                                    <span className="material-symbols-outlined text-4xl text-green-600 dark:text-green-400">check_circle</span>
+                                </div>
+                                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Message Sent!</h2>
+                                <p className="text-lg text-slate-600 dark:text-[#93a5c8] mb-8">
+                                    Thank you for reaching out! I'll get back to you as soon as possible to discuss your vision.
+                                </p>
+                                <button
+                                    onClick={() => setSubmitStatus('idle')}
+                                    className="inline-flex items-center gap-2 text-primary hover:text-blue-600 font-semibold transition-colors"
+                                >
+                                    <span className="material-symbols-outlined text-xl">arrow_back</span>
+                                    Send another message
                                 </button>
                             </div>
-                        </form>
+                        ) : (
+                            <form className="space-y-8 rounded-3xl bg-white dark:bg-[#1a2232] p-8 shadow-2xl ring-1 ring-slate-900/5 dark:ring-white/5 sm:p-12" onSubmit={handleSubmit}>
+                                {submitStatus === 'error' && errorMessage && (
+                                    <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                                        <span className="material-symbols-outlined text-red-600 dark:text-red-400">error</span>
+                                        <p className="text-red-700 dark:text-red-300 font-medium">{errorMessage}</p>
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                    <label className="block group">
+                                        <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Your Name</span>
+                                        <div className="relative">
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">person</span></div>
+                                            <input 
+                                                name="name"
+                                                value={formData.name}
+                                                onChange={handleInputChange}
+                                                className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] h-14 transition-all" 
+                                                placeholder="Jane Doe" 
+                                                type="text"
+                                                required
+                                            />
+                                        </div>
+                                    </label>
+                                    <label className="block group">
+                                        <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Email Address</span>
+                                        <div className="relative">
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">mail</span></div>
+                                            <input 
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] h-14 transition-all" 
+                                                placeholder="jane@example.com" 
+                                                type="email"
+                                                required
+                                            />
+                                        </div>
+                                    </label>
+                                </div>
+                                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                    <label className="block group">
+                                        <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Date Preference</span>
+                                        <div className="relative">
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">calendar_month</span></div>
+                                            <input 
+                                                name="datePreference"
+                                                value={formData.datePreference}
+                                                onChange={handleInputChange}
+                                                className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:[color-scheme:dark] h-14 transition-all" 
+                                                type="date"
+                                            />
+                                        </div>
+                                    </label>
+                                    <label className="block group">
+                                        <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Type of Shoot</span>
+                                        <div className="relative">
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">photo_camera</span></div>
+                                            <select 
+                                                name="shootType"
+                                                value={formData.shootType}
+                                                onChange={handleInputChange}
+                                                className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white h-14 transition-all appearance-none"
+                                            >
+                                                <option>Portrait Session</option>
+                                                <option>Wedding / Engagement</option>
+                                                <option>Event Coverage</option>
+                                                <option>Commercial / Product</option>
+                                            </select>
+                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4"><span className="material-symbols-outlined text-slate-400">expand_more</span></div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <label className="block group">
+                                    <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Your Vision</span>
+                                    <textarea 
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleInputChange}
+                                        className="block w-full rounded-xl border-slate-200 bg-slate-50 p-6 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] resize-none transition-all" 
+                                        placeholder="Tell me a bit about what you are looking for..." 
+                                        rows={5}
+                                    ></textarea>
+                                </label>
+                                <div className="pt-4">
+                                    <button 
+                                        className="group flex w-full items-center justify-center gap-3 rounded-xl bg-primary px-8 py-5 text-lg font-bold text-white transition-all hover:bg-blue-600 hover:shadow-lg hover:shadow-primary/30 sm:w-auto transform hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:hover:shadow-none" 
+                                        type="submit"
+                                        disabled={submitStatus === 'submitting'}
+                                    >
+                                        {submitStatus === 'submitting' ? (
+                                            <>
+                                                <span className="material-symbols-outlined animate-spin text-xl">progress_activity</span>
+                                                <span>Sending...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Send Message</span>
+                                                <span className="material-symbols-outlined transition-transform group-hover:translate-x-1 text-xl">send</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
                     </div>
                     {/* Info & Sidebar */}
                     <div className="lg:col-span-5 flex flex-col h-full animate-fade-in-up delay-300">
