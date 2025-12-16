@@ -50,10 +50,19 @@ const ServiceManager = () => {
         }
 
         try {
+            let error;
             if (editItem?.id) {
-                await supabase.from('services').update(values).eq('id', editItem.id);
+                const { error: updateError } = await supabase.from('services').update(values).eq('id', editItem.id);
+                error = updateError;
             } else {
-                await supabase.from('services').insert([values]);
+                const { error: insertError } = await supabase.from('services').insert([values]);
+                error = insertError;
+            }
+
+            if (error) {
+                console.error('Error saving service item:', error);
+                alert(`Error saving service: ${error.message}`);
+                return;
             }
 
             setIsModalOpen(false);
