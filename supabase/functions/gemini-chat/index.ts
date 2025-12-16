@@ -25,15 +25,23 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
     // Fetch Settings
-    const { data: settingsData } = await supabase
+    const { data: settingsData, error: settingsError } = await supabase
       .from('settings')
       .select('*')
       .single()
 
+    if (settingsError) {
+      console.error('Error fetching settings:', settingsError)
+    }
+
     // Fetch Services
-    const { data: servicesData } = await supabase
+    const { data: servicesData, error: servicesError } = await supabase
       .from('services')
       .select('title, price, description, features')
+
+    if (servicesError) {
+      console.error('Error fetching services:', servicesError)
+    }
 
     // Construct Dynamic Info
     const studioName = settingsData?.site_title || 'Shedrick Flowers Photography';
@@ -55,7 +63,8 @@ serve(async (req) => {
         // Fallback if DB fetch fails or is empty
         servicesText = `- **Wedding & Engagement:** Starts at $2,400. Includes cinematic storytelling, 20-50+ retouched images.
 - **Portraiture:** Starts at $350. Studio or outdoor options.
-- **Commercial:** Custom quoting based on usage and scope.`;
+- **Commercial:** Custom quoting based on usage and scope.
+*Note: We offer a variety of other photography and editing services not listed here. Please ask if you don't see what you're looking for.*`;
     }
 
     const SYSTEM_INSTRUCTION = `You are the dedicated Studio Concierge for '${studioName}', a premium photography studio based in ${location} led by Shedrick Flowers.
