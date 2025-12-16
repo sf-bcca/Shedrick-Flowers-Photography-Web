@@ -36,11 +36,24 @@ CREATE TABLE IF NOT EXISTS blog (
     date DATE NOT NULL,
     image TEXT NOT NULL,
     excerpt TEXT,
-    content TEXT, -- Rich text content (HTML)
-    status TEXT DEFAULT 'Draft', -- 'Draft' or 'Published'
+    content TEXT,
+    status TEXT DEFAULT 'Draft',
     tags TEXT[] DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Enable RLS on blog
+ALTER TABLE blog ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view published blog posts"
+ON blog
+FOR SELECT
+USING (true); -- Application level filtering for drafts
+
+CREATE POLICY "Authenticated users can manage blog posts"
+ON blog
+FOR ALL
+USING (auth.role() = 'authenticated');
 
 -- Table: services
 CREATE TABLE IF NOT EXISTS services (
@@ -49,13 +62,27 @@ CREATE TABLE IF NOT EXISTS services (
     description TEXT NOT NULL,
     price TEXT NOT NULL,
     image TEXT NOT NULL,
-    features TEXT[], -- Array of strings
+    features TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Enable RLS on services
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view services"
+ON services
+FOR SELECT
+USING (true);
+
+CREATE POLICY "Authenticated users can manage services"
+ON services
+FOR ALL
+USING (auth.role() = 'authenticated');
+
 -- Table: settings
+-- Global configuration for the site
 CREATE TABLE IF NOT EXISTS settings (
-    id INTEGER PRIMARY KEY DEFAULT 1, -- Single row for global settings
+    id INTEGER PRIMARY KEY DEFAULT 1,
     site_title TEXT,
     site_description TEXT,
     logo_url TEXT,
@@ -72,8 +99,48 @@ CREATE TABLE IF NOT EXISTS settings (
     social_links JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    CONSTRAINT single_row_check CHECK (id = 1)
+    CONSTRAINT single_settings_row CHECK (id = 1)
 );
+
+-- Initialize default settings row
+INSERT INTO settings (id, site_title, site_description, contact_email)
+VALUES (1, 'Shedrick Flowers Photography', 'Capturing moments in time.', 'admin@lensandlight.com')
+ON CONFLICT (id) DO NOTHING;
+
+-- Auto-update updated_at for settings
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_settings_updated_at
+    BEFORE UPDATE ON settings
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Enable RLS on settings
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read settings"
+ON settings
+FOR SELECT
+USING (true);
+
+CREATE POLICY "Authenticated users can update settings"
+ON settings
+FOR UPDATE
+TO authenticated
+USING (id = 1)
+WITH CHECK (id = 1);
+
+CREATE POLICY "Authenticated users can insert settings"
+ON settings
+FOR INSERT
+TO authenticated
+WITH CHECK (id = 1);
 
 -- Table: comments
 CREATE TABLE IF NOT EXISTS comments (
@@ -97,4 +164,31 @@ CREATE TABLE IF NOT EXISTS testimonials (
     display_order INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Enable RLS on testimonials
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view testimonials"
+ON testimonials
+FOR SELECT
+USING (true);
+
+CREATE POLICY "Authenticated users can manage testimonials"
+ON testimonials
+FOR ALL
+USING (auth.role() = 'authenticated');
+
+-- Storage Bucket Policies (SQL representation)
+-- Note: These policies assume a bucket named 'images' exists.
+-- You must create the bucket in Supabase Dashboard -> Storage.
+
+-- Allow authenticated uploads to 'images' bucket
+-- CREATE POLICY "Allow authenticated uploads" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'images' AND auth.role() = 'authenticated');
+
+-- Allow public reads from 'images' bucket
+-- CREATE POLICY "Allow public reads" ON storage.objects FOR SELECT USING (bucket_id = 'images');
+
+-- Allow authenticated updates/deletes
+-- CREATE POLICY "Allow authenticated deletes" ON storage.objects FOR DELETE USING (bucket_id = 'images' AND auth.role() = 'authenticated');
+-- CREATE POLICY "Allow authenticated updates" ON storage.objects FOR UPDATE USING (bucket_id = 'images' AND auth.role() = 'authenticated');
 ```

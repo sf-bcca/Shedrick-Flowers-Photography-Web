@@ -19,6 +19,14 @@ interface MediaPickerProps {
     onClose?: () => void; // For modal usage
 }
 
+/**
+ * MediaPicker Component
+ *
+ * A reusable component for browsing and uploading images to Supabase Storage.
+ *
+ * @param onSelect - Optional callback when an image is selected.
+ * @param onClose - Optional callback to close the picker (e.g. in a modal).
+ */
 const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
     const [files, setFiles] = useState<FileObject[]>([]);
     const [loading, setLoading] = useState(true);
@@ -29,6 +37,9 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         fetchFiles();
     }, []);
 
+    /**
+     * Fetches the list of files from the 'images' bucket.
+     */
     const fetchFiles = async () => {
         try {
             setLoading(true);
@@ -48,6 +59,9 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         }
     };
 
+    /**
+     * Handles file drops, uploads to Storage, and refreshes the list.
+     */
     const onDrop = useCallback(async (acceptedFiles: File[]) => {
         setUploading(true);
         try {
@@ -83,6 +97,9 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         return data.publicUrl;
     };
 
+    /**
+     * Copies the image URL to clipboard.
+     */
     const handleCopyUrl = (e: React.MouseEvent, path: string) => {
         e.stopPropagation();
         const url = getPublicUrl(path);
@@ -91,6 +108,9 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         setTimeout(() => setCopyId(null), 2000);
     };
 
+    /**
+     * Deletes a file from Storage.
+     */
     const handleDelete = async (e: React.MouseEvent, path: string) => {
         e.stopPropagation();
         if (!confirm('Are you sure you want to delete this image?')) return;

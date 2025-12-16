@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react';
 
+/**
+ * TestimonialsManager Component
+ *
+ * Manages client testimonials.
+ * Supports creating, editing, and deleting testimonials.
+ * Allows reordering (via display_order field) and image uploading.
+ */
 interface Testimonial {
     id: string;
     client_name: string;
@@ -27,6 +34,9 @@ const TestimonialsManager = () => {
         fetchTestimonials();
     }, []);
 
+    /**
+     * Fetches all testimonials from Supabase.
+     */
     const fetchTestimonials = async () => {
         try {
             setLoading(true);
@@ -49,6 +59,10 @@ const TestimonialsManager = () => {
         }
     };
 
+    /**
+     * Saves (inserts or updates) a testimonial.
+     * Validates required fields before saving.
+     */
     const handleSave = async () => {
         try {
             if (!currentTestimonial.client_name || !currentTestimonial.quote) {
@@ -92,6 +106,9 @@ const TestimonialsManager = () => {
         }
     };
 
+    /**
+     * Deletes a testimonial by ID.
+     */
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this testimonial?')) return;
 
@@ -109,6 +126,10 @@ const TestimonialsManager = () => {
         }
     };
 
+    /**
+     * Uploads a client image to Supabase Storage.
+     * Generates a random filename to avoid collisions.
+     */
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         try {
             if (!event.target.files || event.target.files.length === 0) {

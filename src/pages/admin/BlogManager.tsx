@@ -9,6 +9,19 @@ import TagsCard from '../../components/admin/Editor/Sidebar/TagsCard';
 import { BlogPost } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * BlogManager Component
+ *
+ * A comprehensive interface for managing blog posts.
+ * Allows creating, editing, publishing, and deleting posts.
+ * Features a split-view editor (Tiptap) with sidebar settings.
+ *
+ * Key features:
+ * - List view with search and filtering
+ * - Rich text editor (Tiptap)
+ * - Sidebar for metadata (Categories, Tags, Featured Image)
+ * - Mobile-responsive settings drawer
+ */
 const BlogManager = () => {
     const { user } = useAuth();
     const [view, setView] = useState<'list' | 'editor'>('list');
@@ -35,6 +48,10 @@ const BlogManager = () => {
         if (view === 'list') fetchItems();
     }, [view]);
 
+    /**
+     * Fetches all blog posts from Supabase.
+     * Ordered by creation date descending.
+     */
     const fetchItems = async () => {
         setLoading(true);
         // We'll fetch all and filter in UI for now, or add .eq('status', ...) later
@@ -43,12 +60,20 @@ const BlogManager = () => {
         setLoading(false);
     };
 
+    /**
+     * Deletes a post by ID after confirmation.
+     * @param id - UUID of the post to delete.
+     */
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure?')) return;
         await supabase.from('blog').delete().eq('id', id);
         fetchItems();
     };
 
+    /**
+     * Prepares the editor with data from an existing post.
+     * @param item - The blog post object to edit.
+     */
     const handleEdit = (item: any) => {
         setEditItem(item);
         setTitle(item.title);
@@ -62,6 +87,10 @@ const BlogManager = () => {
         setView('editor');
     };
 
+    /**
+     * Resets the editor state for creating a new post.
+     * Sets default values (e.g., today's date, Draft status).
+     */
     const handleCreate = () => {
         setEditItem(null);
         setTitle('');
@@ -81,6 +110,11 @@ const BlogManager = () => {
         setView('editor');
     };
 
+    /**
+     * Saves the current post state to Supabase.
+     * Handles both INSERT (new) and UPDATE (existing).
+     * Alerts the user on success or error.
+     */
     const handleSave = async () => {
         setSaving(true);
         const itemData = {
@@ -115,6 +149,9 @@ const BlogManager = () => {
         }
     };
 
+    /**
+     * Explicitly updates status to 'Published' and saves the post.
+     */
     const handlePublish = async () => {
         setStatus('Published');
         const itemData = {

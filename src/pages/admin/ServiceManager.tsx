@@ -4,6 +4,13 @@ import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } fr
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
+/**
+ * ServiceManager Component
+ *
+ * Manages service offerings (packages, pricing, descriptions).
+ * Supports CRUD operations and image uploading via Supabase Storage.
+ * Features a drag-and-drop interface for service images.
+ */
 const ServiceManager = () => {
     const [items, setItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -17,6 +24,9 @@ const ServiceManager = () => {
         fetchItems();
     }, []);
 
+    /**
+     * Fetches all services from Supabase.
+     */
     const fetchItems = async () => {
         setLoading(true);
         const { data, error } = await supabase
@@ -28,12 +38,19 @@ const ServiceManager = () => {
         setLoading(false);
     };
 
+    /**
+     * Deletes a service item by ID.
+     */
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure?')) return;
         await supabase.from('services').delete().eq('id', id);
         fetchItems();
     };
 
+    /**
+     * Saves (inserts or updates) a service item.
+     * Handles form submission and validation.
+     */
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
@@ -79,6 +96,10 @@ const ServiceManager = () => {
         item.title.toLowerCase().includes(search.toLowerCase())
     );
 
+    /**
+     * Handles image file selection, optimization, and upload to Supabase Storage.
+     * Generates a unique filename and updates the preview.
+     */
     const handleImageUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
