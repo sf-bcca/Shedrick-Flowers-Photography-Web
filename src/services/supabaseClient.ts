@@ -35,6 +35,25 @@ export const fetchData = async (table: 'portfolio' | 'blog' | 'services') => {
 };
 
 /**
+ * Fetch only published blog posts for public display.
+ * Prevents drafts from being exposed to the client.
+ * @returns {Promise<BlogPost[]>} List of published blog posts.
+ */
+export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
+    const { data, error } = await supabase
+        .from('blog')
+        .select('*')
+        .eq('status', 'Published')
+        .order('date', { ascending: false }); // Use publish date for ordering
+
+    if (error) {
+        console.error('Error fetching published blog posts:', error);
+        return [];
+    }
+    return data || [];
+};
+
+/**
  * Create a new record in the specified table.
  * @param table - The target table.
  * @param item - The data object to insert. Note: 'id' is automatically stripped to allow DB generation.
@@ -96,10 +115,11 @@ export const fetchRelatedPosts = async (currentPostId: string, category: string)
     let relatedPosts: BlogPost[] = [];
     const LIMIT = 3;
 
-    // 1. Fetch posts with the same category, excluding current post
+    // 1. Fetch posts with the same category, excluding current post AND only Published
     const { data: categoryData, error: categoryError } = await supabase
         .from('blog')
         .select('*')
+        .eq('status', 'Published') // Security: Only show published posts
         .eq('category', category)
         .neq('id', currentPostId)
         .limit(LIMIT);
@@ -118,6 +138,7 @@ export const fetchRelatedPosts = async (currentPostId: string, category: string)
         const { data: recentData, error: recentError } = await supabase
             .from('blog')
             .select('*')
+            .eq('status', 'Published') // Security: Only show published posts
             .not('id', 'in', `(${existingIds.map(id => `"${id}"`).join(',')})`) // Format for Postgres IN
             .order('created_at', { ascending: false })
             .limit(remaining);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlogCard } from '../components/BlogCard';
-import { fetchData } from '../services/supabaseClient';
+import { fetchPublishedBlogPosts } from '../services/supabaseClient';
 import { BlogPost } from '../types';
 
 const BlogPage = () => {
@@ -10,7 +10,8 @@ const BlogPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchData('blog').then((data: any) => {
+        // Use the secure fetch function to get only published posts
+        fetchPublishedBlogPosts().then((data) => {
             setBlogPosts(data);
             setLoading(false);
         });
