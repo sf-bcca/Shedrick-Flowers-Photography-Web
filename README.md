@@ -26,7 +26,7 @@ A professional photography portfolio website built with React, Vite, and Supabas
 1.  Clone the repository.
 2.  Install dependencies:
     ```bash
-    npm install
+    npm install --legacy-peer-deps
     ```
 3.  Set up environment variables (see [INSTALL.md](INSTALL.md)).
 4.  Run the development server:

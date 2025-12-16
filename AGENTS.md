@@ -5,7 +5,7 @@
 *   **Routing**: React Router v7
 *   **Backend**: Supabase (PostgreSQL, Auth, Storage)
 *   **State Management**: React Context / Hooks
-*   **Icons**: Lucide React
+*   **Icons**: Lucide React, Material Symbols (Google Fonts)
 *   **Rich Text**: @tiptap/react
 *   **Language**: TypeScript
 
