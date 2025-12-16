@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS settings (
 
 -- Initialize default settings row
 INSERT INTO settings (id, site_title, site_description, contact_email)
-VALUES (1, 'Shedrick Flowers Photography', 'Capturing moments in time.', 'admin@lensandlight.com')
+VALUES (1, 'Shedrick Flowers Photography', 'Capturing moments in time.', 'shedrick@shedrickflowers.com')
 ON CONFLICT (id) DO NOTHING;
 
 -- Auto-update updated_at for settings

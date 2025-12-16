@@ -29,7 +29,7 @@ export const AdminLayout = () => {
 
     // Branding State
     const [logoUrl, setLogoUrl] = useState(localStorage.getItem('site_logo_url') || '');
-    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Lens & Light');
+    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Shedrick Flowers Photography');
 
     useEffect(() => {
         const fetchSettings = async () => {

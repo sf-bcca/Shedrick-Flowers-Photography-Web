@@ -12,7 +12,7 @@ interface LayoutProps {
 export const Header: React.FC<{ transparent?: boolean }> = ({ transparent = false }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [logoUrl, setLogoUrl] = useState(localStorage.getItem('site_logo_url') || '');
-    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Lens & Light');
+    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Shedrick Flowers Photography');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -90,7 +90,7 @@ const XIcon = ({ size = 24, className = "" }: { size?: number, className?: strin
 
 export const Footer: React.FC = () => {
     const [logoUrl, setLogoUrl] = useState(localStorage.getItem('site_logo_url') || '');
-    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Lens & Light');
+    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Shedrick Flowers Photography');
     const [socialLinks, setSocialLinks] = useState({
         facebook: '',
         twitter: '',

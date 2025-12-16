@@ -68,7 +68,7 @@ const LoginPage = () => {
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
                                 className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                                placeholder="admin@lensandlight.com"
+                                placeholder="shedrick@shedrickflowers.com"
                                 required
                             />
                         </div>
