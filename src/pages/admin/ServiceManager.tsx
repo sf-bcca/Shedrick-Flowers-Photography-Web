@@ -193,6 +193,7 @@ const ServiceManager = () => {
                         <input
                             type="text"
                             placeholder="Search services..."
+                            aria-label="Search services"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 outline-none focus:ring-2 focus:ring-primary/50"
@@ -211,8 +212,8 @@ const ServiceManager = () => {
                                 <div className="aspect-video bg-slate-200 relative">
                                     <img src={item.image} alt="" className="w-full h-full object-cover" />
                                     <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button onClick={() => openModal(item)} className="p-2 bg-white text-slate-900 rounded-full hover:text-primary shadow-sm"><Edit size={16} /></button>
-                                        <button onClick={() => handleDelete(item.id)} className="p-2 bg-white text-slate-900 rounded-full hover:text-red-500 shadow-sm"><Trash2 size={16} /></button>
+                                        <button onClick={() => openModal(item)} className="p-2 bg-white text-slate-900 rounded-full hover:text-primary shadow-sm" aria-label={`Edit ${item.title}`}><Edit size={16} /></button>
+                                        <button onClick={() => handleDelete(item.id)} className="p-2 bg-white text-slate-900 rounded-full hover:text-red-500 shadow-sm" aria-label={`Delete ${item.title}`}><Trash2 size={16} /></button>
                                     </div>
                                 </div>
                                 <div className="p-4">
@@ -232,17 +233,17 @@ const ServiceManager = () => {
                     <div className="bg-white dark:bg-[#1e283a] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
                         <div className="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
                             <h3 className="text-xl font-bold dark:text-white">{editItem ? 'Edit Service' : 'New Service'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white"><X size={24} /></button>
+                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white" aria-label="Close modal"><X size={24} /></button>
                         </div>
                         <form onSubmit={handleSave} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Service Title</label>
-                                <input name="title" defaultValue={editItem?.title} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
+                                <label htmlFor="service-title" className="block text-xs font-bold uppercase text-slate-500 mb-1">Service Title</label>
+                                <input id="service-title" name="title" defaultValue={editItem?.title} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Price</label>
-                                <input name="price" defaultValue={editItem?.price} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
+                                <label htmlFor="service-price" className="block text-xs font-bold uppercase text-slate-500 mb-1">Price</label>
+                                <input id="service-price" name="price" defaultValue={editItem?.price} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
                             </div>
 
                             <div>
@@ -258,6 +259,7 @@ const ServiceManager = () => {
                                                     onClick={handleRemoveImage}
                                                     className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                                                     title="Remove image"
+                                                    aria-label="Remove image"
                                                 >
                                                     <X size={18} />
                                                 </button>
@@ -329,8 +331,8 @@ const ServiceManager = () => {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Description</label>
-                                <textarea name="description" defaultValue={editItem?.description} required rows={4} className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white resize-none" />
+                                <label htmlFor="service-description" className="block text-xs font-bold uppercase text-slate-500 mb-1">Description</label>
+                                <textarea id="service-description" name="description" defaultValue={editItem?.description} required rows={4} className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white resize-none" />
                             </div>
                             <div className="pt-4 flex justify-end gap-3">
                                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">Cancel</button>
