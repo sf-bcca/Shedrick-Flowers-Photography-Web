@@ -40,8 +40,15 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Blog Manager**: Write and edit posts using the rich text editor.
 *   **Services Manager**: Update pricing tiers and features.
 *   **Testimonials Manager**: Manage client testimonials and reviews.
-*   **Settings**: Configure site title, logo, and social media links.
-*   **Comments**: Approve or reject user comments on blog posts.
+*   **Settings**: Comprehensive site configuration including:
+    *   **General**: Site title, description, and contact email.
+    *   **Branding**: Upload/update Logo, Hero Image, Avatar, and Favicon.
+    *   **About Photo**: Image used on the About page.
+    *   **Contact Info**: Phone, address, and social media links (Instagram, Facebook, X/Twitter, LinkedIn).
+*   **Comments**: Moderation queue for blog comments.
+    *   New comments appear as **Pending**.
+    *   Admins must **Approve** comments for them to appear on the public site.
+    *   **Reject** removes the comment from the queue.
 
 ### 2. Public Site
 *   **Home**: Landing page with featured content.

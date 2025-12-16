@@ -67,7 +67,18 @@ The application relies on specific database tables in Supabase.
 3.  Set the bucket to **Public**.
 4.  Add a policy to allow authenticated users to upload/update/delete files, and anyone to read files.
 
-## 6. Docker Setup (Self-Hosting)
+## 6. Verify Installation
+
+Before running the application, verify that your local environment is correctly connected to Supabase. This script checks your `.env` configuration and attempts to fetch settings from the database.
+
+```bash
+# Requires Node.js v20.6+ for --env-file support
+node --env-file=.env verify-supabase.js
+```
+
+If successful, you will see: `✅ Supabase Connection Successful`.
+
+## 7. Docker Setup (Self-Hosting)
 
 If you intend to self-host this application using Docker (e.g., on Proxmox LXC), follow these steps.
 
