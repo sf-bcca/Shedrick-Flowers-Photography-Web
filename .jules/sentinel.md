@@ -1,9 +1,6 @@
-## 2025-12-14 - Exposed AI API Key in Client-Side Architecture
-**Vulnerability:** The Gemini API key is embedded in the client-side JavaScript bundle and exposed to anyone inspecting the source code or network traffic.
-**Learning:** Client-only architectures cannot safely hold secrets for third-party APIs unless those APIs support scoped/restricted browser keys (like Firebase or Google Maps). GenAI keys typically allow content generation which can be abused or quota-drained if exposed.
-**Prevention:** Use a backend proxy (e.g., Supabase Edge Function) to hold the secret key and proxy requests from the client. Alternatively, use API keys with strict quotas and HTTP Referrer restrictions if the provider supports them.
-
-## 2025-12-15 - Stored XSS in Rich Text Content
-**Vulnerability:** Blog content was rendered using `dangerouslySetInnerHTML` without sanitization. Although primarily authored by admins, a compromised admin account or database injection could lead to Stored XSS affecting all visitors.
-**Learning:** Trusting "internal" content is risky. Rich text editors often produce HTML that *looks* safe but relies on the rendering component to strip malicious scripts.
-**Prevention:** Always sanitize HTML content immediately before rendering using a library like `dompurify`, even if the source is considered trusted.
+## 2024-05-23 - Information Disclosure (Blog Drafts)
+**Vulnerability:** The `blog` table's RLS policy allowed public access to all rows (`USING (true)`), and the frontend `fetchData` function fetched all posts regardless of status. This meant "Draft" posts were visible to anyone visiting the blog page or inspecting network requests.
+**Learning:** "Application-level filtering" (comment found in schema) is not a security control. Always enforce data visibility constraints at the database level (RLS) and the data access layer.
+**Prevention:**
+1. Use RLS policies that strictly enforce `status = 'Published'` for public roles.
+2. Create specific data fetching functions (e.g., `fetchPublishedBlogPosts`) that include `.eq('status', 'Published')` to prevent accidental exposure and improve query performance.
