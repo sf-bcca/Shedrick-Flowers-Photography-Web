@@ -236,12 +236,14 @@ const PortfolioManager = () => {
                                                 <button
                                                     onClick={() => { setEditItem(item); setImagePreview(item.image); setIsModalOpen(true); }}
                                                     className="p-2 text-slate-400 hover:text-primary transition-colors"
+                                                    aria-label={`Edit ${item.title}`}
                                                 >
                                                     <Edit size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(item.id)}
                                                     className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                                                    aria-label={`Delete ${item.title}`}
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -261,7 +263,7 @@ const PortfolioManager = () => {
                     <div className="bg-white dark:bg-[#1e283a] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
                         <div className="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
                             <h3 className="text-xl font-bold dark:text-white">{editItem ? 'Edit Item' : 'New Portfolio Item'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white"><X size={24} /></button>
+                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white" aria-label="Close modal"><X size={24} /></button>
                         </div>
                         <form onSubmit={handleSave} className="p-6 space-y-4">
                             <div>
@@ -285,6 +287,7 @@ const PortfolioManager = () => {
                                                     onClick={handleRemoveImage}
                                                     className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                                                     title="Remove image"
+                                                    aria-label="Remove image"
                                                 >
                                                     <X size={18} />
                                                 </button>

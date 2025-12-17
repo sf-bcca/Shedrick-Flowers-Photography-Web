@@ -190,6 +190,7 @@ const TestimonialsManager = () => {
                             <button
                                 onClick={() => setIsEditing(false)}
                                 className="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full"
+                                aria-label="Close modal"
                             >
                                 <X size={20} className="dark:text-white" />
                             </button>
@@ -349,12 +350,14 @@ const TestimonialsManager = () => {
                                         setIsEditing(true);
                                     }}
                                     className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                    aria-label={`Edit testimonial from ${testimonial.client_name}`}
                                 >
                                     <Edit2 size={18} />
                                 </button>
                                 <button
                                     onClick={() => handleDelete(testimonial.id)}
                                     className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                    aria-label={`Delete testimonial from ${testimonial.client_name}`}
                                 >
                                     <Trash2 size={18} />
                                 </button>
