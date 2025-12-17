@@ -18,11 +18,10 @@ cd shedrick-flowers-photography-web
 
 ## 2. Install Dependencies
 
-Install the required Node.js packages:
+Install the required Node.js packages.
+**Note:** Due to React 19 dependencies, `legacy-peer-deps` is required.
 
 ```bash
-npm install
-# If you encounter peer dependency issues with React 19:
 npm install --legacy-peer-deps
 ```
 
@@ -84,12 +83,13 @@ If you intend to self-host this application using Docker (e.g., on Proxmox LXC),
 
 ### Build the Image
 
-Create a `Dockerfile` in the root (if not present) or use the following command to build a production image using a standard Node/Nginx setup.
-
-*Example Build Command:*
+To build the production image, you must pass your Supabase credentials as build arguments. These are baked into the static build.
 
 ```bash
-docker build -t shedrick-photography-web .
+docker build \
+  --build-arg VITE_SUPABASE_URL=your_supabase_url \
+  --build-arg VITE_SUPABASE_ANON_KEY=your_anon_key \
+  -t shedrick-photography-web .
 ```
 
 ### Run the Container
@@ -97,7 +97,6 @@ docker build -t shedrick-photography-web .
 ```bash
 docker run -d \
   -p 80:80 \
-  --env-file .env \
   --name photography-web \
   shedrick-photography-web
 ```
