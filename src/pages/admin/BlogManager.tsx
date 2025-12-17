@@ -55,7 +55,11 @@ const BlogManager = () => {
     const fetchItems = async () => {
         setLoading(true);
         // We'll fetch all and filter in UI for now, or add .eq('status', ...) later
-        const { data, error } = await supabase.from('blog').select('*').order('created_at', { ascending: false });
+        // Optimize payload by excluding 'content' (large field) from list view
+        const { data, error } = await supabase
+            .from('blog')
+            .select('id, title, category, date, image, status, created_at, excerpt, tags')
+            .order('created_at', { ascending: false });
         if (!error) setItems(data || []);
         setLoading(false);
     };
@@ -72,19 +76,45 @@ const BlogManager = () => {
 
     /**
      * Prepares the editor with data from an existing post.
+     * Fetches the full content on demand to reduce list view payload size.
      * @param item - The blog post object to edit.
      */
-    const handleEdit = (item: any) => {
-        setEditItem(item);
-        setTitle(item.title);
-        setCategory(item.category);
-        setDate(item.date);
-        setImage(item.image);
-        setExcerpt(item.excerpt || '');
-        setContent(item.content || item.excerpt || '');
-        setTags(item.tags || []);
-        setStatus(item.status || 'Draft'); // Graceful fallback if status column missing
-        setView('editor');
+    const handleEdit = async (item: any) => {
+        setLoading(true);
+        try {
+            // Fetch the full content specifically for editing
+            const { data, error } = await supabase
+                .from('blog')
+                .select('content')
+                .eq('id', item.id)
+                .single();
+
+            if (error) {
+                console.error('Error fetching post content:', error);
+                alert('Failed to load post content. Please try again.');
+                setLoading(false);
+                return;
+            }
+
+            // Merge the fetched content with the item
+            const fullItem = { ...item, content: data.content };
+
+            setEditItem(fullItem);
+            setTitle(fullItem.title);
+            setCategory(fullItem.category);
+            setDate(fullItem.date);
+            setImage(fullItem.image);
+            setExcerpt(fullItem.excerpt || '');
+            setContent(fullItem.content || fullItem.excerpt || '');
+            setTags(fullItem.tags || []);
+            setStatus(fullItem.status || 'Draft'); // Graceful fallback if status column missing
+            setView('editor');
+        } catch (err) {
+            console.error(err);
+            alert('An unexpected error occurred while loading the post.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     /**
