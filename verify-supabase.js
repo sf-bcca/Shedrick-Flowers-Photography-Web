@@ -1,5 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
+/**
+ * Supabase Connection Verification Script
+ *
+ * This script is used to verify that the local environment is correctly configured
+ * to connect to the Supabase instance. It checks for the presence of environment
+ * variables and attempts a test query against the 'settings' table.
+ *
+ * Usage:
+ * node --env-file=.env verify-supabase.js
+ */
+
 // Support both VITE_ prefixed variables (for client) and standard ones
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;

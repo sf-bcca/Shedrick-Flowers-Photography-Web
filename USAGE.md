@@ -49,6 +49,9 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
     *   New comments appear as **Pending**.
     *   Admins must **Approve** comments for them to appear on the public site.
     *   **Reject** removes the comment from the queue.
+*   **Contact Submissions**: Inquiries from the Contact page are:
+    *   Emailed directly to the `contact_email` configured in Settings.
+    *   Logged to the `contact_submissions` table in Supabase for backup (accessible via Supabase Dashboard).
 
 ### 2. Public Site
 *   **Home**: Landing page with featured content.
@@ -80,3 +83,14 @@ export default defineConfig({
   // ...
 });
 ```
+
+## Troubleshooting
+
+### Verify Supabase Connection
+If the application fails to load data, use the verification script to check your configuration:
+
+```bash
+node --env-file=.env verify-supabase.js
+```
+
+Ensure your `.env` file contains the correct `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
