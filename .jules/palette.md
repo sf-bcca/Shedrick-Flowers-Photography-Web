@@ -5,3 +5,7 @@
 ## 2025-12-15 - Responsive Button Labels
 **Learning:** Buttons that hide text labels on mobile (using classes like `hidden sm:inline`) become effectively "icon-only" on small screens. Without an `aria-label`, screen readers may announce nothing or just "button", confusing mobile users.
 **Action:** Add static `aria-label` attributes to any button that uses responsive classes to hide its text content, ensuring consistent accessibility across all viewports.
+
+## 2025-12-16 - Semantic Action Labels
+**Learning:** Generic "Edit" or "Delete" labels on icon buttons are okay, but including the item name (e.g., "Edit Wedding Photography") provides much better context for screen reader users navigating lists.
+**Action:** When adding `aria-label` to action buttons in a list, dynamically include the item's name or title to distinguish between multiple similar actions.
