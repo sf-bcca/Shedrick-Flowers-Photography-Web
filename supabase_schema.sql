@@ -32,7 +32,7 @@ ALTER TABLE blog ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view published blog posts"
 ON blog
 FOR SELECT
-USING (true); -- Application level filtering for drafts
+USING (status = 'Published');
 
 CREATE POLICY "Authenticated users can manage blog posts"
 ON blog
@@ -136,6 +136,25 @@ CREATE TABLE IF NOT EXISTS comments (
     post_id UUID REFERENCES blog(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Enable RLS on comments
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can insert comments"
+ON comments
+FOR INSERT
+TO anon, authenticated
+WITH CHECK (true);
+
+CREATE POLICY "Public can view approved comments"
+ON comments
+FOR SELECT
+USING (status = 'approved');
+
+CREATE POLICY "Authenticated users can manage comments"
+ON comments
+FOR ALL
+USING (auth.role() = 'authenticated');
 
 -- Table: testimonials
 CREATE TABLE IF NOT EXISTS testimonials (
