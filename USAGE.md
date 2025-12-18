@@ -36,6 +36,7 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Note**: You must be authenticated to access this area. Ensure you have set up Supabase Auth and created a user.
 
 **Features:**
+*   **Media Library**: View and manage all images stored in the system.
 *   **Portfolio Manager**: Upload images, set categories, and manage display order.
 *   **Blog Manager**: Write and edit posts using the rich text editor.
 *   **Services Manager**: Update pricing tiers and features.
