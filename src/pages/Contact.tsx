@@ -95,6 +95,13 @@ const ContactPage = () => {
             }
 
             // 2. Send Email via Web3Forms
+            const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+
+            if (!accessKey) {
+                console.error('CRITICAL: Missing VITE_WEB3FORMS_ACCESS_KEY in environment variables.');
+                throw new Error('Configuration error. Please contact the administrator.');
+            }
+
             const response = await fetch("https://api.web3forms.com/submit", {
                 method: "POST",
                 headers: {
@@ -102,7 +109,7 @@ const ContactPage = () => {
                     Accept: "application/json",
                 },
                 body: JSON.stringify({
-                    access_key: "3cdfa349-771c-43e9-ba81-4882fae3b76f",
+                    access_key: accessKey,
                     name: formData.name,
                     email: formData.email,
                     message: formData.message,
@@ -196,6 +203,7 @@ const ContactPage = () => {
                                                 className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] h-14 transition-all" 
                                                 placeholder="Jane Doe" 
                                                 type="text"
+                                                maxLength={100}
                                                 required
                                             />
                                         </div>
@@ -211,6 +219,7 @@ const ContactPage = () => {
                                                 className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-11 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] h-14 transition-all" 
                                                 placeholder="jane@example.com" 
                                                 type="email"
+                                                maxLength={100}
                                                 required
                                             />
                                         </div>
@@ -258,6 +267,7 @@ const ContactPage = () => {
                                         className="block w-full rounded-xl border-slate-200 bg-slate-50 p-6 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] resize-none transition-all" 
                                         placeholder="Tell me a bit about what you are looking for..." 
                                         rows={5}
+                                        maxLength={2000}
                                     ></textarea>
                                 </label>
                                 <div className="pt-4">
