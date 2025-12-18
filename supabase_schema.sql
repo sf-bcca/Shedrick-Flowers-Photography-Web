@@ -12,6 +12,22 @@ CREATE TABLE IF NOT EXISTS portfolio (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Enable RLS on portfolio
+ALTER TABLE portfolio ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view portfolio"
+ON portfolio
+FOR SELECT
+TO public
+USING (true);
+
+CREATE POLICY "Authenticated users can manage portfolio"
+ON portfolio
+FOR ALL
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
 -- Table: blog
 CREATE TABLE IF NOT EXISTS blog (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -29,15 +45,18 @@ CREATE TABLE IF NOT EXISTS blog (
 -- Enable RLS on blog
 ALTER TABLE blog ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public can view published blog posts"
-ON blog
-FOR SELECT
-USING (status = 'Published');
-
 CREATE POLICY "Authenticated users can manage blog posts"
 ON blog
 FOR ALL
-USING (auth.role() = 'authenticated');
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+CREATE POLICY "Public can view published blog posts"
+ON blog
+FOR SELECT
+TO anon
+USING (status = 'Published');
 
 -- Table: services
 CREATE TABLE IF NOT EXISTS services (
@@ -53,15 +72,18 @@ CREATE TABLE IF NOT EXISTS services (
 -- Enable RLS on services
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public can view services"
-ON services
-FOR SELECT
-USING (true);
-
 CREATE POLICY "Authenticated users can manage services"
 ON services
 FOR ALL
-USING (auth.role() = 'authenticated');
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+CREATE POLICY "Public can view services"
+ON services
+FOR SELECT
+TO anon
+USING (true);
 
 -- Table: settings
 -- Global configuration for the site
