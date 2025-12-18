@@ -3,54 +3,70 @@ import { PageLayout } from '../components/Layout';
 import { fetchData } from '../services/supabaseClient';
 import { ServiceTier } from '../types';
 
+const FALLBACK_SERVICES: ServiceTier[] = [
+    {
+        title: "Portrait Session",
+        description: "Intimate single or couple portraits capturing authentic moments in natural or studio settings.",
+        price: "500",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAmHoj0vChTuwRwtj4WMJB_K9TL4vBvRxb_58w3tE5hI_0c3EwhXM9rL2oijC2VuLBvc_jwud3uawTIwKumgLE2K5Q4dE_Od4MedX3mtrYD3GSqkQvPH8yIXSM3FL_b4p2JWH8MyXuYXMZzweYwVq9gCKCYw7w604pT9jzzQRO3fkWympgDWXcKtFKKShQam2j3w3IU7Rx76HyQGOGoj7IqOVdmtn09BJDlOUF-ZtB5BCvw3xtLyABS8s6G_2gxQd2bq-C1T5E9zmod"
+    },
+    {
+        title: "Wedding Coverage",
+        description: "Full-day wedding photography including ceremony, reception, and candid moments with your loved ones.",
+        price: "2500",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDj4Qc39c1Bdpp5z1iM8AGRx9atflrxxF0IxJLEXqjGcOlUTBdYyuCCLiBT5p7Bd8a9ONhVvlMbqThgup4DCT-kz2g1gL0EtnxEOePnl1oSuS77mOCW3rZV2H4ClPddn2JeF5Ir5rnxu_ND_XSa6NcbiJ0Xo7TgNTZzp7Q-L9I3xB_XW0Jv0OR9ysr5wGf2UXK5DBDe0J9WRWo-QawcHZAYPxECIb6qgxyQej94lIc4ImRwsDDHDAbPeJ65kCuC9WSqZioqEEypm2zC"
+    },
+    {
+        title: "Event Photography",
+        description: "Professional coverage of corporate events, parties, and special occasions with quick turnaround.",
+        price: "1200",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC6dwKikfC342afi1MaVXiwZ0NcdwRthX9XaX-XeqTUmq19TtL9cuUn8i3bUdl6O1OpjLtGCMJU2VSy7e6MQ4NFK3dEz8P25bultf_M3ZJOn1geKTDaeHMN0n8Zbs8xQQe2iDspgYevSCg7k7XNtL9CVXHZP9RWRnYyfVmk5izk4qBQvKItg4w0pPakHP0U5epcpKlwbzReOM3Ls6Jxuy9djYvzP8S1jxHDykpmb1ZrzZywwQcJf6iJdjUup9_Bb4yA8p7sJ6rS7Cf-"
+    },
+    {
+        title: "Commercial / Product",
+        description: "High-end product photography and commercial shoots for brands and businesses.",
+        price: "Custom",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBPKNL63uKUTPIARy2j1jcjGCeVA-LiZt3b4eqYu3-XxAmXdLaNAmVjADGzs6TyZQiLwYiIPU8XVrND09Q_GG5c6IMiOoSXrlAkXrK-NNrTZSWUCP-_dY-mVe44uFRGQC6RJijoDDy4v9CrXFD4bFl-FwQ9rClXT_RfDKWWKMW7zclRInwFQRh8uGpVQXXqNhByispoVF0az9WLhBJ6NwpkJWUx3G_7EQAjwwjOuzoujFfogBJElD0T_GuIn3ueCNxkbEm6WbX_rT9Y"
+    },
+    {
+        title: "Family Session",
+        description: "Warm, candid family portraits that capture the unique dynamics and love within your family.",
+        price: "750",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"
+    },
+    {
+        title: "Editorial Shoot",
+        description: "Magazine-style editorial photography for models, designers, and creative collaborations.",
+        price: "1800",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"
+    }
+];
+
 const ServicesPage = () => {
     const [services, setServices] = useState<ServiceTier[]>([]);
 
     useEffect(() => {
+        // Try to load from session cache first
+        const cached = sessionStorage.getItem('servicesData');
+        if (cached) {
+            try {
+                setServices(JSON.parse(cached));
+                return;
+            } catch (e) {
+                console.warn('Invalid cached services data, fetching fresh...');
+                sessionStorage.removeItem('servicesData');
+            }
+        }
+
         fetchData('services').then((data: any) => {
             // If no data from Supabase, use fallback mock data
             if (data && data.length > 0) {
                 setServices(data);
+                // Cache the fresh data
+                sessionStorage.setItem('servicesData', JSON.stringify(data));
             } else {
                 // Fallback mock data
-                setServices([
-                    {
-                        title: "Portrait Session",
-                        description: "Intimate single or couple portraits capturing authentic moments in natural or studio settings.",
-                        price: "500",
-                        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAmHoj0vChTuwRwtj4WMJB_K9TL4vBvRxb_58w3tE5hI_0c3EwhXM9rL2oijC2VuLBvc_jwud3uawTIwKumgLE2K5Q4dE_Od4MedX3mtrYD3GSqkQvPH8yIXSM3FL_b4p2JWH8MyXuYXMZzweYwVq9gCKCYw7w604pT9jzzQRO3fkWympgDWXcKtFKKShQam2j3w3IU7Rx76HyQGOGoj7IqOVdmtn09BJDlOUF-ZtB5BCvw3xtLyABS8s6G_2gxQd2bq-C1T5E9zmod"
-                    },
-                    {
-                        title: "Wedding Coverage",
-                        description: "Full-day wedding photography including ceremony, reception, and candid moments with your loved ones.",
-                        price: "2500",
-                        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDj4Qc39c1Bdpp5z1iM8AGRx9atflrxxF0IxJLEXqjGcOlUTBdYyuCCLiBT5p7Bd8a9ONhVvlMbqThgup4DCT-kz2g1gL0EtnxEOePnl1oSuS77mOCW3rZV2H4ClPddn2JeF5Ir5rnxu_ND_XSa6NcbiJ0Xo7TgNTZzp7Q-L9I3xB_XW0Jv0OR9ysr5wGf2UXK5DBDe0J9WRWo-QawcHZAYPxECIb6qgxyQej94lIc4ImRwsDDHDAbPeJ65kCuC9WSqZioqEEypm2zC"
-                    },
-                    {
-                        title: "Event Photography",
-                        description: "Professional coverage of corporate events, parties, and special occasions with quick turnaround.",
-                        price: "1200",
-                        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC6dwKikfC342afi1MaVXiwZ0NcdwRthX9XaX-XeqTUmq19TtL9cuUn8i3bUdl6O1OpjLtGCMJU2VSy7e6MQ4NFK3dEz8P25bultf_M3ZJOn1geKTDaeHMN0n8Zbs8xQQe2iDspgYevSCg7k7XNtL9CVXHZP9RWRnYyfVmk5izk4qBQvKItg4w0pPakHP0U5epcpKlwbzReOM3Ls6Jxuy9djYvzP8S1jxHDykpmb1ZrzZywwQcJf6iJdjUup9_Bb4yA8p7sJ6rS7Cf-"
-                    },
-                    {
-                        title: "Commercial / Product",
-                        description: "High-end product photography and commercial shoots for brands and businesses.",
-                        price: "Custom",
-                        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBPKNL63uKUTPIARy2j1jcjGCeVA-LiZt3b4eqYu3-XxAmXdLaNAmVjADGzs6TyZQiLwYiIPU8XVrND09Q_GG5c6IMiOoSXrlAkXrK-NNrTZSWUCP-_dY-mVe44uFRGQC6RJijoDDy4v9CrXFD4bFl-FwQ9rClXT_RfDKWWKMW7zclRInwFQRh8uGpVQXXqNhByispoVF0az9WLhBJ6NwpkJWUx3G_7EQAjwwjOuzoujFfogBJElD0T_GuIn3ueCNxkbEm6WbX_rT9Y"
-                    },
-                    {
-                        title: "Family Session",
-                        description: "Warm, candid family portraits that capture the unique dynamics and love within your family.",
-                        price: "750",
-                        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"
-                    },
-                    {
-                        title: "Editorial Shoot",
-                        description: "Magazine-style editorial photography for models, designers, and creative collaborations.",
-                        price: "1800",
-                        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"
-                    }
-                ]);
+                setServices(FALLBACK_SERVICES);
             }
         });
     }, []);
