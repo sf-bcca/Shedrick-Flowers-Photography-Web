@@ -35,7 +35,7 @@ ALTER TABLE portfolio ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view portfolio"
 ON portfolio
 FOR SELECT
-TO public
+TO anon
 USING (true);
 
 CREATE POLICY "Authenticated users can manage portfolio"
