@@ -10,7 +10,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@google/genai": "^1.33.0",
     "@supabase/supabase-js": "^2.87.3",
     "@tiptap/extension-image": "^3.13.0",
     "@tiptap/extension-link": "^3.13.0",

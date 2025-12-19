@@ -1,12 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
 
-
+/**
+ * Interface representing a chat message.
+ */
 interface Message {
     role: 'user' | 'model';
     text: string;
 }
 
+/**
+ * Studio Assistant Component
+ *
+ * A floating chat widget powered by Google Gemini AI (via Supabase Edge Functions).
+ * It helps visitors with pricing, booking info, and services.
+ *
+ * Features:
+ * - Real-time chat interface
+ * - Maintains conversation context
+ * - Auto-scrolls to new messages
+ * - Securely invokes the 'gemini-chat' Edge Function
+ */
 export const StudioAssistant: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([

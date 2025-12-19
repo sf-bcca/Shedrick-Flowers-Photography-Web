@@ -73,6 +73,9 @@ Before running the application, verify that your local environment is correctly 
 ```bash
 # Requires Node.js v20.6+ for --env-file support
 node --env-file=.env verify-supabase.js
+
+# Or if environment variables are already exported in your shell:
+node verify-supabase.js
 ```
 
 If successful, you will see: `✅ Supabase Connection Successful`.

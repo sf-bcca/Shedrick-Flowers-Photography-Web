@@ -61,7 +61,7 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Services**: View packages and pricing.
 
 ### 3. Studio Assistant (AI Chat)
-A floating chat interface powered by Google Gemini AI, available on public pages (like Contact).
+A floating chat interface powered by Google Gemini AI, currently available on the Contact page.
 *   **Purpose**: Helps visitors visualize their session, get pricing info, and learn about services.
 *   **Usage**: Click the chat bubble icon in the bottom-right corner.
 *   **Requirements**: Requires `GEMINI_API_KEY` to be configured in Supabase Secrets (see INSTALL.md).
