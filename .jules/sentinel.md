@@ -19,3 +19,10 @@
 **Prevention:**
 1. Always use `import.meta.env` for external service keys.
 2. Enforce `maxLength` on all user inputs (especially textareas) to prevent large payload attacks.
+
+## 2025-12-19 - Nginx Security Headers
+**Vulnerability:** Missing standard security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`) in the Nginx configuration, leaving the application vulnerable to Clickjacking and MIME sniffing.
+**Learning:** Default Nginx configurations for SPAs typically prioritize functionality over security. Hardening headers must be explicitly added.
+**Prevention:**
+1. Add `add_header` directives with the `always` parameter in `nginx.conf`.
+2. Explicitly define `X-Frame-Options: SAMEORIGIN` and `X-Content-Type-Options: nosniff`.
