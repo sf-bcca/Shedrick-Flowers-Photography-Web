@@ -133,11 +133,11 @@ const HomePage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {portfolioItems.map((item, idx) => (
                                 <div key={idx} className={`group relative overflow-hidden rounded-xl aspect-[4/5] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 ${item.marginTop ? 'lg:mt-16' : ''} ${item.marginTopInverse ? 'lg:-mt-16' : ''}`}>
-                                    <img
+                                    <BlurImage
                                         src={item.image}
                                         alt={item.title}
-                                        loading="lazy"
-                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        containerClassName="absolute inset-0 w-full h-full"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0">
                                         <span className="text-primary text-xs font-bold uppercase tracking-wider mb-2">{item.category}</span>
@@ -161,11 +161,11 @@ const HomePage = () => {
                         "Photography is the story I fail to put into words. It's about capturing the soul of the moment."
                     </h2>
                     <div className="flex flex-col items-center gap-6 mb-12">
-                        <img
+                        <BlurImage
                             src={avatarUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"}
                             alt="Shedrick Flowers - Lead Photographer"
-                            loading="lazy"
-                            className="w-20 h-20 rounded-full object-cover border-4 border-background-dark ring-2 ring-primary"
+                            className="w-full h-full object-cover"
+                            containerClassName="w-20 h-20 rounded-full border-4 border-background-dark ring-2 ring-primary"
                         />
                         <div className="text-center">
                             <p className="text-slate-900 dark:text-white font-bold text-xl">Shedrick Flowers</p>
