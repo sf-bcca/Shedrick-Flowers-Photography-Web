@@ -15,6 +15,7 @@ A professional photography portfolio website built with React, Vite, and Supabas
 *   **Dynamic Portfolio**: Showcase photography with categorization and custom layout options.
 *   **Blog System**: Rich text blogging platform with user comments and moderation.
 *   **Service Listings**: Display pricing tiers and service details.
+*   **Studio Assistant**: AI-powered chat agent (Google Gemini) to help visitors with pricing and services.
 *   **Admin Dashboard**: Protected area to manage all content, site settings, and media.
 *   **Responsive Design**: Optimized for all devices using Tailwind CSS.
 *   **Dark Mode**: Native dark mode support.
@@ -47,5 +48,6 @@ For detailed instructions, please refer to the following guides:
 *   **Frontend**: React 19, React Router v7, Vite
 *   **Styling**: Tailwind CSS
 *   **Backend/Database**: Supabase (PostgreSQL, Auth, Storage)
+*   **AI**: Google Gemini (via Supabase Edge Functions)
 *   **Icons**: Lucide React, Material Symbols
 *   **Rich Text**: @tiptap/react
