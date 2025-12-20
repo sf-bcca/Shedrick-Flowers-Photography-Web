@@ -13,3 +13,7 @@
 ## 2025-12-17 - Skip Links
 **Learning:** A "Skip to content" link is essential for keyboard users to bypass repeated navigation blocks. It should be hidden by default but visible on focus, and link to the main content area which needs `id` and `tabIndex="-1"`.
 **Action:** Include a skip link as the first element in the layout component, styled with `sr-only focus:not-sr-only`, and ensure the target element is focusable.
+
+## 2025-12-18 - Accessible Chat Interface
+**Learning:** Floating chat widgets need explicit state management for screen readers. A simple toggle isn't enough; the hidden window must be removed from the accessibility tree (using `invisible` or `hidden`) to prevent focus trapping, and the toggle button needs `aria-expanded`.
+**Action:** When implementing toggleable widgets, pair `aria-expanded` on the trigger with `aria-hidden` and `invisible`/`hidden` classes on the content container. Also, use `role="log"` and `aria-live="polite"` for dynamic message feeds.
