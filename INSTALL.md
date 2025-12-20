@@ -70,12 +70,25 @@ The application relies on specific database tables in Supabase.
 
 Before running the application, verify that your local environment is correctly connected to Supabase. This script checks your `.env` configuration and attempts to fetch settings from the database.
 
+### Option A: Node.js v20.6 or newer (Recommended)
+Use the native `--env-file` flag to load your configuration:
 ```bash
-# Requires Node.js v20.6+ for --env-file support
 node --env-file=.env verify-supabase.js
+```
 
-# Or if environment variables are already exported in your shell:
-node verify-supabase.js
+### Option B: Older Node.js versions
+If you are using an older version of Node.js (e.g., v18), you must load the environment variables manually before running the script.
+
+**Mac/Linux:**
+```bash
+# Export variables from .env and run
+export $(grep -v '^#' .env | xargs) && node verify-supabase.js
+```
+
+**Windows (PowerShell):**
+```powershell
+# Manually set the variables (replace with your values)
+$env:VITE_SUPABASE_URL="your_url"; $env:VITE_SUPABASE_ANON_KEY="your_key"; node verify-supabase.js
 ```
 
 If successful, you will see: `✅ Supabase Connection Successful`.

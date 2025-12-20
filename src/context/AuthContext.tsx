@@ -2,14 +2,29 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { User } from '@supabase/supabase-js';
 
+/**
+ * Authentication Context Interface
+ * Describes the shape of the authentication context exposed to consumers.
+ */
 interface AuthContextType {
+    /** The currently authenticated Supabase user, or null if not logged in. */
     user: User | null;
+    /** Indicates if the initial session check is still in progress. */
     loading: boolean;
+    /** Function to sign out the current user. */
     signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * AuthProvider Component
+ *
+ * Wraps the application to provide global authentication state.
+ * Manages the Supabase session and listens for auth state changes (login, logout, refresh).
+ *
+ * @param children - The child components that require access to auth state.
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
@@ -47,6 +62,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 };
 
+/**
+ * Custom hook to access the authentication context.
+ *
+ * Usage:
+ * const { user, loading, signOut } = useAuth();
+ *
+ * @throws {Error} If used outside of an AuthProvider.
+ * @returns {AuthContextType} The current auth context values.
+ */
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (context === undefined) {
