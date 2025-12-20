@@ -26,3 +26,10 @@
 **Prevention:**
 1. Add `add_header` directives with the `always` parameter in `nginx.conf`.
 2. Explicitly define `X-Frame-Options: SAMEORIGIN` and `X-Content-Type-Options: nosniff`.
+
+## 2025-12-20 - Unsafe SQL Query Construction
+**Vulnerability:** The `fetchRelatedPosts` function manually constructed a Postgres tuple string for the `IN` filter (e.g., `.not('id', 'in', \`(${ids})\`)`), mimicking SQL injection patterns. While currently using trusted data (UUIDs), this pattern is brittle and risky if inputs change.
+**Learning:** Supabase/PostgREST clients support array arguments for `in` filters directly. Manual string construction for SQL-like syntax is unnecessary and dangerous.
+**Prevention:**
+1. Always use the client library's native parameter binding (e.g., `.not('id', 'in', array)`).
+2. Avoid string interpolation in database query builders.
