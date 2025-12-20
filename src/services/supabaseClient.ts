@@ -140,7 +140,7 @@ export const fetchRelatedPosts = async (currentPostId: string, category: string)
             .from('blog')
             .select('id, title, category, date, image, excerpt')
             .eq('status', 'Published') // Security: Only show published posts
-            .not('id', 'in', `(${existingIds.map(id => `"${id}"`).join(',')})`) // Format for Postgres IN
+            .not('id', 'in', existingIds) // Use array for secure parameter binding
             .order('created_at', { ascending: false })
             .limit(remaining);
 
