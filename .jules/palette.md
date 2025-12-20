@@ -17,3 +17,7 @@
 ## 2025-12-18 - Accessible Chat Interface
 **Learning:** Floating chat widgets need explicit state management for screen readers. A simple toggle isn't enough; the hidden window must be removed from the accessibility tree (using `invisible` or `hidden`) to prevent focus trapping, and the toggle button needs `aria-expanded`.
 **Action:** When implementing toggleable widgets, pair `aria-expanded` on the trigger with `aria-hidden` and `invisible`/`hidden` classes on the content container. Also, use `role="log"` and `aria-live="polite"` for dynamic message feeds.
+
+## 2025-12-19 - Unified Loading States
+**Learning:** Inconsistent loading indicators (mix of hardcoded spinners and text) create a disjointed experience. More importantly, visual-only spinners (divs) are invisible to screen readers, leaving users unsure if content is loading or the page is broken.
+**Action:** Use a standardized `LoadingSpinner` component that includes `role="status"` and a screen-reader-only label (e.g., "Loading..."). Ensure it handles both full-screen and inline contexts.

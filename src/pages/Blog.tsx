@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlogCard } from '../components/BlogCard';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchPublishedBlogPosts } from '../services/supabaseClient';
 import { BlogPost } from '../types';
 
@@ -56,7 +57,7 @@ const BlogPage = () => {
 
             <section className="px-4 md:px-10 lg:px-40 py-16 max-w-[1440px] mx-auto">
                 {loading ? (
-                    <div className="flex justify-center"><div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div></div>
+                    <LoadingSpinner fullScreen={false} size="sm" label="Loading blog posts..." />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
                         {blogPosts.map((item) => (
