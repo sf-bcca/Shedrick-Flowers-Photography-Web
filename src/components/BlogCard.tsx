@@ -1,5 +1,6 @@
 import React from 'react';
 import { BlogPost } from '../types';
+import { BlurImage } from './BlurImage';
 
 interface BlogCardProps {
     post: BlogPost;
@@ -9,11 +10,11 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
     return (
         <article className="flex flex-col gap-5 group cursor-pointer h-full">
             <div className="w-full aspect-[3/2] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark relative shadow-md group-hover:shadow-xl transition-all duration-300">
-                <img
+                <BlurImage
                     src={post.image}
                     alt={post.title}
-                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    containerClassName="w-full h-full"
                 />
             </div>
             <div className="flex flex-col gap-3 flex-grow">

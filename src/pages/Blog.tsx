@@ -10,11 +10,28 @@ const BlogPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Use the secure fetch function to get only published posts
-        fetchPublishedBlogPosts().then((data) => {
+        const loadPosts = async () => {
+            // Try to load from session cache first
+            const cached = sessionStorage.getItem('blogPosts');
+            if (cached) {
+                try {
+                    setBlogPosts(JSON.parse(cached));
+                    setLoading(false);
+                    return;
+                } catch (e) {
+                    console.warn('Invalid cached blog posts, fetching fresh...');
+                    sessionStorage.removeItem('blogPosts');
+                }
+            }
+
+            // Use the secure fetch function to get only published posts
+            const data = await fetchPublishedBlogPosts();
             setBlogPosts(data);
             setLoading(false);
-        });
+            sessionStorage.setItem('blogPosts', JSON.stringify(data));
+        };
+
+        loadPosts();
     }, []);
 
     return (
