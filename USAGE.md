@@ -59,6 +59,7 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Portfolio**: Filterable gallery of work.
 *   **Blog**: Read articles and leave comments (subject to approval).
 *   **Services**: View packages and pricing.
+*   **About**: View artist biography and client testimonials.
 
 ### 3. Studio Assistant (AI Chat)
 A floating chat interface powered by Google Gemini AI, currently available on the Contact page.
