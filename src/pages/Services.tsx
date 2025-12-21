@@ -176,21 +176,21 @@ const ServicesPage = () => {
                         <details className="group bg-surface-dark p-6 rounded-xl cursor-pointer border border-white/5 hover:border-primary/50 transition-all open:ring-1 open:ring-primary/20 shadow-lg">
                             <summary className="flex justify-between items-center font-bold text-white text-lg select-none">
                                 <span>Do you travel for weddings?</span>
-                                <span className="material-symbols-outlined text-gray-400 group-open:rotate-180 transition-transform">expand_more</span>
+                                <span className="material-symbols-outlined text-gray-400 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                             </summary>
                             <div className="mt-4 text-text-secondary leading-relaxed border-t border-white/5 pt-4">Yes! While I am based in New York, I love to travel. For destination weddings, travel fees including flight and accommodation will be included in a custom quote.</div>
                         </details>
                         <details className="group bg-surface-dark p-6 rounded-xl cursor-pointer border border-white/5 hover:border-primary/50 transition-all open:ring-1 open:ring-primary/20 shadow-lg">
                             <summary className="flex justify-between items-center font-bold text-white text-lg select-none">
                                 <span>How do I book a date?</span>
-                                <span className="material-symbols-outlined text-gray-400 group-open:rotate-180 transition-transform">expand_more</span>
+                                <span className="material-symbols-outlined text-gray-400 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                             </summary>
                             <div className="mt-4 text-text-secondary leading-relaxed border-t border-white/5 pt-4">To secure your date, a signed contract and a 30% non-refundable retainer are required. The remaining balance is due 2 weeks before the event date.</div>
                         </details>
                         <details className="group bg-surface-dark p-6 rounded-xl cursor-pointer border border-white/5 hover:border-primary/50 transition-all open:ring-1 open:ring-primary/20 shadow-lg">
                             <summary className="flex justify-between items-center font-bold text-white text-lg select-none">
                                 <span>What equipment do you use?</span>
-                                <span className="material-symbols-outlined text-gray-400 group-open:rotate-180 transition-transform">expand_more</span>
+                                <span className="material-symbols-outlined text-gray-400 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                             </summary>
                             <div className="mt-4 text-text-secondary leading-relaxed border-t border-white/5 pt-4">I shoot with professional Sony mirrorless cameras (A7R V) and a collection of prime G-Master lenses to ensure the highest quality in low light.</div>
                         </details>

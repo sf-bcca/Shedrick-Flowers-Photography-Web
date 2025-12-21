@@ -169,7 +169,7 @@ const ContactPage = () => {
                         {submitStatus === 'success' ? (
                             <div className="rounded-3xl bg-white dark:bg-[#1a2232] p-8 shadow-2xl ring-1 ring-slate-900/5 dark:ring-white/5 sm:p-12 text-center">
                                 <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 dark:bg-green-900/30">
-                                    <span className="material-symbols-outlined text-4xl text-green-600 dark:text-green-400">check_circle</span>
+                                    <span className="material-symbols-outlined text-4xl text-green-600 dark:text-green-400" aria-hidden="true">check_circle</span>
                                 </div>
                                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Message Sent!</h2>
                                 <p className="text-lg text-slate-600 dark:text-[#93a5c8] mb-8">
@@ -179,7 +179,7 @@ const ContactPage = () => {
                                     onClick={() => setSubmitStatus('idle')}
                                     className="inline-flex items-center gap-2 text-primary hover:text-blue-600 font-semibold transition-colors"
                                 >
-                                    <span className="material-symbols-outlined text-xl">arrow_back</span>
+                                    <span className="material-symbols-outlined text-xl" aria-hidden="true">arrow_back</span>
                                     Send another message
                                 </button>
                             </div>
@@ -187,7 +187,7 @@ const ContactPage = () => {
                             <form className="space-y-8 rounded-3xl bg-white dark:bg-[#1a2232] p-8 shadow-2xl ring-1 ring-slate-900/5 dark:ring-white/5 sm:p-12" onSubmit={handleSubmit}>
                                 {submitStatus === 'error' && errorMessage && (
                                     <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                                        <span className="material-symbols-outlined text-red-600 dark:text-red-400">error</span>
+                                        <span className="material-symbols-outlined text-red-600 dark:text-red-400" aria-hidden="true">error</span>
                                         <p className="text-red-700 dark:text-red-300 font-medium">{errorMessage}</p>
                                     </div>
                                 )}
@@ -195,7 +195,7 @@ const ContactPage = () => {
                                     <label className="block group">
                                         <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Your Name</span>
                                         <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">person</span></div>
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">person</span></div>
                                             <input 
                                                 name="name"
                                                 value={formData.name}
@@ -211,7 +211,7 @@ const ContactPage = () => {
                                     <label className="block group">
                                         <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Email Address</span>
                                         <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">mail</span></div>
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">mail</span></div>
                                             <input 
                                                 name="email"
                                                 value={formData.email}
@@ -229,7 +229,7 @@ const ContactPage = () => {
                                     <label className="block group">
                                         <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Date Preference</span>
                                         <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">calendar_month</span></div>
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">calendar_month</span></div>
                                             <input 
                                                 name="datePreference"
                                                 value={formData.datePreference}
@@ -242,7 +242,7 @@ const ContactPage = () => {
                                     <label className="block group">
                                         <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Type of Shoot</span>
                                         <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">photo_camera</span></div>
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">photo_camera</span></div>
                                             <select 
                                                 name="shootType"
                                                 value={formData.shootType}
@@ -254,7 +254,7 @@ const ContactPage = () => {
                                                 <option>Event Coverage</option>
                                                 <option>Commercial / Product</option>
                                             </select>
-                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4"><span className="material-symbols-outlined text-slate-400">expand_more</span></div>
+                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4"><span className="material-symbols-outlined text-slate-400" aria-hidden="true">expand_more</span></div>
                                         </div>
                                     </label>
                                 </div>
