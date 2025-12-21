@@ -4,13 +4,18 @@ import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
 import { fetchData, supabase } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
+import { getSessionStorage, getLocalStorageString } from '../services/storage';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [heroImageUrl, setHeroImageUrl] = useState(localStorage.getItem('hero_image_url') || '');
-    const [avatarUrl, setAvatarUrl] = useState(localStorage.getItem('avatar_url') || '');
+
+    // Lazy initialize state from storage to prevent unnecessary re-renders and layout shifts
+    const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(() =>
+        getSessionStorage<PortfolioItem[]>('portfolioItems') || []
+    );
+    const [loading, setLoading] = useState(() => !getSessionStorage('portfolioItems'));
+    const [heroImageUrl, setHeroImageUrl] = useState(() => getLocalStorageString('hero_image_url'));
+    const [avatarUrl, setAvatarUrl] = useState(() => getLocalStorageString('avatar_url'));
 
     const fetchPortfolio = () => {
         fetchData('portfolio').then((data: any) => {
@@ -21,18 +26,8 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        // Fetch portfolio items with caching
-        const cachedPortfolio = sessionStorage.getItem('portfolioItems');
-        if (cachedPortfolio) {
-            try {
-                setPortfolioItems(JSON.parse(cachedPortfolio));
-                setLoading(false);
-            } catch (e) {
-                console.error("Error parsing cached portfolio items", e);
-                // Fallback to fetch if parse fails
-                fetchPortfolio();
-            }
-        } else {
+        // If not loaded from cache (or cache was invalid/empty), fetch fresh data
+        if (loading) {
             fetchPortfolio();
         }
 

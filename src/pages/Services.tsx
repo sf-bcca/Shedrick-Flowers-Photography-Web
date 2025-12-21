@@ -3,6 +3,7 @@ import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
 import { fetchData } from '../services/supabaseClient';
 import { ServiceTier } from '../types';
+import { getSessionStorage } from '../services/storage';
 
 const FALLBACK_SERVICES: ServiceTier[] = [
     {
@@ -44,20 +45,14 @@ const FALLBACK_SERVICES: ServiceTier[] = [
 ];
 
 const ServicesPage = () => {
-    const [services, setServices] = useState<ServiceTier[]>([]);
+    // Lazy initialize from session storage
+    const [services, setServices] = useState<ServiceTier[]>(() =>
+        getSessionStorage<ServiceTier[]>('servicesData') || []
+    );
 
     useEffect(() => {
-        // Try to load from session cache first
-        const cached = sessionStorage.getItem('servicesData');
-        if (cached) {
-            try {
-                setServices(JSON.parse(cached));
-                return;
-            } catch (e) {
-                console.warn('Invalid cached services data, fetching fresh...');
-                sessionStorage.removeItem('servicesData');
-            }
-        }
+        // If loaded from cache, skip fetch
+        if (services.length > 0) return;
 
         fetchData('services').then((data: any) => {
             // If no data from Supabase, use fallback mock data

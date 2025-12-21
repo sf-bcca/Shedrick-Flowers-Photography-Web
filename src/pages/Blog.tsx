@@ -4,25 +4,19 @@ import { PageLayout } from '../components/Layout';
 import { BlogCard } from '../components/BlogCard';
 import { fetchPublishedBlogPosts } from '../services/supabaseClient';
 import { BlogPost } from '../types';
+import { getSessionStorage } from '../services/storage';
 
 const BlogPage = () => {
-    const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-    const [loading, setLoading] = useState(true);
+    // Lazy initialize state from storage
+    const [blogPosts, setBlogPosts] = useState<BlogPost[]>(() =>
+        getSessionStorage<BlogPost[]>('blogPosts') || []
+    );
+    const [loading, setLoading] = useState(() => !getSessionStorage('blogPosts'));
 
     useEffect(() => {
         const loadPosts = async () => {
-            // Try to load from session cache first
-            const cached = sessionStorage.getItem('blogPosts');
-            if (cached) {
-                try {
-                    setBlogPosts(JSON.parse(cached));
-                    setLoading(false);
-                    return;
-                } catch (e) {
-                    console.warn('Invalid cached blog posts, fetching fresh...');
-                    sessionStorage.removeItem('blogPosts');
-                }
-            }
+            // If loaded from cache, skip fetch
+            if (!loading) return;
 
             // Use the secure fetch function to get only published posts
             const data = await fetchPublishedBlogPosts();
