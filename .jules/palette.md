@@ -21,3 +21,7 @@
 ## 2025-12-19 - Unified Loading States
 **Learning:** Inconsistent loading indicators (mix of hardcoded spinners and text) create a disjointed experience. More importantly, visual-only spinners (divs) are invisible to screen readers, leaving users unsure if content is loading or the page is broken.
 **Action:** Use a standardized `LoadingSpinner` component that includes `role="status"` and a screen-reader-only label (e.g., "Loading..."). Ensure it handles both full-screen and inline contexts.
+
+## 2025-12-20 - Semantic Context in Lists
+**Learning:** In lists of items (like a media gallery), generic action labels ("Delete", "Copy") are confusing for screen reader users as they hear the same label repeatedly.
+**Action:** Always include the item's unique identifier (e.g., filename or title) in the `aria-label` (e.g., "Delete image.jpg") to provide context, even if the visible label is generic or an icon.
