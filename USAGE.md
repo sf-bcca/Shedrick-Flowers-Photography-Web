@@ -39,6 +39,7 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Media Library**: View and manage all images stored in the system.
 *   **Portfolio Manager**: Upload images, set categories, and manage display order.
 *   **Blog Manager**: Write and edit posts using the rich text editor.
+    *   **Note**: To preview a post, you must **Save** it first (e.g. as a Draft), then click the "Preview" eye icon.
 *   **Services Manager**: Update pricing tiers and features.
 *   **Testimonials Manager**: Manage client testimonials and reviews.
 *   **Settings**: Comprehensive site configuration including:
@@ -64,8 +65,9 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 ### 3. Studio Assistant (AI Chat)
 A floating chat interface powered by Google Gemini AI, currently available on the Contact page.
 *   **Purpose**: Helps visitors visualize their session, get pricing info, and learn about services.
+*   **Dynamic Knowledge**: The assistant reads directly from your **Services** and **Settings** tables. Updates to your pricing or contact info in the dashboard are immediately reflected in the AI's answers.
 *   **Usage**: Click the chat bubble icon in the bottom-right corner.
-*   **Requirements**: Requires `GEMINI_API_KEY` to be configured in Supabase Secrets (see INSTALL.md).
+*   **Requirements**: Requires the `gemini-chat` Edge Function to be deployed and `GEMINI_API_KEY` set (see INSTALL.md).
 
 ## Configuration Options
 
