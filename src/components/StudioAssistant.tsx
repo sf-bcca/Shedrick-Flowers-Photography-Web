@@ -20,8 +20,11 @@ interface Message {
  * - Maintains conversation context
  * - Auto-scrolls to new messages
  * - Securely invokes the 'gemini-chat' Edge Function
+ *
+ * @performance Optimized with React.memo to prevent re-renders when parent
+ * ContactPage state updates (e.g. form typing). Component has no props.
  */
-export const StudioAssistant: React.FC = () => {
+export const StudioAssistant = React.memo(() => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         { role: 'model', text: "Hello! I'm the Studio Assistant. How can I help you visualize your session today?" }
@@ -166,4 +169,4 @@ export const StudioAssistant: React.FC = () => {
             </div>
         </>
     );
-};
+});
