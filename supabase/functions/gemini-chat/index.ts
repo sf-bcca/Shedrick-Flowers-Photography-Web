@@ -128,6 +128,7 @@ ${servicesText}
 
   } catch (error) {
     console.error('Edge Function Error:', error)
+    // Return generic error to client for security
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
