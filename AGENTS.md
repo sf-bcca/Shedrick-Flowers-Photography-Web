@@ -10,6 +10,16 @@
 - **Rich Text**: @tiptap/react
 - **Language**: TypeScript
 
+## Developer Notes
+
+### Edge Functions
+The project uses Supabase Edge Functions for backend logic (e.g., AI chat).
+- Location: `supabase/functions/`
+- Deployment: Must be deployed via CLI to take effect.
+  ```bash
+  npx supabase functions deploy gemini-chat
+  ```
+
 ## Database Schema (Supabase)
 
 The following SQL schema represents the current structure of the Supabase database.

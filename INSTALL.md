@@ -41,15 +41,31 @@ npm install --legacy-peer-deps
 
     *   **Supabase URL/Key**: Found in your Supabase Project Settings > API.
 
-## 4. Edge Function Secrets (AI Features)
+## 4. Deploy Edge Functions (AI Features)
 
-The "Studio Assistant" feature uses Google Gemini AI. To enable this, you must store your API key in Supabase Secrets (not in your local `.env` file).
+The "Studio Assistant" feature uses a Supabase Edge Function (`gemini-chat`) powered by Google Gemini AI. You must deploy this function to your Supabase project for the chat to work.
 
-1.  Get a Gemini API Key from [Google AI Studio](https://aistudio.google.com/).
-2.  Go to your **Supabase Dashboard** > **Edge Functions**.
-3.  Add a new Secret:
-    *   **Name**: `GEMINI_API_KEY`
-    *   **Value**: `your-actual-api-key`
+### Step 1: Link your Project
+You need your Supabase Project Reference ID (found in your Dashboard URL: `https://supabase.com/dashboard/project/<project-id>`).
+
+```bash
+npx supabase login
+npx supabase link --project-ref <your-project-id>
+```
+
+### Step 2: Set Secrets
+Obtain a Gemini API Key from [Google AI Studio](https://aistudio.google.com/). Then set it as a secret:
+
+```bash
+npx supabase secrets set GEMINI_API_KEY=your_api_key_here
+```
+
+### Step 3: Deploy
+Deploy the function code from the `supabase/functions` directory:
+
+```bash
+npx supabase functions deploy gemini-chat
+```
 
 ## 5. Database Setup (Supabase)
 
