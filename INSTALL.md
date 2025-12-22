@@ -58,7 +58,7 @@ The application relies on specific database tables in Supabase.
 1.  Go to the **SQL Editor** in your Supabase dashboard.
 2.  Open the `supabase_schema.sql` file provided in this repository.
 3.  Copy the entire contents and paste them into the SQL Editor.
-4.  Run the script to create all necessary tables, functions, and policies (`portfolio`, `blog`, `services`, `settings`, `comments`, `testimonials`).
+4.  Run the script to create all necessary tables, functions, and policies (`portfolio`, `blog`, `services`, `settings`, `comments`, `testimonials`, `contact_submissions`).
 
 ### Storage Setup
 1.  Go to **Storage** in Supabase.
