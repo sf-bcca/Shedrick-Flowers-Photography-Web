@@ -220,7 +220,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                                             onClick={(e) => handleCopyUrl(e, file.name)}
                                             className="p-2 bg-white text-slate-900 rounded-full hover:bg-primary hover:text-white transition-colors"
                                             title="Copy URL"
-                                            aria-label="Copy URL"
+                                            aria-label={`Copy URL for ${file.name}`}
                                         >
                                             {copyId === file.name ? <Check size={18} /> : <Copy size={18} />}
                                         </button>
@@ -228,7 +228,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                                             onClick={(e) => handleDelete(e, file.name)}
                                             className="p-2 bg-white text-slate-900 rounded-full hover:bg-red-500 hover:text-white transition-colors"
                                             title="Delete"
-                                            aria-label="Delete image"
+                                            aria-label={`Delete ${file.name}`}
                                         >
                                             <Trash2 size={18} />
                                         </button>
