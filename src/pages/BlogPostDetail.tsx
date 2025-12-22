@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlogCard } from '../components/BlogCard';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchPostById, fetchRelatedPosts } from '../services/supabaseClient';
 import { BlogPost } from '../types';
 import DOMPurify from 'dompurify';
@@ -35,9 +36,7 @@ const BlogPostDetail = () => {
     if (loading) {
         return (
             <PageLayout>
-                <div className="min-h-screen flex justify-center items-center">
-                    <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
-                </div>
+                <LoadingSpinner fullScreen className="min-h-screen" label="Loading post details..." />
             </PageLayout>
         );
     }

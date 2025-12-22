@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchData } from '../services/supabaseClient';
 import { ServiceTier } from '../types';
 
@@ -100,7 +101,9 @@ const ServicesPage = () => {
                         <div className="h-1 w-20 bg-primary rounded-full"></div>
                     </div>
                     {services.length === 0 ? (
-                        <div className="flex justify-center text-white/50">Loading services...</div>
+                        <div className="flex justify-center">
+                            <LoadingSpinner fullScreen={false} label="Loading services..." />
+                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {services.map((item, idx) => (

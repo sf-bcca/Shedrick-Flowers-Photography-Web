@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchData, supabase } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
 
@@ -128,7 +129,9 @@ const HomePage = () => {
                         </Link>
                     </div>
                     {loading ? (
-                         <div className="h-96 flex items-center justify-center text-slate-500">Loading works...</div>
+                         <div className="h-96 flex items-center justify-center">
+                            <LoadingSpinner fullScreen={false} label="Loading portfolio..." />
+                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {portfolioItems.map((item, idx) => (
