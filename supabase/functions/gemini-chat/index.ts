@@ -116,7 +116,7 @@ ${servicesText}
     if (!response.ok) {
         const errorText = await response.text()
         console.error('Gemini API Error:', errorText)
-        throw new Error(`Gemini API Error: ${response.statusText} - ${errorText}`)
+        throw new Error('Failed to generate content from AI service')
     }
 
     const data = await response.json()
@@ -128,7 +128,7 @@ ${servicesText}
 
   } catch (error) {
     console.error('Edge Function Error:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     })

@@ -33,3 +33,11 @@
 **Prevention:**
 1. Always use the client library's native parameter binding (e.g., `.not('id', 'in', array)`).
 2. Avoid string interpolation in database query builders.
+
+## 2025-12-22 - Information Leakage in Edge Functions
+**Vulnerability:** The `gemini-chat` Edge Function returned raw exception messages (`error.message`) to the client upon failure. This could expose internal implementation details, API keys (if in error text), or database connection info to malicious actors.
+**Learning:** Serverless functions often default to bubbling up errors for developer convenience, but this is a security risk in production. "Fail securely" means returning generic errors to the client while logging specifics internally.
+**Prevention:**
+1. Wrap Edge Function logic in a `try/catch` block that catches ALL errors.
+2. Log the full error to the console (which flows to Supabase logs).
+3. Return a sanitized JSON response (e.g., `{ error: 'Internal Server Error' }`) to the client.
