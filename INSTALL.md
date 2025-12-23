@@ -37,9 +37,11 @@ npm install --legacy-peer-deps
     ```env
     VITE_SUPABASE_URL=https://your-project-ref.supabase.co
     VITE_SUPABASE_ANON_KEY=your-anon-public-key
+    VITE_WEB3FORMS_ACCESS_KEY=your-web3forms-key
     ```
 
     *   **Supabase URL/Key**: Found in your Supabase Project Settings > API.
+    *   **Web3Forms Key**: Required for the contact form to send emails. Get a free key at [Web3Forms](https://web3forms.com/).
 
 ## 4. Deploy Edge Functions (AI Features)
 
