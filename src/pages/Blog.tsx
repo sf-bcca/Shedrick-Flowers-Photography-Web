@@ -49,13 +49,13 @@ const BlogPage = () => {
                 </div>
             </section>
 
-            <section className="px-4 md:px-10 lg:px-40 py-16 max-w-[1440px] mx-auto">
+            <section className="w-full px-4 md:px-10 lg:px-40 py-16 max-w-[1440px] mx-auto">
                 {loading ? (
                     <LoadingSpinner fullScreen={false} size="sm" label="Loading blog posts..." />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
                         {blogPosts.map((item) => (
-                            <Link key={item.id} to={`/blog/${item.id}`}>
+                            <Link key={item.id} to={`/blog/${item.id}`} className="block w-full h-full">
                                 <BlogCard post={item} />
                             </Link>
                         ))}

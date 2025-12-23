@@ -73,12 +73,14 @@ const ServicesPage = () => {
              {/* Header Hero */}
              <section className="relative px-4 md:px-10 lg:px-40 py-10">
                 <div className="relative w-full rounded-2xl overflow-hidden min-h-[500px] flex items-center justify-center text-center p-8 group">
-                    <BlurImage
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj4Qc39c1Bdpp5z1iM8AGRx9atflrxxF0IxJLEXqjGcOlUTBdYyuCCLiBT5p7Bd8a9ONhVvlMbqThgup4DCT-kz2g1gL0EtnxEOePnl1oSuS77mOCW3rZV2H4ClPddn2JeF5Ir5rnxu_ND_XSa6NcbiJ0Xo7TgNTZzp7Q-L9I3xB_XW0Jv0OR9ysr5wGf2UXK5DBDe0J9WRWo-QawcHZAYPxECIb6qgxyQej94lIc4ImRwsDDHDAbPeJ65kCuC9WSqZioqEEypm2zC"
-                        alt="Services Hero Background"
-                        className="w-full h-full object-cover transition-transform duration-[30s] hover:scale-110"
-                        containerClassName="absolute inset-0 w-full h-full"
-                    />
+                    <div className="absolute inset-0 w-full h-full">
+                        <BlurImage
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj4Qc39c1Bdpp5z1iM8AGRx9atflrxxF0IxJLEXqjGcOlUTBdYyuCCLiBT5p7Bd8a9ONhVvlMbqThgup4DCT-kz2g1gL0EtnxEOePnl1oSuS77mOCW3rZV2H4ClPddn2JeF5Ir5rnxu_ND_XSa6NcbiJ0Xo7TgNTZzp7Q-L9I3xB_XW0Jv0OR9ysr5wGf2UXK5DBDe0J9WRWo-QawcHZAYPxECIb6qgxyQej94lIc4ImRwsDDHDAbPeJ65kCuC9WSqZioqEEypm2zC"
+                            alt="Services Hero Background"
+                            className="w-full h-full object-cover transition-transform duration-[30s] hover:scale-110"
+                            containerClassName="w-full h-full"
+                        />
+                    </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-background-dark/30"></div>
                     <div className="relative z-10 flex flex-col gap-6 max-w-3xl animate-fade-in-up">
                         <span className="text-primary font-bold uppercase tracking-widest text-sm">Packages & Pricing</span>
