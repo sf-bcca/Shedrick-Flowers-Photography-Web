@@ -83,6 +83,7 @@ The application relies on specific database tables in Supabase.
 2.  Create a new bucket named `images`.
 3.  Set the bucket to **Public**.
 4.  Add a policy to allow authenticated users to upload/update/delete files, and anyone to read files.
+    *   **Note:** The application automatically organizes files into subfolders within this bucket: `portfolio/`, `blog/`, `testimonials/`, and `services/`. You do not need to create these manually.
 
 ## 6. Verify Installation
 
