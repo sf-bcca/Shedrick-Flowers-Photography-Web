@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
+import { PortfolioCard } from '../components/PortfolioCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchData, supabase } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
@@ -130,18 +131,7 @@ const HomePage = () => {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {portfolioItems.map((item, idx) => (
-                                <div key={idx} className={`group relative overflow-hidden rounded-xl aspect-[4/5] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 ${item.marginTop ? 'lg:mt-16' : ''} ${item.marginTopInverse ? 'lg:-mt-16' : ''}`}>
-                                    <BlurImage
-                                        src={item.image}
-                                        alt={item.title}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                        containerClassName="absolute inset-0 w-full h-full"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0">
-                                        <span className="text-primary text-xs font-bold uppercase tracking-wider mb-2">{item.category}</span>
-                                        <h3 className="text-white text-2xl font-bold">{item.title}</h3>
-                                    </div>
-                                </div>
+                                <PortfolioCard key={idx} item={item} />
                             ))}
                         </div>
                     )}
