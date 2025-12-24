@@ -36,12 +36,18 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Note**: You must be authenticated to access this area. Ensure you have set up Supabase Auth and created a user.
 
 **Features:**
+*   **Dashboard Overview**:
+    *   **Statistics**: Immediate view of total Portfolio Items, Blog Posts, and Active Services.
+    *   **Content Chart**: Visual breakdown of content distribution using interactive bar charts.
 *   **Media Library**: View and manage all images stored in the system.
 *   **Portfolio Manager**: Upload images, set categories, and manage display order.
 *   **Blog Manager**: Write and edit posts using the rich text editor.
     *   **Note**: To preview a post, you must **Save** it first (e.g. as a Draft), then click the "Preview" eye icon.
 *   **Services Manager**: Update pricing tiers and features.
-*   **Testimonials Manager**: Manage client testimonials and reviews.
+*   **Testimonials Manager**: Full control over client reviews displayed on the About page.
+    *   **Add/Edit**: Inputs for Client Name, Subtitle (Role), Quote, Rating (1-5), and Display Order.
+    *   **Images**: Upload client photos directly; these are stored in the `testimonials/` folder in your storage bucket.
+    *   **Reordering**: Use the 'Display Order' field to control the sequence of testimonials on the public site.
 *   **Settings**: Comprehensive site configuration including:
     *   **General**: Site title, description, and contact email.
     *   **Branding**: Upload/update Logo, Hero Image, Avatar, and Favicon.
