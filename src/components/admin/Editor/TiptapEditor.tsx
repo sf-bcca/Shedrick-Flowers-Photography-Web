@@ -48,6 +48,7 @@ const TiptapEditor: React.FC<TiptapEditorProps> = ({ content, onChange }) => {
                 openOnClick: false,
                 HTMLAttributes: {
                     class: 'text-blue-500 underline cursor-pointer hover:text-blue-400',
+                    rel: 'noopener noreferrer',
                 },
             }),
             Placeholder.configure({
