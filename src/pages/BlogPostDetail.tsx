@@ -5,7 +5,7 @@ import { BlogCard } from '../components/BlogCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchPostById, fetchRelatedPosts } from '../services/supabaseClient';
 import { BlogPost } from '../types';
-import DOMPurify from 'dompurify';
+import { sanitizeHtml } from '../utils/sanitize';
 
 const BlogPostDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -86,7 +86,7 @@ const BlogPostDetail = () => {
                     {/* Render HTML content safely if it contains HTML tags from rich text editor,
                         or just text if plain text. Assuming HTML for now as is common with blogs. */}
                     {post.content ? (
-                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
                     ) : (
                         <p>{post.excerpt}</p>
                     )}
