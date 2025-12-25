@@ -4,7 +4,7 @@ This guide will help you set up the Shedrick Flowers Photography Web application
 
 ## Prerequisites
 
-*   **Node.js**: Version 18 or higher (v20+ recommended).
+*   **Node.js**: Version 18 or higher (LTS recommended).
 *   **npm**: Included with Node.js.
 *   **Supabase Account**: For database, authentication, and storage.
 *   **Docker** (Optional): For containerized self-hosting.

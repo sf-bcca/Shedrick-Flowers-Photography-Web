@@ -23,7 +23,7 @@ export const supabase = (supabaseUrl && supabaseKey)
 /**
  * Fetch all records from a specified table.
  * @param table - The name of the table ('portfolio', 'blog', 'services').
- * @returns {Promise<any[]>} List of records sorted by creation date (descending).
+ * @returns {Promise<any[]>} List of records sorted by creation date (descending). Returns generic array, consumer should cast to specific type (e.g., PortfolioItem[]).
  */
 export const fetchData = async (table: 'portfolio' | 'blog' | 'services') => {
     const { data, error } = await supabase.from(table).select('*').order('created_at', { ascending: false });

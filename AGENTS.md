@@ -2,8 +2,8 @@
 
 ## Tech Stack
 
-- **Frontend**: React (v19), Vite, Tailwind CSS (CDN)
-- **Routing**: React Router v7
+- **Frontend**: React (v18), Vite, Tailwind CSS (CDN)
+- **Routing**: React Router v6
 - **Backend**: Supabase (PostgreSQL, Auth, Storage)
 - **State Management**: React Context / Hooks
 - **Icons**: Lucide React, Material Symbols (Google Fonts)
