@@ -6,7 +6,17 @@ interface BlogCardProps {
     post: BlogPost;
 }
 
-export const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
+/**
+ * BlogCard Component
+ *
+ * Displays a preview of a blog post with an image, title, and excerpt.
+ *
+ * Performance Optimizations:
+ * - Wrapped in React.memo to prevent unnecessary re-renders when parent list re-renders
+ *   but this specific item's data hasn't changed.
+ * - Uses BlurImage for progressive loading.
+ */
+export const BlogCard = React.memo<BlogCardProps>(({ post }) => {
     return (
         <article className="flex flex-col gap-5 group cursor-pointer h-full">
             <div className="w-full aspect-[3/2] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark relative shadow-md group-hover:shadow-xl transition-all duration-300">
@@ -29,4 +39,4 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
             </div>
         </article>
     );
-};
+});
