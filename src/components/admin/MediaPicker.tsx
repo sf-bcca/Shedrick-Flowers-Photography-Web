@@ -136,11 +136,11 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                 <div className="flex gap-2">
                     <button
                         onClick={fetchFiles}
-                        className="p-2 text-slate-500 hover:text-primary transition-colors"
+                        className="p-2 text-slate-500 hover:text-primary transition-colors rounded-full focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                         title="Refresh"
                         aria-label="Refresh files"
                     >
-                        <span className="material-symbols-outlined">refresh</span>
+                        <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
                     </button>
                     {onClose && (
                          <button
@@ -199,39 +199,47 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                              return (
                                 <div
                                     key={file.id}
-                                    onClick={() => handleImageClick(file.name)}
                                     className={`
-                                        group relative aspect-square bg-slate-100 dark:bg-black/20 rounded-xl overflow-hidden border border-slate-200 dark:border-white/5
-                                        ${onSelect ? 'cursor-pointer hover:ring-2 hover:ring-primary' : ''}
+                                        group relative aspect-square bg-slate-100 dark:bg-black/20 rounded-xl overflow-hidden border border-slate-200 dark:border-white/5 text-left
+                                        ${onSelect ? 'hover:ring-2 hover:ring-primary' : ''}
                                     `}
                                 >
+                                    {/* Select Action Layer */}
+                                    {onSelect ? (
+                                        <button
+                                            onClick={() => handleImageClick(file.name)}
+                                            className="absolute inset-0 w-full h-full opacity-0 z-10 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-black/10 cursor-pointer"
+                                            aria-label={`Select ${file.name}`}
+                                        />
+                                    ) : null}
+
                                     <img
                                         src={url}
-                                        alt={file.name}
+                                        alt=""
                                         className="w-full h-full object-cover"
                                         loading="lazy"
                                     />
 
-                                    {/* Overlay Actions - Only show in manage mode (no onSelect) OR if we want to allow delete even during select?
-                                        Let's keep delete/copy available but use stopPropagation
-                                    */}
-                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                        <button
-                                            onClick={(e) => handleCopyUrl(e, file.name)}
-                                            className="p-2 bg-white text-slate-900 rounded-full hover:bg-primary hover:text-white transition-colors"
-                                            title="Copy URL"
-                                            aria-label={`Copy URL for ${file.name}`}
-                                        >
-                                            {copyId === file.name ? <Check size={18} /> : <Copy size={18} />}
-                                        </button>
-                                        <button
-                                            onClick={(e) => handleDelete(e, file.name)}
-                                            className="p-2 bg-white text-slate-900 rounded-full hover:bg-red-500 hover:text-white transition-colors"
-                                            title="Delete"
-                                            aria-label={`Delete ${file.name}`}
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
+                                    {/* Overlay Actions - Z-index higher than selection layer */}
+                                    <div className="absolute inset-0 pointer-events-none flex items-center justify-center gap-2 z-20">
+                                        <div className="opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity flex items-center justify-center gap-2 bg-black/40 p-2 rounded-xl pointer-events-auto">
+                                            <button
+                                                onClick={(e) => handleCopyUrl(e, file.name)}
+                                                className="p-2 bg-white text-slate-900 rounded-full hover:bg-primary hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
+                                                title="Copy URL"
+                                                aria-label={`Copy URL for ${file.name}`}
+                                            >
+                                                {copyId === file.name ? <Check size={18} /> : <Copy size={18} />}
+                                            </button>
+                                            <button
+                                                onClick={(e) => handleDelete(e, file.name)}
+                                                className="p-2 bg-white text-slate-900 rounded-full hover:bg-red-500 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:outline-none"
+                                                title="Delete"
+                                                aria-label={`Delete ${file.name}`}
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             );

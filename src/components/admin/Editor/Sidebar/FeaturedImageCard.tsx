@@ -15,26 +15,28 @@ const FeaturedImageCard: React.FC<FeaturedImageCardProps> = ({ image, setImage }
             <div className="bg-[#1a2232] rounded-xl border border-white/10 p-4 space-y-4">
                 <h3 className="font-bold text-white">Featured Image</h3>
 
-                <div
+                <button
                     onClick={() => setShowPicker(true)}
-                    className="relative w-full aspect-video bg-[#111722] border-2 border-dashed border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-primary/50 transition-colors group"
+                    type="button"
+                    aria-label={image ? "Change featured image" : "Select featured image"}
+                    className="relative w-full aspect-video bg-[#111722] border-2 border-dashed border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-primary/50 transition-colors group focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                 >
                     {image ? (
                         <>
-                            <img src={image} alt="Featured" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <img src={image} alt="" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity flex items-center justify-center">
                                 <p className="text-white font-bold flex items-center gap-2">
                                     <Upload size={16} /> Change Image
                                 </p>
                             </div>
                         </>
                     ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500 group-hover:text-primary transition-colors">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500 group-hover:text-primary group-focus-visible:text-primary transition-colors">
                             <Upload size={24} className="mb-2" />
                             <span className="text-xs font-bold uppercase">Select Image</span>
                         </div>
                     )}
-                </div>
+                </button>
                 {image && (
                     <button
                         onClick={() => setImage('')}
