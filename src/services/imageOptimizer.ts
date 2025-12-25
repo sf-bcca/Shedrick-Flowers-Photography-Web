@@ -108,9 +108,9 @@ export async function optimizeImage(
 }
 
 /**
- * Validate if file is a supported image type
- * @param file - File to validate
- * @returns boolean
+ * Validate if file is a supported image type (JPEG, PNG, WebP, GIF)
+ * @param file - The file object to validate
+ * @returns {boolean} True if the file type is supported, false otherwise
  */
 export function isValidImageFile(file: File): boolean {
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
@@ -118,9 +118,9 @@ export function isValidImageFile(file: File): boolean {
 }
 
 /**
- * Get image dimensions from file
- * @param file - Image file
- * @returns Promise with width and height
+ * Get natural dimensions (width/height) from an image file asynchronously
+ * @param file - The image file to inspect
+ * @returns {Promise<{ width: number; height: number }>} Object containing width and height in pixels
  */
 export async function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
     return new Promise((resolve, reject) => {

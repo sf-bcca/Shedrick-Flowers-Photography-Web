@@ -45,7 +45,7 @@ For detailed instructions, please refer to the following guides:
 *   [**Contributing Guide (CONTRIBUTING.md)**](CONTRIBUTING.md) - Guidelines for developers.
 
 ## Technologies
-*   **Frontend**: React 19, React Router v7, Vite
+*   **Frontend**: React 18, React Router v6, Vite
 *   **Styling**: Tailwind CSS
 *   **Backend/Database**: Supabase (PostgreSQL, Auth, Storage)
 *   **AI**: Google Gemini (via Supabase Edge Functions)
