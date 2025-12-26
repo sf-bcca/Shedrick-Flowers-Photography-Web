@@ -92,7 +92,7 @@ export const StudioAssistant = React.memo(() => {
                 aria-expanded={isOpen}
                 className={`fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 ${isOpen ? 'bg-surface-dark text-white rotate-90' : 'bg-primary text-white'}`}
             >
-                <span className="material-symbols-outlined text-2xl">
+                <span className="material-symbols-outlined text-2xl" aria-hidden="true">
                     {isOpen ? 'close' : 'chat_bubble'}
                 </span>
             </button>
@@ -106,7 +106,7 @@ export const StudioAssistant = React.memo(() => {
                 <div className="flex items-center gap-3 p-4 border-b border-slate-100 dark:border-white/5 bg-surface-light dark:bg-[#1e283a] rounded-t-2xl">
                     <div className="relative">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white">
-                            <span className="material-symbols-outlined text-xl">smart_toy</span>
+                            <span className="material-symbols-outlined text-xl" aria-hidden="true">smart_toy</span>
                         </div>
                         <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-[#1e283a] rounded-full"></span>
                     </div>
@@ -166,7 +166,7 @@ export const StudioAssistant = React.memo(() => {
                             aria-label="Send message"
                             className="absolute right-2 p-1.5 text-primary hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                            <span className="material-symbols-outlined">send</span>
+                            <span className="material-symbols-outlined" aria-hidden="true">send</span>
                         </button>
                     </div>
                     <div className="text-center mt-2">
