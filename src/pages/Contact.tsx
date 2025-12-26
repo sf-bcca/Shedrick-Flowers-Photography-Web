@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { PageLayout } from "../components/Layout";
 import { StudioAssistant } from "../components/StudioAssistant";
 import { supabase } from "../services/supabaseClient";
+import { sanitizePlainText } from "../utils/sanitize";
 
 interface FormData {
   name: string;
@@ -59,8 +60,38 @@ const ContactPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const checkRateLimit = () => {
+    const LAST_SUBMISSION_KEY = "contact_form_last_submission";
+    const COOLDOWN_MS = 60 * 1000; // 1 minute
+
+    const lastSubmission = localStorage.getItem(LAST_SUBMISSION_KEY);
+    if (lastSubmission) {
+      const timeSince = Date.now() - parseInt(lastSubmission, 10);
+      if (timeSince < COOLDOWN_MS) {
+        const remainingSeconds = Math.ceil((COOLDOWN_MS - timeSince) / 1000);
+        return {
+          allowed: false,
+          message: `Please wait ${remainingSeconds} seconds before sending another message.`,
+        };
+      }
+    }
+    return { allowed: true };
+  };
+
+  const recordSubmission = () => {
+    localStorage.setItem("contact_form_last_submission", Date.now().toString());
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Rate Limiting Check
+    const rateLimit = checkRateLimit();
+    if (!rateLimit.allowed) {
+      setErrorMessage(rateLimit.message || "Please wait before sending another message.");
+      setSubmitStatus("error");
+      return;
+    }
 
     // Basic validation
     if (!formData.name.trim() || !formData.email.trim()) {
@@ -80,16 +111,23 @@ const ContactPage = () => {
     setSubmitStatus("submitting");
     setErrorMessage("");
 
+    // Sanitize Inputs
+    const cleanName = sanitizePlainText(formData.name);
+    const cleanEmail = sanitizePlainText(formData.email); // Basic strip tags, regex validated above
+    const cleanMessage = sanitizePlainText(formData.message);
+    const cleanShootType = sanitizePlainText(formData.shootType);
+    const cleanDate = formData.datePreference ? sanitizePlainText(formData.datePreference) : "";
+
     try {
       // 1. Save to Supabase (Backup)
       const { error: supabaseError } = await supabase
         .from("contact_submissions")
         .insert({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          date_preference: formData.datePreference || null,
-          shoot_type: formData.shootType,
-          message: formData.message.trim() || null,
+          name: cleanName,
+          email: cleanEmail,
+          date_preference: cleanDate || null,
+          shoot_type: cleanShootType,
+          message: cleanMessage || null,
         });
 
       if (supabaseError) {
@@ -118,14 +156,14 @@ const ContactPage = () => {
         },
         body: JSON.stringify({
           access_key: accessKey,
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          subject: `New Inquiry: ${formData.shootType} - ${formData.name}`,
+          name: cleanName,
+          email: cleanEmail,
+          message: cleanMessage,
+          subject: `New Inquiry: ${cleanShootType} - ${cleanName}`,
           from_name: "Shedrick Flowers Photography Website",
           // Custom fields for the email body
-          "Shoot Type": formData.shootType,
-          "Date Preference": formData.datePreference || "No date specificed",
+          "Shoot Type": cleanShootType,
+          "Date Preference": cleanDate || "No date specificed",
         }),
       });
 
@@ -135,6 +173,7 @@ const ContactPage = () => {
         throw new Error(result.message || "Failed to send email");
       }
 
+      recordSubmission();
       setSubmitStatus("success");
       // Reset form
       setFormData({
