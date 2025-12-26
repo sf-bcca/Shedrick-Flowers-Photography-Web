@@ -456,7 +456,7 @@ const ContactPage = () => {
                     href={`mailto:${email}`}
                   >
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-[#243047] text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors">
-                      <span className="material-symbols-outlined text-2xl">
+                      <span className="material-symbols-outlined text-2xl" aria-hidden="true">
                         alternate_email
                       </span>
                     </div>
@@ -471,7 +471,7 @@ const ContactPage = () => {
                   </a>
                   <div className="flex items-start gap-6">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-[#243047] text-primary shadow-sm">
-                      <span className="material-symbols-outlined text-2xl">
+                      <span className="material-symbols-outlined text-2xl" aria-hidden="true">
                         location_on
                       </span>
                     </div>
@@ -491,7 +491,7 @@ const ContactPage = () => {
                     href={`tel:${phone.replace(/\s/g, "")}`}
                   >
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-[#243047] text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors">
-                      <span className="material-symbols-outlined text-2xl">
+                      <span className="material-symbols-outlined text-2xl" aria-hidden="true">
                         call
                       </span>
                     </div>
