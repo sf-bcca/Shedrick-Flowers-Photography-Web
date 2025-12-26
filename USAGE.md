@@ -42,7 +42,8 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 *   **Media Library**: View and manage all images stored in the system.
 *   **Portfolio Manager**: Upload images, set categories, and manage display order.
 *   **Blog Manager**: Write and edit posts using the rich text editor.
-    *   **Note**: To preview a post, you must **Save** it first (e.g. as a Draft), then click the "Preview" eye icon.
+    *   **Status Workflow**: Posts can be saved as **Draft** (visible only to admins) or **Published** (visible to the public).
+    *   **Preview**: To preview a post, you must **Save** it first, then click the "Preview" eye icon to see it on the live site.
 *   **Services Manager**: Update pricing tiers and features.
 *   **Testimonials Manager**: Full control over client reviews displayed on the About page.
     *   **Add/Edit**: Inputs for Client Name, Subtitle (Role), Quote, Rating (1-5), and Display Order.
