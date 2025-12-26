@@ -28,8 +28,8 @@ export const AdminLayout = () => {
     const location = useLocation();
 
     // Branding State
-    const [logoUrl, setLogoUrl] = useState(localStorage.getItem('site_logo_url') || '');
-    const [siteTitle, setSiteTitle] = useState(localStorage.getItem('site_title') || 'Shedrick Flowers Photography');
+    const [logoUrl, setLogoUrl] = useState(() => localStorage.getItem('site_logo_url') || '');
+    const [siteTitle, setSiteTitle] = useState(() => localStorage.getItem('site_title') || 'Shedrick Flowers Photography');
 
     useEffect(() => {
         const fetchSettings = async () => {

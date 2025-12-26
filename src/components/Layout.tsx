@@ -14,10 +14,10 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState(
-    localStorage.getItem("site_logo_url") || "",
+    () => localStorage.getItem("site_logo_url") || "",
   );
   const [siteTitle, setSiteTitle] = useState(
-    localStorage.getItem("site_title") || "Shedrick Flowers Photography",
+    () => localStorage.getItem("site_title") || "Shedrick Flowers Photography",
   );
   const navigate = useNavigate();
 
@@ -127,10 +127,10 @@ const XIcon = ({
 
 export const Footer: React.FC = () => {
   const [logoUrl, setLogoUrl] = useState(
-    localStorage.getItem("site_logo_url") || "",
+    () => localStorage.getItem("site_logo_url") || "",
   );
   const [siteTitle, setSiteTitle] = useState(
-    localStorage.getItem("site_title") || "Shedrick Flowers Photography",
+    () => localStorage.getItem("site_title") || "Shedrick Flowers Photography",
   );
   const [socialLinks, setSocialLinks] = useState({
     facebook: "",
