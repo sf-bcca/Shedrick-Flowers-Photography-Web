@@ -25,6 +25,13 @@ interface Message {
  * ContactPage state updates (e.g. form typing). Component has no props.
  */
 export const StudioAssistant = React.memo(() => {
+    /**
+     * State management for chat window visibility, messages, and input.
+     * `isOpen`: Toggles the chat window.
+     * `messages`: Stores the conversation history.
+     * `inputValue`: Current text in the input field.
+     * `isLoading`: Indicates when the AI is processing a response.
+     */
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         { role: 'model', text: "Hello! I'm the Studio Assistant. How can I help you visualize your session today?" }

@@ -1,9 +1,9 @@
 # Shedrick Flowers Photography Web
 
-![Development Status](https://img.shields.io/badge/Status-Development-orange)
+![Development Status](https://img.shields.io/badge/Status-Active-green)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
-A professional photography portfolio website built with React, Vite, and Supabase. This application features a dynamic portfolio, blog with commenting system, service listings, and a comprehensive admin dashboard for content management.
+A professional photography portfolio website built with React, Vite, and Supabase. This application features a dynamic portfolio, blog with commenting system, service listings, client testimonials, and a comprehensive admin dashboard for content management.
 
 ## Table of Contents
 *   [Key Features](#key-features)
@@ -15,6 +15,7 @@ A professional photography portfolio website built with React, Vite, and Supabas
 *   **Dynamic Portfolio**: Showcase photography with categorization and custom layout options.
 *   **Blog System**: Rich text blogging platform with user comments and moderation.
 *   **Service Listings**: Display pricing tiers and service details.
+*   **Client Testimonials**: Dedicated management for client reviews and ratings.
 *   **Studio Assistant**: AI-powered chat agent (Google Gemini) to help visitors with pricing and services.
 *   **Admin Dashboard**: Protected area to manage all content, site settings, and media.
 *   **Responsive Design**: Optimized for all devices using Tailwind CSS.
