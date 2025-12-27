@@ -53,13 +53,14 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
     *   **General**: Site title, description, and contact email.
     *   **Branding**: Upload/update Logo, Hero Image, Avatar, and Favicon.
     *   **About Photo**: Image used on the About page.
-    *   **Contact Info**: Phone, address, and social media links (Instagram, Facebook, X/Twitter, LinkedIn).
+    *   **Contact Info**: Phone, address, and social media links.
+    *   **Social Icons**: The site uses the modern 'X' logo for Twitter/X links.
 *   **Comments**: Moderation queue for blog comments.
     *   New comments appear as **Pending**.
     *   Admins must **Approve** comments for them to appear on the public site.
     *   **Reject** removes the comment from the queue.
 *   **Contact Submissions**: Inquiries from the Contact page are:
-    *   Emailed directly to the `contact_email` configured in Settings.
+    *   Emailed directly to the `contact_email` configured in Settings (requires Web3Forms).
     *   Logged to the `contact_submissions` table in Supabase for backup (accessible via Supabase Dashboard).
 
 ### 2. Public Site
@@ -98,10 +99,13 @@ export default defineConfig({
 ## Troubleshooting
 
 ### Verify Supabase Connection
-If the application fails to load data, use the verification script to check your configuration:
+If the application fails to load data, use the verification script to check your configuration and database connectivity.
 
+**For Node v20.6+:**
 ```bash
 node --env-file=.env verify-supabase.js
 ```
+
+**For older Node versions**, refer to the detailed instructions in [INSTALL.md](INSTALL.md#6-verify-installation).
 
 Ensure your `.env` file contains the correct `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
