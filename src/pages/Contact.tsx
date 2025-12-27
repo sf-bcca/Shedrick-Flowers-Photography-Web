@@ -10,6 +10,7 @@ interface FormData {
   datePreference: string;
   shootType: string;
   message: string;
+  website_url: string; // Honeypot field
 }
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
@@ -25,6 +26,7 @@ const ContactPage = () => {
     datePreference: "",
     shootType: "Portrait Session",
     message: "",
+    website_url: "",
   });
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -84,6 +86,23 @@ const ContactPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 🛡️ Security: Honeypot Check
+    // If the hidden field 'website_url' is filled, it's likely a bot.
+    // We pretend the submission was successful to mislead the bot.
+    if (formData.website_url) {
+      console.warn("Bot detected: Honeypot field filled.");
+      setSubmitStatus("success");
+      setFormData({
+        name: "",
+        email: "",
+        datePreference: "",
+        shootType: "Portrait Session",
+        message: "",
+        website_url: "",
+      });
+      return;
+    }
 
     // Rate Limiting Check
     const rateLimit = checkRateLimit();
@@ -182,6 +201,7 @@ const ContactPage = () => {
         datePreference: "",
         shootType: "Portrait Session",
         message: "",
+        website_url: "",
       });
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -270,6 +290,20 @@ const ContactPage = () => {
                   </div>
                 )}
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                  {/* Honeypot Field (Hidden) */}
+                  <div className="hidden" aria-hidden="true">
+                    <label htmlFor="website_url">Website URL</label>
+                    <input
+                      type="text"
+                      id="website_url"
+                      name="website_url"
+                      value={formData.website_url}
+                      onChange={handleInputChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
+
                   <label className="block group">
                     <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
                       Your Name
