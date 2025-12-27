@@ -41,7 +41,8 @@ npm install --legacy-peer-deps
     ```
 
     *   **Supabase URL/Key**: Found in your Supabase Project Settings > API.
-    *   **Web3Forms Key**: Required for the contact form to send emails. Get a free key at [Web3Forms](https://web3forms.com/).
+    *   **Web3Forms Key**: (Recommended) Required for the contact form to send emails. Get a free key at [Web3Forms](https://web3forms.com/).
+        *   *If skipped, the contact form will still log submissions to the database, but email delivery will fail.*
 
 ## 4. Deploy Edge Functions (AI Features)
 

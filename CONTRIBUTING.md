@@ -7,7 +7,7 @@ Thank you for your interest in contributing to the Shedrick Flowers Photography 
 If you find a bug, please create a GitHub Issue with the following details:
 
 1.  **Title**: Clear and descriptive title.
-2.  **Description**: detailed explanation of what is happening.
+2.  **Description**: Detailed explanation of what is happening.
 3.  **Steps to Reproduce**: Numbered list of steps to make the bug appear.
 4.  **Expected Behavior**: What you expected to happen.
 5.  **Screenshots**: If applicable.
@@ -19,8 +19,12 @@ Open a GitHub Issue with the label `enhancement`. Describe the feature, why it i
 
 ## Local Development Setup
 
-1.  Follow the instructions in [INSTALL.md](INSTALL.md) to set up your local environment.
-2.  Ensure you have the correct `.env` variables set up.
+1.  Follow the detailed instructions in [INSTALL.md](INSTALL.md) to set up your local environment, including database and environment variables.
+2.  **Install Dependencies**: Due to React 19 dependencies, you must use the legacy peer deps flag:
+    ```bash
+    npm install --legacy-peer-deps
+    ```
+3.  Ensure you have the correct `.env` variables set up (see `INSTALL.md`).
 
 ## Pull Request (PR) Process
 
@@ -50,6 +54,7 @@ We follow a standard Git workflow:
 
 *   **Style**: We use standard React/TypeScript best practices.
 *   **Formatting**: Keep code clean and readable.
+*   **Linting**: While we include `eslint`, we currently do not enforce a strict linting pipeline. Please rely on your IDE's formatting and linting suggestions.
 *   **Types**: Avoid using `any` whenever possible; define interfaces in `src/types.ts`.
 *   **Components**: Create reusable components in `src/components/`.
 
