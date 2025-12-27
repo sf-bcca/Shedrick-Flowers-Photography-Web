@@ -83,9 +83,10 @@ const CommentsManager = () => {
             <div className="bg-white dark:bg-[#1a2232] border border-slate-200 dark:border-white/5 rounded-xl overflow-hidden">
                 <div className="p-4 border-b border-slate-200 dark:border-white/5">
                     <div className="relative max-w-md">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
                         <input
                             type="text"
+                            aria-label="Search comments"
                             placeholder="Search comments..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}

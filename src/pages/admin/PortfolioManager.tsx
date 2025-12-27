@@ -194,9 +194,11 @@ const PortfolioManager = () => {
                 {/* Toolbar */}
                 <div className="p-4 border-b border-slate-200 dark:border-white/5 flex items-center gap-4">
                     <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
                         <input
                             type="text"
+                            id="search-portfolio"
+                            aria-label="Search portfolio"
                             placeholder="Search portfolio..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -267,12 +269,12 @@ const PortfolioManager = () => {
                         </div>
                         <form onSubmit={handleSave} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Title</label>
-                                <input name="title" defaultValue={editItem?.title} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
+                                <label htmlFor="portfolio-title" className="block text-xs font-bold uppercase text-slate-500 mb-1">Title</label>
+                                <input id="portfolio-title" name="title" defaultValue={editItem?.title} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Category</label>
-                                <input name="category" defaultValue={editItem?.category} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
+                                <label htmlFor="portfolio-category" className="block text-xs font-bold uppercase text-slate-500 mb-1">Category</label>
+                                <input id="portfolio-category" name="category" defaultValue={editItem?.category} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Portfolio Image</label>
