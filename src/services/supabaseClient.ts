@@ -36,8 +36,14 @@ export const fetchData = async (table: 'portfolio' | 'blog' | 'services') => {
 
 /**
  * Fetch only published blog posts for public display.
- * Prevents drafts from being exposed to the client.
- * @returns {Promise<BlogPost[]>} List of published blog posts.
+ * Prevents drafts from being exposed to the client and optimizes payload size.
+ *
+ * @performance Optimization:
+ * - Selects only necessary metadata ('id', 'title', 'category', 'date', 'image', 'excerpt').
+ * - Excludes the potentially large 'content' field (rich text HTML) to reduce network payload.
+ * - Used primarily for list views (Blog Home, Related Posts).
+ *
+ * @returns {Promise<BlogPost[]>} List of published blog posts sorted by date.
  */
 export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
     // Select specific fields to avoid fetching large 'content' field
@@ -103,14 +109,17 @@ export const fetchPostById = async (id: string): Promise<BlogPost | null> => {
 };
 
 /**
- * Fetch related blog posts based on category.
- * Logic:
- * 1. Tries to find up to 3 posts in the same category (excluding current post).
- * 2. If fewer than 3 found, fills the remaining slots with the most recent posts (excluding current & already found).
+ * Fetch related blog posts based on category with a smart fallback strategy.
  *
- * @param currentPostId - The ID of the post currently being viewed.
+ * @logic
+ * 1. **Primary Strategy**: Attempt to find up to 3 'Published' posts in the same category, excluding the current post.
+ * 2. **Fallback Strategy**: If fewer than 3 category matches are found, fill the remaining slots with the most recent 'Published' posts from any category (excluding the current post and those already selected).
+ *
+ * @security Strictly filters for `status = 'Published'` to ensure drafts are never leaked in related suggestions.
+ *
+ * @param currentPostId - The UUID of the post currently being viewed (to exclude it from results).
  * @param category - The category of the current post.
- * @returns {Promise<BlogPost[]>} Array of related blog posts (max 3).
+ * @returns {Promise<BlogPost[]>} Array of related blog posts (always returns up to 3 items if content exists).
  */
 export const fetchRelatedPosts = async (currentPostId: string, category: string): Promise<BlogPost[]> => {
     let relatedPosts: BlogPost[] = [];

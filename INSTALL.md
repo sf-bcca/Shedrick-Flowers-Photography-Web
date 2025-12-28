@@ -25,6 +25,8 @@ Install the required Node.js packages.
 npm install --legacy-peer-deps
 ```
 
+*Note: Supabase Edge Functions (in `supabase/functions/`) use Deno and manage their own dependencies via `import_map.json` or direct URL imports. You do not need to run `npm install` inside the functions directory.*
+
 ## 3. Environment Configuration
 
 1.  Copy the example environment file:
