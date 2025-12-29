@@ -106,9 +106,13 @@ const HomePage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="absolute bottom-10 w-full flex justify-center animate-bounce-slow text-white/50 cursor-pointer" onClick={() => document.getElementById('portfolio')?.scrollIntoView()}>
-                    <span className="material-symbols-outlined text-5xl">keyboard_arrow_down</span>
-                </div>
+                <button
+                    className="absolute bottom-10 w-full flex justify-center animate-bounce-slow text-white/50 hover:text-white transition-colors cursor-pointer bg-transparent border-none appearance-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/20"
+                    onClick={() => document.getElementById('portfolio')?.scrollIntoView()}
+                    aria-label="Scroll to portfolio"
+                >
+                    <span className="material-symbols-outlined text-5xl" aria-hidden="true">keyboard_arrow_down</span>
+                </button>
             </section>
 
             {/* Selected Works */}
@@ -121,7 +125,7 @@ const HomePage = () => {
                         </div>
                         <Link to="/blog" className="group flex items-center gap-2 text-primary font-bold hover:text-blue-400 transition-colors text-lg">
                             View Full Portfolio
-                            <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+                            <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
                         </Link>
                     </div>
                     {loading ? (
@@ -143,7 +147,7 @@ const HomePage = () => {
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-surface-dark/20 to-transparent pointer-events-none"></div>
                 <div className="max-w-[1000px] mx-auto text-center relative z-10">
                     <div className="mb-10">
-                        <span className="material-symbols-outlined text-7xl text-primary/50">format_quote</span>
+                        <span className="material-symbols-outlined text-7xl text-primary/50" aria-hidden="true">format_quote</span>
                     </div>
                     <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-slate-900 dark:text-white leading-tight mb-12">
                         "Photography is the story I fail to put into words. It's about capturing the soul of the moment."
