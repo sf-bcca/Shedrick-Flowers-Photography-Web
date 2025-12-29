@@ -26,6 +26,15 @@ Open a GitHub Issue with the label `enhancement`. Describe the feature, why it i
     ```
 3.  Ensure you have the correct `.env` variables set up (see `INSTALL.md`).
 
+## Documentation Standards
+
+We maintain a high standard of documentation to ensure the project remains maintainable and accessible.
+
+*   **Role**: "Scribe" (Technical Writer).
+*   **Priorities**: Accuracy > Completeness > Developer Experience > Polish.
+*   **JSDoc**: All complex functions and services (especially in `src/services/`) must have JSDoc comments explaining parameters, return values, and side effects.
+*   **Markdown**: Use relative links, verify code blocks, and keep the Table of Contents updated.
+
 ## Pull Request (PR) Process
 
 We follow a standard Git workflow:
