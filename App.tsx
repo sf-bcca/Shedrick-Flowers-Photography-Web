@@ -3,7 +3,9 @@ import ScrollToTop from './src/components/ScrollToTop';
 import { Routes, Route } from 'react-router-dom';
 import LoadingSpinner from './src/components/LoadingSpinner';
 import ProtectedRoute from './src/components/ProtectedRoute';
-import { AdminLayout } from './src/components/layouts/AdminLayout';
+
+// Lazy load Admin Layout (Named Export)
+const AdminLayout = lazy(() => import('./src/components/layouts/AdminLayout').then(module => ({ default: module.AdminLayout })));
 
 // Lazy load Public Pages
 const HomePage = lazy(() => import('./src/pages/Home'));
