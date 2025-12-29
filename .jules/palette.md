@@ -37,3 +37,8 @@
 
 **Learning:** In lists of items (like a media gallery), generic action labels ("Delete", "Copy") are confusing for screen reader users as they hear the same label repeatedly.
 **Action:** Always include the item's unique identifier (e.g., filename or title) in the `aria-label` (e.g., "Delete image.jpg") to provide context, even if the visible label is generic or an icon.
+
+## 2025-12-21 - Semantic Buttons for Interactions
+
+**Learning:** Using `div`s with `onClick` handlers for interactive elements (like "scroll down" arrows) creates barriers for keyboard and screen reader users. These elements are not focusable and lack semantic meaning.
+**Action:** Always replace interactive `div`s with semantic `<button>` elements. Use `bg-transparent border-none` to reset styles if needed, and ensure `aria-label` is provided for icon-only buttons.
