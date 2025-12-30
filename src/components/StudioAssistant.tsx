@@ -56,9 +56,9 @@ export const StudioAssistant = React.memo(() => {
         setIsLoading(true);
 
         try {
-            // Send entire message history + new message to maintain context
+            // Send recent message history (last 10) + new message to maintain context and prevent token exhaustion
             // Note: Cloud function handles the system instruction and Gemini API interaction securely
-            const historyToSend = [...messages, newUserMessage];
+            const historyToSend = [...messages, newUserMessage].slice(-10);
             
             const { data, error } = await supabase.functions.invoke('gemini-chat', {
                 body: { messages: historyToSend }
@@ -158,6 +158,7 @@ export const StudioAssistant = React.memo(() => {
                             onKeyDown={handleKeyDown}
                             placeholder="Ask about pricing, style..."
                             aria-label="Type your message"
+                            maxLength={500}
                             className="w-full bg-slate-100 dark:bg-[#111722] text-slate-900 dark:text-white placeholder-slate-500 rounded-xl pl-4 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                         />
                         <button 
