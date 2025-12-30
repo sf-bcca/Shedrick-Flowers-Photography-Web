@@ -10,7 +10,14 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Contact', path: '/contact' },
 ];
 
-export const NavLinks: React.FC<{ mobile?: boolean }> = ({ mobile = false }) => {
+/**
+ * Navigation links component.
+ *
+ * @performance Optimization:
+ * - Wrapped in React.memo to prevent unnecessary re-renders when parent Header updates state (e.g. logo loading).
+ * - Only re-renders if 'mobile' prop changes or route location changes (via useLocation hook).
+ */
+export const NavLinks: React.FC<{ mobile?: boolean }> = React.memo(({ mobile = false }) => {
     const location = useLocation();
 
     const baseClasses = mobile
@@ -37,7 +44,7 @@ export const NavLinks: React.FC<{ mobile?: boolean }> = ({ mobile = false }) => 
             })}
         </nav>
     );
-};
+});
 
 export const MobileMenu: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PageLayout } from '../components/Layout';
 import { Link } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
+import { supabase, fetchSettings } from '../services/supabaseClient';
 
 interface Testimonial {
     id: string;
@@ -20,12 +20,8 @@ const AboutPage = () => {
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
     useEffect(() => {
-        const fetchAboutPhoto = async () => {
-            const { data } = await supabase
-                .from('settings')
-                .select('about_photo_url')
-                .eq('id', 1)
-                .single();
+        const loadAboutPhoto = async () => {
+            const data = await fetchSettings();
 
             if (data?.about_photo_url) {
                 setAboutPhotoUrl(data.about_photo_url);
@@ -44,7 +40,7 @@ const AboutPage = () => {
             }
         };
 
-        fetchAboutPhoto();
+        loadAboutPhoto();
         fetchTestimonials();
     }, []);
 

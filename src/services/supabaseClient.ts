@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { PortfolioItem, BlogPost, ServiceTier } from '../types';
+import { PortfolioItem, BlogPost, ServiceTier, Settings } from '../types';
 
 // Access environment variables using Vite's import.meta.env
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
@@ -18,7 +18,43 @@ export const supabase = (supabaseUrl && supabaseKey)
     ? createClient(supabaseUrl, supabaseKey)
     : createClient('https://placeholder.supabase.co', 'placeholder');
 
+// --- Cache Variables ---
+let settingsCache: Settings | null = null;
+let settingsPromise: Promise<Settings | null> | null = null;
+
 // --- Generic CRUD Wrappers (Direct Supabase Calls) ---
+
+/**
+ * Fetch global site settings with caching and request deduplication.
+ *
+ * @performance Optimization:
+ * - Implements the Singleton pattern for settings retrieval.
+ * - Deduplicates simultaneous requests from multiple components (Header, Footer, Home) using a shared promise.
+ * - Caches the result in memory to prevent redundant network calls during the session.
+ *
+ * @returns {Promise<Settings | null>} The settings object or null if error.
+ */
+export const fetchSettings = async (): Promise<Settings | null> => {
+    // Return in-memory cache if available
+    if (settingsCache) return settingsCache;
+
+    // Return existing promise if request is in flight (deduplication)
+    if (settingsPromise) return settingsPromise;
+
+    settingsPromise = (async () => {
+        const { data, error } = await supabase.from('settings').select('*').eq('id', 1).single();
+        if (error) {
+            console.error("Error fetching settings:", error);
+            settingsPromise = null;
+            return null;
+        }
+        settingsCache = data;
+        settingsPromise = null;
+        return data;
+    })();
+
+    return settingsPromise;
+};
 
 /**
  * Fetch all records from a specified table.

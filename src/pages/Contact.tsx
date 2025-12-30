@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { PageLayout } from "../components/Layout";
 import { StudioAssistant } from "../components/StudioAssistant";
-import { supabase } from "../services/supabaseClient";
+import { supabase, fetchSettings } from "../services/supabaseClient";
 import { sanitizePlainText } from "../utils/sanitize";
+import { Settings } from "../types";
 
 interface FormData {
   name: string;
@@ -16,7 +17,7 @@ interface FormData {
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 const ContactPage = () => {
-  const [settings, setSettings] = useState<any>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Form state
@@ -32,16 +33,12 @@ const ContactPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetchSettings();
+    loadSettings();
   }, []);
 
-  const fetchSettings = async () => {
+  const loadSettings = async () => {
     try {
-      const { data, error } = await supabase
-        .from("settings")
-        .select("*")
-        .eq("id", 1)
-        .single();
+      const data = await fetchSettings();
 
       if (data) {
         setSettings(data);
