@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -122,7 +123,13 @@ const ServicesPage = () => {
                                                 <span className="text-xs text-slate-500 uppercase font-bold">Starting at</span>
                                                 <span className="text-white font-bold text-xl">{item.price === "Custom" ? "Custom Quote" : `$${item.price}`}</span>
                                             </div>
-                                            <button className="h-10 px-6 rounded-lg bg-white/5 hover:bg-primary text-white text-sm font-bold transition-all hover:scale-105 border border-white/10 hover:border-transparent">Details</button>
+                                            <Link
+                                                to="/contact"
+                                                aria-label={`Book ${item.title}`}
+                                                className="h-10 px-6 rounded-lg bg-white/5 hover:bg-primary text-white text-sm font-bold transition-all hover:scale-105 border border-white/10 hover:border-transparent flex items-center justify-center"
+                                            >
+                                                Book Now
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
