@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { NavLinks, MobileMenu } from "./Navigation";
-import { supabase } from "../services/supabaseClient";
+import { fetchSettings } from "../services/supabaseClient";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
 
 interface LayoutProps {
@@ -22,12 +22,8 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      const { data } = await supabase
-        .from("settings")
-        .select("logo_url, site_title, favicon_url")
-        .eq("id", 1)
-        .single();
+    const loadSettings = async () => {
+      const data = await fetchSettings();
 
       if (data) {
         if (data.logo_url) {
@@ -51,7 +47,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
         }
       }
     };
-    fetchSettings();
+    loadSettings();
   }, []);
 
   return (
@@ -140,12 +136,8 @@ export const Footer: React.FC = () => {
   });
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      const { data } = await supabase
-        .from("settings")
-        .select("logo_url, site_title, social_links")
-        .eq("id", 1)
-        .single();
+    const loadSettings = async () => {
+      const data = await fetchSettings();
 
       if (data) {
         if (data.logo_url) {
@@ -166,7 +158,7 @@ export const Footer: React.FC = () => {
         }
       }
     };
-    fetchSettings();
+    loadSettings();
   }, []);
 
   return (

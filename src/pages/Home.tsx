@@ -4,7 +4,7 @@ import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
 import { PortfolioCard } from '../components/PortfolioCard';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { fetchData, supabase } from '../services/supabaseClient';
+import { fetchData, fetchSettings } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
 import { getSessionStorage, getLocalStorageString } from '../services/storage';
 
@@ -34,12 +34,8 @@ const HomePage = () => {
         }
 
         // Fetch hero image and avatar from settings
-        const fetchSettings = async () => {
-            const { data } = await supabase
-                .from('settings')
-                .select('hero_image_url, avatar_url')
-                .eq('id', 1)
-                .single();
+        const loadSettings = async () => {
+            const data = await fetchSettings();
             
             if (data) {
                 if (data.hero_image_url) {
@@ -52,7 +48,7 @@ const HomePage = () => {
                 }
             }
         };
-        fetchSettings();
+        loadSettings();
     }, []);
 
     // SEO Meta Tags
