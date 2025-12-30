@@ -12,7 +12,12 @@ if (!supabaseUrl || !supabaseKey) {
 /**
  * Global Supabase Client Instance
  * Handles connection to Supabase backend for database, auth, and storage.
- * Falls back to a placeholder client if keys are missing to prevent immediate crash.
+ *
+ * @remarks
+ * This client is initialized with credentials from environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
+ * If these variables are missing (e.g., during build time or misconfiguration), it falls back to a
+ * placeholder client ('https://placeholder.supabase.co') to prevent the application from crashing immediately
+ * on import. This allows the UI to render error messages gracefully instead of white-screening.
  */
 export const supabase = (supabaseUrl && supabaseKey) 
     ? createClient(supabaseUrl, supabaseKey)
@@ -22,8 +27,13 @@ export const supabase = (supabaseUrl && supabaseKey)
 
 /**
  * Fetch all records from a specified table.
- * @param table - The name of the table ('portfolio', 'blog', 'services').
- * @returns {Promise<any[]>} List of records sorted by creation date (descending). Returns generic array, consumer should cast to specific type (e.g., PortfolioItem[]).
+ *
+ * @param table - The name of the table to fetch from (e.g., 'portfolio', 'blog', 'services').
+ * @returns {Promise<any[]>} A promise that resolves to an array of records sorted by 'created_at' in descending order.
+ *
+ * @remarks
+ * Returns a generic array `any[]`. The consumer is responsible for casting the result to the appropriate
+ * interface (e.g., `as PortfolioItem[]`). If an error occurs, it logs to the console and returns an empty array.
  */
 export const fetchData = async (table: 'portfolio' | 'blog' | 'services') => {
     const { data, error } = await supabase.from(table).select('*').order('created_at', { ascending: false });
@@ -62,9 +72,15 @@ export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
 
 /**
  * Create a new record in the specified table.
- * @param table - The target table.
- * @param item - The data object to insert. Note: 'id' is automatically stripped to allow DB generation.
- * @returns {Promise<any>} The Supabase response object.
+ *
+ * @param table - The target database table (e.g., 'portfolio', 'blog').
+ * @param item - The data object to insert.
+ * @returns {Promise<any>} The response from Supabase, containing `data` (the inserted row) or `error`.
+ *
+ * @remarks
+ * This function automatically strips the `id` field from the input object before insertion,
+ * allowing the database to generate a new UUID or auto-incrementing ID.
+ * It uses `.select()` to return the inserted record immediately.
  */
 export const createItem = async (table: 'portfolio' | 'blog' | 'services', item: any) => {
     // Remove ID if present to let DB auto-increment or gen UUID
@@ -74,21 +90,23 @@ export const createItem = async (table: 'portfolio' | 'blog' | 'services', item:
 };
 
 /**
- * Update an existing record.
- * @param table - The target table.
- * @param id - The UUID of the record to update.
- * @param updates - Object containing fields to update.
- * @returns {Promise<any>} The Supabase response object.
+ * Update an existing record by its ID.
+ *
+ * @param table - The target database table.
+ * @param id - The UUID (or unique identifier) of the record to update.
+ * @param updates - An object containing only the fields to be updated (partial update).
+ * @returns {Promise<any>} The response from Supabase.
  */
 export const updateItem = async (table: 'portfolio' | 'blog' | 'services', id: string, updates: any) => {
     return await supabase.from(table).update(updates).eq('id', id);
 };
 
 /**
- * Delete a record by ID.
- * @param table - The target table.
- * @param id - The UUID of the record to delete.
- * @returns {Promise<any>} The Supabase response object.
+ * Delete a record by its ID.
+ *
+ * @param table - The target database table.
+ * @param id - The UUID (or unique identifier) of the record to delete.
+ * @returns {Promise<any>} The response from Supabase.
  */
 export const deleteItem = async (table: 'portfolio' | 'blog' | 'services', id: string) => {
     return await supabase.from(table).delete().eq('id', id);
