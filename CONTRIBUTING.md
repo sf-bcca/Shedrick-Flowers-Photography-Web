@@ -63,7 +63,7 @@ We follow a standard Git workflow:
 
 *   **Style**: We use standard React/TypeScript best practices.
 *   **Formatting**: Keep code clean and readable.
-*   **Linting**: While we include `eslint`, we currently do not enforce a strict linting pipeline. Please rely on your IDE's formatting and linting suggestions.
+*   **Linting**: We currently do not enforce a strict linting pipeline. Please rely on your IDE's formatting and linting suggestions.
 *   **Types**: Avoid using `any` whenever possible; define interfaces in `src/types.ts`.
 *   **Components**: Create reusable components in `src/components/`.
 
