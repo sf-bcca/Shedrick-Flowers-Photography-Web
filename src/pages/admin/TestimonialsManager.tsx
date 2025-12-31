@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 /**
  * TestimonialsManager Component
@@ -199,10 +200,11 @@ const TestimonialsManager = () => {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                    <label htmlFor="client_name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                         Client Name *
                                     </label>
                                     <input
+                                        id="client_name"
                                         type="text"
                                         value={currentTestimonial.client_name || ''}
                                         onChange={e => setCurrentTestimonial({ ...currentTestimonial, client_name: e.target.value })}
@@ -211,10 +213,11 @@ const TestimonialsManager = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                    <label htmlFor="subtitle" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                         Subtitle (Role/Service)
                                     </label>
                                     <input
+                                        id="subtitle"
                                         type="text"
                                         value={currentTestimonial.subtitle || ''}
                                         onChange={e => setCurrentTestimonial({ ...currentTestimonial, subtitle: e.target.value })}
@@ -225,10 +228,11 @@ const TestimonialsManager = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                <label htmlFor="quote" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                     Quote *
                                 </label>
                                 <textarea
+                                    id="quote"
                                     value={currentTestimonial.quote || ''}
                                     onChange={e => setCurrentTestimonial({ ...currentTestimonial, quote: e.target.value })}
                                     className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent dark:text-white focus:outline-none focus:ring-2 focus:ring-primary h-32 resize-none"
@@ -238,10 +242,11 @@ const TestimonialsManager = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                    <label htmlFor="rating" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                         Rating (1-5)
                                     </label>
                                     <input
+                                        id="rating"
                                         type="number"
                                         min="1"
                                         max="5"
@@ -251,10 +256,11 @@ const TestimonialsManager = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                    <label htmlFor="display_order" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                         Display Order
                                     </label>
                                     <input
+                                        id="display_order"
                                         type="number"
                                         value={currentTestimonial.display_order || 0}
                                         onChange={e => setCurrentTestimonial({ ...currentTestimonial, display_order: parseInt(e.target.value) })}
@@ -275,15 +281,26 @@ const TestimonialsManager = () => {
                                             className="w-16 h-16 rounded-full object-cover"
                                         />
                                     )}
-                                    <label className="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                                        <Upload size={20} className="text-slate-500" />
-                                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                            {uploading ? 'Uploading...' : 'Upload Image'}
-                                        </span>
+                                    <label className="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+                                        {uploading ? (
+                                            <>
+                                                <LoadingSpinner size="sm" fullScreen={false} label="Uploading" />
+                                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                                    Uploading...
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Upload size={20} className="text-slate-500" />
+                                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                                    Upload Image
+                                                </span>
+                                            </>
+                                        )}
                                         <input
                                             type="file"
                                             accept="image/*"
-                                            className="hidden"
+                                            className="sr-only"
                                             onChange={handleImageUpload}
                                             disabled={uploading}
                                         />
@@ -368,6 +385,7 @@ const TestimonialsManager = () => {
                             {Array.from({ length: 5 }).map((_, i) => (
                                 <span
                                     key={i}
+                                    aria-hidden="true"
                                     className={`material-symbols-outlined text-[20px] ${
                                         i < testimonial.rating ? 'fill-current' : 'text-slate-300 dark:text-slate-700'
                                     }`}
