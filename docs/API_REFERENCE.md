@@ -16,7 +16,7 @@ This document provides a reference for the service layer functions used througho
 
 ## Supabase Client
 
-**Location:** [`src/services/supabaseClient.ts`](file:///Users/shedrick/Projects/Shedrick-Flowers-Photography-Web/src/services/supabaseClient.ts)
+**Location:** [`src/services/supabaseClient.ts`](../src/services/supabaseClient.ts)
 
 ### Data Fetching
 
@@ -198,7 +198,7 @@ fetchRelatedPosts(
 
 ## Image Optimizer
 
-**Location:** [`src/services/imageOptimizer.ts`](file:///Users/shedrick/Projects/Shedrick-Flowers-Photography-Web/src/services/imageOptimizer.ts)
+**Location:** [`src/services/imageOptimizer.ts`](../src/services/imageOptimizer.ts)
 
 ### `optimizeImage(file, options)`
 
@@ -264,7 +264,7 @@ formatFileSize(bytes: number): string
 
 ## Storage Utilities
 
-**Location:** [`src/services/storage.ts`](file:///Users/shedrick/Projects/Shedrick-Flowers-Photography-Web/src/services/storage.ts)
+**Location:** [`src/services/storage.ts`](../src/services/storage.ts)
 
 Safe wrappers for browser storage APIs with error handling.
 
@@ -300,7 +300,7 @@ Retrieves a raw string value from localStorage (no JSON parsing).
 
 ## TypeScript Interfaces
 
-**Location:** [`src/types.ts`](file:///Users/shedrick/Projects/Shedrick-Flowers-Photography-Web/src/types.ts)
+**Location:** [`src/types.ts`](../src/types.ts)
 
 | Interface           | Database Table        | Description                           |
 | ------------------- | --------------------- | ------------------------------------- |
@@ -313,4 +313,4 @@ Retrieves a raw string value from localStorage (no JSON parsing).
 | `Settings`          | `settings`            | Global site configuration (singleton) |
 | `NavItem`           | —                     | Navigation menu items                 |
 
-For full interface definitions, see [types.ts](file:///Users/shedrick/Projects/Shedrick-Flowers-Photography-Web/src/types.ts).
+For full interface definitions, see [types.ts](../src/types.ts).
