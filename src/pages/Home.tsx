@@ -20,7 +20,8 @@ const HomePage = () => {
     const [avatarUrl, setAvatarUrl] = useState(() => getLocalStorageString('avatar_url'));
 
     const fetchPortfolio = () => {
-        fetchData('portfolio').then((data: any) => {
+        // Optimize: Select only necessary fields for the grid to reduce payload
+        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse').then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
             sessionStorage.setItem('portfolioItems', JSON.stringify(data));

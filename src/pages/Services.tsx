@@ -56,7 +56,8 @@ const ServicesPage = () => {
         // If loaded from cache, skip fetch
         if (services.length > 0) return;
 
-        fetchData('services').then((data: any) => {
+        // Optimize: Select only necessary fields for the grid
+        fetchData('services', 'id, title, description, price, image').then((data: any) => {
             // If no data from Supabase, use fallback mock data
             if (data && data.length > 0) {
                 setServices(data);
