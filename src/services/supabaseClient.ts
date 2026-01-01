@@ -71,8 +71,8 @@ export const fetchSettings = async (): Promise<Settings | null> => {
  * Returns a generic array `any[]`. The consumer is responsible for casting the result to the appropriate
  * interface (e.g., `as PortfolioItem[]`). If an error occurs, it logs to the console and returns an empty array.
  */
-export const fetchData = async (table: 'portfolio' | 'blog' | 'services') => {
-    const { data, error } = await supabase.from(table).select('*').order('created_at', { ascending: false });
+export const fetchData = async (table: 'portfolio' | 'blog' | 'services', select = '*') => {
+    const { data, error } = await supabase.from(table).select(select).order('created_at', { ascending: false });
     if (error) {
         console.error(`Error fetching ${table}:`, error);
         return [];
