@@ -106,7 +106,11 @@ The application relies on specific database tables in Supabase.
 
 ## 6. Verify Installation
 
-Before running the application, verify that your local environment is correctly connected to Supabase. This script checks your `.env` configuration and attempts to fetch settings from the database.
+Before running the application, verify that your local environment is correctly connected to Supabase. This script performs the following checks:
+1.  **Environment File**: Confirms `.env` exists.
+2.  **Required Variables**: Checks for `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+3.  **Optional Variables**: Warns if `VITE_WEB3FORMS_ACCESS_KEY` is missing (non-critical).
+4.  **Network Connection**: Attempts to fetch the `settings` table from your Supabase project.
 
 ### Option A: Node.js v20.6 or newer (Recommended)
 
