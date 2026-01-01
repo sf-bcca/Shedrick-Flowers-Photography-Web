@@ -55,7 +55,7 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 - **Testimonials Manager**: Full control over client reviews displayed on the About page.
   - **Add/Edit**: Inputs for Client Name, Subtitle (Role/Service), Quote, Rating (1-5), and Display Order.
   - **Images**: Upload client photos directly; these are stored in the `testimonials/` folder in your storage bucket.
-  - **Reordering**: Use the 'Display Order' field to control the sequence of testimonials on the public site.
+  - **Reordering**: Use the 'Display Order' field (integer) to control the sequence. Lower numbers appear first. If two testimonials have the same number, they are sorted by creation date.
 - **Settings**: Comprehensive site configuration including:
   - **General**: Site title, description, and contact email.
   - **Branding**: Upload/update Logo, Hero Image, Avatar, and Favicon.
@@ -121,7 +121,8 @@ This section covers common issues and their solutions.
 
 **Solutions:**
 
-1. Run the verification script:
+1. **Run the verification script:**
+   This utility checks if your `.env` file exists, validates the presence of required keys (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`), and attempts a real network request to Supabase.
 
    ```bash
    # Node v20.6+
