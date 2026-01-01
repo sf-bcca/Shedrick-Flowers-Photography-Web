@@ -10,7 +10,14 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Contact', path: '/contact' },
 ];
 
-export const NavLinks: React.FC<{ mobile?: boolean }> = ({ mobile = false }) => {
+/**
+ * Navigation links component.
+ *
+ * @performance Optimization:
+ * - Wrapped in React.memo to prevent unnecessary re-renders when parent Header updates state (e.g. logo loading).
+ * - Only re-renders if 'mobile' prop changes or route location changes (via useLocation hook).
+ */
+export const NavLinks: React.FC<{ mobile?: boolean }> = React.memo(({ mobile = false }) => {
     const location = useLocation();
 
     const baseClasses = mobile
@@ -37,14 +44,14 @@ export const NavLinks: React.FC<{ mobile?: boolean }> = ({ mobile = false }) => 
             })}
         </nav>
     );
-};
+});
 
 export const MobileMenu: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 z-[60] bg-background-dark/95 backdrop-blur-xl p-8 flex flex-col items-center justify-center animate-fade-in-up">
             <button onClick={onClose} className="absolute top-6 right-6 p-2 text-white hover:text-primary transition-colors" aria-label="Close menu">
-                <span className="material-symbols-outlined text-4xl">close</span>
+                <span className="material-symbols-outlined text-4xl" aria-hidden="true">close</span>
             </button>
             <div onClick={onClose}>
                 <NavLinks mobile={true} />

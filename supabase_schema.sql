@@ -12,6 +12,22 @@ CREATE TABLE IF NOT EXISTS portfolio (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Enable RLS on portfolio
+ALTER TABLE portfolio ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view portfolio"
+ON portfolio
+FOR SELECT
+TO anon
+USING (true);
+
+CREATE POLICY "Authenticated users can manage portfolio"
+ON portfolio
+FOR ALL
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
 -- Table: blog
 CREATE TABLE IF NOT EXISTS blog (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -29,15 +45,18 @@ CREATE TABLE IF NOT EXISTS blog (
 -- Enable RLS on blog
 ALTER TABLE blog ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public can view published blog posts"
-ON blog
-FOR SELECT
-USING (true); -- Application level filtering for drafts
-
 CREATE POLICY "Authenticated users can manage blog posts"
 ON blog
 FOR ALL
-USING (auth.role() = 'authenticated');
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+CREATE POLICY "Public can view published blog posts"
+ON blog
+FOR SELECT
+TO anon
+USING (status = 'Published');
 
 -- Table: services
 CREATE TABLE IF NOT EXISTS services (
@@ -49,6 +68,22 @@ CREATE TABLE IF NOT EXISTS services (
     features TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Enable RLS on services
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can manage services"
+ON services
+FOR ALL
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+CREATE POLICY "Public can view services"
+ON services
+FOR SELECT
+TO anon
+USING (true);
 
 -- Table: settings
 -- Global configuration for the site
@@ -75,7 +110,7 @@ CREATE TABLE IF NOT EXISTS settings (
 
 -- Initialize default settings row
 INSERT INTO settings (id, site_title, site_description, contact_email)
-VALUES (1, 'Shedrick Flowers Photography', 'Capturing moments in time.', 'admin@lensandlight.com')
+VALUES (1, 'Shedrick Flowers Photography', 'Capturing moments in time.', 'shedrick@shedrickflowers.com')
 ON CONFLICT (id) DO NOTHING;
 
 -- Auto-update updated_at for settings
@@ -124,6 +159,25 @@ CREATE TABLE IF NOT EXISTS comments (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Enable RLS on comments
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can insert comments"
+ON comments
+FOR INSERT
+TO anon, authenticated
+WITH CHECK (true);
+
+CREATE POLICY "Public can view approved comments"
+ON comments
+FOR SELECT
+USING (status = 'approved');
+
+CREATE POLICY "Authenticated users can manage comments"
+ON comments
+FOR ALL
+USING (auth.role() = 'authenticated');
+
 -- Table: testimonials
 CREATE TABLE IF NOT EXISTS testimonials (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -148,6 +202,44 @@ CREATE POLICY "Authenticated users can manage testimonials"
 ON testimonials
 FOR ALL
 USING (auth.role() = 'authenticated');
+
+-- Table: contact_submissions
+-- Stores contact form submissions from website visitors
+CREATE TABLE IF NOT EXISTS contact_submissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    date_preference DATE,
+    shoot_type TEXT NOT NULL,
+    message TEXT,
+    status TEXT DEFAULT 'new',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS on contact_submissions
+ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to submit (INSERT)
+CREATE POLICY "Anyone can submit contact form"
+ON contact_submissions
+FOR INSERT
+TO anon, authenticated
+WITH CHECK (true);
+
+-- Only authenticated users can view submissions
+CREATE POLICY "Authenticated users can view submissions"
+ON contact_submissions
+FOR SELECT
+TO authenticated
+USING (true);
+
+-- Only authenticated users can update submissions
+CREATE POLICY "Authenticated users can update submissions"
+ON contact_submissions
+FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
 
 -- Storage Bucket Policies (SQL representation)
 -- Note: These policies assume a bucket named 'images' exists.

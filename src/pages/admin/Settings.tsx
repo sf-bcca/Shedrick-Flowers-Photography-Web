@@ -3,6 +3,7 @@ import { supabase } from '../../services/supabaseClient';
 import { Save, Globe, Mail, Image as ImageIcon, Share2, Upload, Loader2, X } from 'lucide-react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
+import { isValidUrl, isValidEmail } from '../../utils/validation';
 
 const Settings = () => {
     const [loading, setLoading] = useState(true);
@@ -14,7 +15,7 @@ const Settings = () => {
     const [uploadingAboutPhoto, setUploadingAboutPhoto] = useState(false);
 
     // Form State
-    const [siteTitle, setSiteTitle] = useState('Lens & Light');
+    const [siteTitle, setSiteTitle] = useState('Shedrick Flowers Photography');
     const [siteDesc, setSiteDesc] = useState('');
     const [logoUrl, setLogoUrl] = useState('');
     const [heroImageUrl, setHeroImageUrl] = useState('');
@@ -72,6 +73,21 @@ const Settings = () => {
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
+
+        // Security Validation
+        if (contactEmail && !isValidEmail(contactEmail)) {
+            alert('Please enter a valid email address.');
+            setSaving(false);
+            return;
+        }
+
+        for (const [key, url] of Object.entries(socialLinks)) {
+            if (url && !isValidUrl(url)) {
+                alert(`Invalid URL for ${key}: Must start with http:// or https://`);
+                setSaving(false);
+                return;
+            }
+        }
 
         const updates = {
             site_title: siteTitle,
@@ -479,6 +495,7 @@ const Settings = () => {
                                 <input
                                     value={siteTitle}
                                     onChange={e => setSiteTitle(e.target.value)}
+                                    maxLength={100}
                                     className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
                                 />
                             </div>
@@ -490,6 +507,7 @@ const Settings = () => {
                                         type="email"
                                         value={contactEmail}
                                         onChange={e => setContactEmail(e.target.value)}
+                                        maxLength={100}
                                         className="w-full pl-10 bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
                                     />
                                 </div>
@@ -985,7 +1003,7 @@ const Settings = () => {
                                     value={contactAddressStreet}
                                     onChange={e => setContactAddressStreet(e.target.value)}
                                     className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
-                                    placeholder="123 Lens Avenue"
+                                    placeholder="123 Flowers Avenue"
                                 />
                             </div>
                         </div>
@@ -1036,6 +1054,7 @@ const Settings = () => {
                                 <input
                                     value={socialLinks.instagram}
                                     onChange={e => setSocialLinks({...socialLinks, instagram: e.target.value})}
+                                    maxLength={200}
                                     className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
                                     placeholder="https://instagram.com/username"
                                 />
@@ -1045,6 +1064,7 @@ const Settings = () => {
                                 <input
                                     value={socialLinks.facebook}
                                     onChange={e => setSocialLinks({...socialLinks, facebook: e.target.value})}
+                                    maxLength={200}
                                     className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
                                     placeholder="https://facebook.com/username"
                                 />
@@ -1054,6 +1074,7 @@ const Settings = () => {
                                 <input
                                     value={socialLinks.twitter}
                                     onChange={e => setSocialLinks({...socialLinks, twitter: e.target.value})}
+                                    maxLength={200}
                                     className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
                                     placeholder="https://twitter.com/username"
                                 />
@@ -1063,6 +1084,7 @@ const Settings = () => {
                                 <input
                                     value={socialLinks.linkedin}
                                     onChange={e => setSocialLinks({...socialLinks, linkedin: e.target.value})}
+                                    maxLength={200}
                                     className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-3 text-sm dark:text-white"
                                     placeholder="https://linkedin.com/in/username"
                                 />

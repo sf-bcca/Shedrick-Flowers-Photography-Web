@@ -9,6 +9,19 @@ import TagsCard from '../../components/admin/Editor/Sidebar/TagsCard';
 import { BlogPost } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * BlogManager Component
+ *
+ * A comprehensive interface for managing blog posts.
+ * Allows creating, editing, publishing, and deleting posts.
+ * Features a split-view editor (Tiptap) with sidebar settings.
+ *
+ * Key features:
+ * - List view with search and filtering
+ * - Rich text editor (Tiptap)
+ * - Sidebar for metadata (Categories, Tags, Featured Image)
+ * - Mobile-responsive settings drawer
+ */
 const BlogManager = () => {
     const { user } = useAuth();
     const [view, setView] = useState<'list' | 'editor'>('list');
@@ -35,33 +48,79 @@ const BlogManager = () => {
         if (view === 'list') fetchItems();
     }, [view]);
 
+    /**
+     * Fetches all blog posts from Supabase.
+     * Ordered by creation date descending.
+     */
     const fetchItems = async () => {
         setLoading(true);
         // We'll fetch all and filter in UI for now, or add .eq('status', ...) later
-        const { data, error } = await supabase.from('blog').select('*').order('created_at', { ascending: false });
+        // Optimize payload by excluding 'content' (large field) from list view
+        const { data, error } = await supabase
+            .from('blog')
+            .select('id, title, category, date, image, status, created_at, excerpt, tags')
+            .order('created_at', { ascending: false });
         if (!error) setItems(data || []);
         setLoading(false);
     };
 
+    /**
+     * Deletes a post by ID after confirmation.
+     * @param id - UUID of the post to delete.
+     */
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure?')) return;
         await supabase.from('blog').delete().eq('id', id);
         fetchItems();
     };
 
-    const handleEdit = (item: any) => {
-        setEditItem(item);
-        setTitle(item.title);
-        setCategory(item.category);
-        setDate(item.date);
-        setImage(item.image);
-        setExcerpt(item.excerpt || '');
-        setContent(item.content || item.excerpt || '');
-        setTags(item.tags || []);
-        setStatus(item.status || 'Draft'); // Graceful fallback if status column missing
-        setView('editor');
+    /**
+     * Prepares the editor with data from an existing post.
+     * Fetches the full content on demand to reduce list view payload size.
+     * @param item - The blog post object to edit.
+     */
+    const handleEdit = async (item: any) => {
+        setLoading(true);
+        try {
+            // Fetch the full content specifically for editing
+            const { data, error } = await supabase
+                .from('blog')
+                .select('content')
+                .eq('id', item.id)
+                .single();
+
+            if (error) {
+                console.error('Error fetching post content:', error);
+                alert('Failed to load post content. Please try again.');
+                setLoading(false);
+                return;
+            }
+
+            // Merge the fetched content with the item
+            const fullItem = { ...item, content: data.content };
+
+            setEditItem(fullItem);
+            setTitle(fullItem.title);
+            setCategory(fullItem.category);
+            setDate(fullItem.date);
+            setImage(fullItem.image);
+            setExcerpt(fullItem.excerpt || '');
+            setContent(fullItem.content || fullItem.excerpt || '');
+            setTags(fullItem.tags || []);
+            setStatus(fullItem.status || 'Draft'); // Graceful fallback if status column missing
+            setView('editor');
+        } catch (err) {
+            console.error(err);
+            alert('An unexpected error occurred while loading the post.');
+        } finally {
+            setLoading(false);
+        }
     };
 
+    /**
+     * Resets the editor state for creating a new post.
+     * Sets default values (e.g., today's date, Draft status).
+     */
     const handleCreate = () => {
         setEditItem(null);
         setTitle('');
@@ -81,6 +140,11 @@ const BlogManager = () => {
         setView('editor');
     };
 
+    /**
+     * Saves the current post state to Supabase.
+     * Handles both INSERT (new) and UPDATE (existing).
+     * Alerts the user on success or error.
+     */
     const handleSave = async () => {
         setSaving(true);
         const itemData = {
@@ -115,6 +179,9 @@ const BlogManager = () => {
         }
     };
 
+    /**
+     * Explicitly updates status to 'Published' and saves the post.
+     */
     const handlePublish = async () => {
         setStatus('Published');
         const itemData = {
@@ -199,6 +266,7 @@ const BlogManager = () => {
                         <button
                             onClick={() => setView('list')}
                             className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors"
+                            aria-label="Back to posts list"
                         >
                             <ChevronLeft size={20} /> <span className="hidden sm:inline">Back to Posts</span>
                         </button>
@@ -213,6 +281,8 @@ const BlogManager = () => {
                          <button
                             onClick={handlePreview}
                             className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors text-sm font-bold"
+                            aria-label="Preview post in new tab"
+                            title="Preview"
                          >
                              <Eye size={16} /> <span className="hidden sm:inline">Preview</span>
                          </button>
@@ -221,6 +291,8 @@ const BlogManager = () => {
                          <button
                             onClick={() => setShowMobileSettings(true)}
                             className="lg:hidden p-2 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors"
+                            aria-label="Open post settings"
+                            title="Settings"
                          >
                              <Settings size={20} />
                          </button>
@@ -273,6 +345,7 @@ const BlogManager = () => {
                             <button
                                 onClick={() => setShowMobileSettings(false)}
                                 className="p-2 text-slate-400 hover:text-white transition-colors"
+                                aria-label="Close settings"
                             >
                                 <X size={24} />
                             </button>
@@ -295,6 +368,7 @@ const BlogManager = () => {
                 <button
                     onClick={handleCreate}
                     className="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-primary/20"
+                    aria-label="Create new post"
                 >
                     <Plus size={20} /> <span className="hidden sm:inline">New Post</span>
                 </button>
@@ -307,6 +381,7 @@ const BlogManager = () => {
                         <input
                             type="text"
                             placeholder="Search posts..."
+                            aria-label="Search posts"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white"
@@ -349,12 +424,16 @@ const BlogManager = () => {
                                     <button
                                         onClick={() => handleEdit(item)}
                                         className="p-2 text-slate-400 hover:text-primary transition-colors"
+                                        aria-label={`Edit ${item.title}`}
+                                        title="Edit"
                                     >
                                         <Edit size={18} />
                                     </button>
                                     <button
                                         onClick={() => handleDelete(item.id)}
                                         className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                                        aria-label={`Delete ${item.title}`}
+                                        title="Delete"
                                     >
                                         <Trash2 size={18} />
                                     </button>

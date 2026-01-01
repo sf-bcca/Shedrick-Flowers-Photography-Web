@@ -2,18 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
-import { fetchData, supabase } from '../services/supabaseClient';
+import { PortfolioCard } from '../components/PortfolioCard';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { fetchData, fetchSettings } from '../services/supabaseClient';
 import { PortfolioItem } from '../types';
+import { getSessionStorage, getLocalStorageString } from '../services/storage';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [heroImageUrl, setHeroImageUrl] = useState(localStorage.getItem('hero_image_url') || '');
-    const [avatarUrl, setAvatarUrl] = useState(localStorage.getItem('avatar_url') || '');
+
+    // Lazy initialize state from storage to prevent unnecessary re-renders and layout shifts
+    const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(() =>
+        getSessionStorage<PortfolioItem[]>('portfolioItems') || []
+    );
+    const [loading, setLoading] = useState(() => !getSessionStorage('portfolioItems'));
+    const [heroImageUrl, setHeroImageUrl] = useState(() => getLocalStorageString('hero_image_url'));
+    const [avatarUrl, setAvatarUrl] = useState(() => getLocalStorageString('avatar_url'));
 
     const fetchPortfolio = () => {
-        fetchData('portfolio').then((data: any) => {
+        // Optimize: Select only necessary fields for the grid to reduce payload
+        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse').then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
             sessionStorage.setItem('portfolioItems', JSON.stringify(data));
@@ -21,28 +29,14 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        // Fetch portfolio items with caching
-        const cachedPortfolio = sessionStorage.getItem('portfolioItems');
-        if (cachedPortfolio) {
-            try {
-                setPortfolioItems(JSON.parse(cachedPortfolio));
-                setLoading(false);
-            } catch (e) {
-                console.error("Error parsing cached portfolio items", e);
-                // Fallback to fetch if parse fails
-                fetchPortfolio();
-            }
-        } else {
+        // If not loaded from cache (or cache was invalid/empty), fetch fresh data
+        if (loading) {
             fetchPortfolio();
         }
 
         // Fetch hero image and avatar from settings
-        const fetchSettings = async () => {
-            const { data } = await supabase
-                .from('settings')
-                .select('hero_image_url, avatar_url')
-                .eq('id', 1)
-                .single();
+        const loadSettings = async () => {
+            const data = await fetchSettings();
             
             if (data) {
                 if (data.hero_image_url) {
@@ -55,7 +49,7 @@ const HomePage = () => {
                 }
             }
         };
-        fetchSettings();
+        loadSettings();
     }, []);
 
     // SEO Meta Tags
@@ -109,9 +103,13 @@ const HomePage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="absolute bottom-10 w-full flex justify-center animate-bounce-slow text-white/50 cursor-pointer" onClick={() => document.getElementById('portfolio')?.scrollIntoView()}>
-                    <span className="material-symbols-outlined text-5xl">keyboard_arrow_down</span>
-                </div>
+                <button
+                    className="absolute bottom-10 w-full flex justify-center animate-bounce-slow text-white/50 hover:text-white transition-colors cursor-pointer bg-transparent border-none appearance-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/20"
+                    onClick={() => document.getElementById('portfolio')?.scrollIntoView()}
+                    aria-label="Scroll to portfolio"
+                >
+                    <span className="material-symbols-outlined text-5xl" aria-hidden="true">keyboard_arrow_down</span>
+                </button>
             </section>
 
             {/* Selected Works */}
@@ -124,26 +122,17 @@ const HomePage = () => {
                         </div>
                         <Link to="/blog" className="group flex items-center gap-2 text-primary font-bold hover:text-blue-400 transition-colors text-lg">
                             View Full Portfolio
-                            <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+                            <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
                         </Link>
                     </div>
                     {loading ? (
-                         <div className="h-96 flex items-center justify-center text-slate-500">Loading works...</div>
+                         <div className="h-96 flex items-center justify-center">
+                            <LoadingSpinner fullScreen={false} label="Loading portfolio..." />
+                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {portfolioItems.map((item, idx) => (
-                                <div key={idx} className={`group relative overflow-hidden rounded-xl aspect-[4/5] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 ${item.marginTop ? 'lg:mt-16' : ''} ${item.marginTopInverse ? 'lg:-mt-16' : ''}`}>
-                                    <img
-                                        src={item.image}
-                                        alt={item.title}
-                                        loading="lazy"
-                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0">
-                                        <span className="text-primary text-xs font-bold uppercase tracking-wider mb-2">{item.category}</span>
-                                        <h3 className="text-white text-2xl font-bold">{item.title}</h3>
-                                    </div>
-                                </div>
+                                <PortfolioCard key={idx} item={item} />
                             ))}
                         </div>
                     )}
@@ -155,17 +144,17 @@ const HomePage = () => {
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-surface-dark/20 to-transparent pointer-events-none"></div>
                 <div className="max-w-[1000px] mx-auto text-center relative z-10">
                     <div className="mb-10">
-                        <span className="material-symbols-outlined text-7xl text-primary/50">format_quote</span>
+                        <span className="material-symbols-outlined text-7xl text-primary/50" aria-hidden="true">format_quote</span>
                     </div>
                     <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-slate-900 dark:text-white leading-tight mb-12">
                         "Photography is the story I fail to put into words. It's about capturing the soul of the moment."
                     </h2>
                     <div className="flex flex-col items-center gap-6 mb-12">
-                        <img
+                        <BlurImage
                             src={avatarUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCPWoi9ZhXTrdZwbQil23_b8ljo7Qf1z7W5Ow_BGqzj3LkSekq9K0iZwIcLbT8sZEGHahKqk3uie2SWm1fel5mIHW9b72EQeaFTmLOI2siHwAT0AmEic2iBrFKA0khIANOA2T5lKu9NncRD0muI-y3gcZQtXfGi6r1ohnT5C3Ipmkq-rx3wlimjyQqZ8_wUUa8HwQxJwVTdQ7FwFSgsK45N2yGviCK1uvorMqMe8Dy6nKtjFgKI_VODBZ-bN-ODbwgAY8R1TkUR1lUx"}
                             alt="Shedrick Flowers - Lead Photographer"
-                            loading="lazy"
-                            className="w-20 h-20 rounded-full object-cover border-4 border-background-dark ring-2 ring-primary"
+                            className="w-full h-full object-cover"
+                            containerClassName="w-20 h-20 rounded-full border-4 border-background-dark ring-2 ring-primary"
                         />
                         <div className="text-center">
                             <p className="text-slate-900 dark:text-white font-bold text-xl">Shedrick Flowers</p>

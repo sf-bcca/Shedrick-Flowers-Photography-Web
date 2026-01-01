@@ -7,7 +7,7 @@ Thank you for your interest in contributing to the Shedrick Flowers Photography 
 If you find a bug, please create a GitHub Issue with the following details:
 
 1.  **Title**: Clear and descriptive title.
-2.  **Description**: detailed explanation of what is happening.
+2.  **Description**: Detailed explanation of what is happening.
 3.  **Steps to Reproduce**: Numbered list of steps to make the bug appear.
 4.  **Expected Behavior**: What you expected to happen.
 5.  **Screenshots**: If applicable.
@@ -19,8 +19,21 @@ Open a GitHub Issue with the label `enhancement`. Describe the feature, why it i
 
 ## Local Development Setup
 
-1.  Follow the instructions in [INSTALL.md](INSTALL.md) to set up your local environment.
-2.  Ensure you have the correct `.env` variables set up.
+1.  Follow the detailed instructions in [INSTALL.md](INSTALL.md) to set up your local environment, including database and environment variables.
+2.  **Install Dependencies**: Due to React 19 dependencies, you must use the legacy peer deps flag:
+    ```bash
+    npm install --legacy-peer-deps
+    ```
+3.  Ensure you have the correct `.env` variables set up (see `INSTALL.md`).
+
+## Documentation Standards
+
+We maintain a high standard of documentation to ensure the project remains maintainable and accessible.
+
+- **Role**: "Scribe" (Technical Writer).
+- **Priorities**: Accuracy > Completeness > Developer Experience > Polish.
+- **JSDoc**: All complex functions and services (especially in `src/services/`) must have JSDoc comments explaining parameters, return values, and side effects.
+- **Markdown**: Use relative links, verify code blocks, and keep the Table of Contents updated.
 
 ## Pull Request (PR) Process
 
@@ -48,10 +61,42 @@ We follow a standard Git workflow:
 
 ### Coding Guidelines
 
-*   **Style**: We use standard React/TypeScript best practices.
-*   **Formatting**: Keep code clean and readable.
-*   **Types**: Avoid using `any` whenever possible; define interfaces in `src/types.ts`.
-*   **Components**: Create reusable components in `src/components/`.
+- **Style**: We use standard React/TypeScript best practices.
+- **Formatting**: Keep code clean and readable.
+- **Linting**: We currently do not enforce a strict linting pipeline. Please rely on your IDE's formatting and linting suggestions.
+- **Types**: Avoid using `any` whenever possible; define interfaces in `src/types.ts`.
+- **Components**: Create reusable components in `src/components/`.
+
+### Testing Expectations
+
+This project currently relies on **manual testing** rather than automated unit tests. Before submitting a PR, please verify:
+
+1.  **Development server runs without errors:**
+
+    ```bash
+    npm run dev
+    ```
+
+2.  **Production build succeeds:**
+
+    ```bash
+    npm run build
+    ```
+
+3.  **Affected features work correctly:**
+
+    - If you modified a public page, visit it and verify rendering
+    - If you modified admin features, test the full CRUD flow (Create, Read, Update, Delete)
+    - If you modified the database schema, ensure RLS policies are included
+    - If you modified the Studio Assistant, verify chat responses are accurate
+
+4.  **Responsive design is preserved:**
+    - Test on desktop (1920px+)
+    - Test on tablet (768px)
+    - Test on mobile (375px)
+
+> **Future Improvement:** We welcome contributions that add a testing framework (Vitest recommended for Vite projects).
 
 ## License
+
 By contributing, you agree that your contributions will be licensed under the project's MIT License.

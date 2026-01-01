@@ -1,13 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
 
-
+/**
+ * Interface representing a chat message.
+ */
 interface Message {
     role: 'user' | 'model';
     text: string;
 }
 
-export const StudioAssistant: React.FC = () => {
+/**
+ * Studio Assistant Component
+ *
+ * A floating chat widget powered by Google Gemini AI (via Supabase Edge Functions).
+ * It helps visitors with pricing, booking info, and services.
+ *
+ * Features:
+ * - Real-time chat interface
+ * - Maintains conversation context
+ * - Auto-scrolls to new messages
+ * - Securely invokes the 'gemini-chat' Edge Function
+ *
+ * @performance Optimized with React.memo to prevent re-renders when parent
+ * ContactPage state updates (e.g. form typing). Component has no props.
+ */
+export const StudioAssistant = React.memo(() => {
+    /**
+     * State management for chat window visibility, messages, and input.
+     * `isOpen`: Toggles the chat window.
+     * `messages`: Stores the conversation history.
+     * `inputValue`: Current text in the input field.
+     * `isLoading`: Indicates when the AI is processing a response.
+     */
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         { role: 'model', text: "Hello! I'm the Studio Assistant. How can I help you visualize your session today?" }
@@ -32,9 +56,9 @@ export const StudioAssistant: React.FC = () => {
         setIsLoading(true);
 
         try {
-            // Send entire message history + new message to maintain context
+            // Send recent message history (last 10) + new message to maintain context and prevent token exhaustion
             // Note: Cloud function handles the system instruction and Gemini API interaction securely
-            const historyToSend = [...messages, newUserMessage];
+            const historyToSend = [...messages, newUserMessage].slice(-10);
             
             const { data, error } = await supabase.functions.invoke('gemini-chat', {
                 body: { messages: historyToSend }
@@ -64,20 +88,25 @@ export const StudioAssistant: React.FC = () => {
             {/* Toggle Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? "Close studio assistant" : "Open studio assistant"}
+                aria-expanded={isOpen}
                 className={`fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 ${isOpen ? 'bg-surface-dark text-white rotate-90' : 'bg-primary text-white'}`}
             >
-                <span className="material-symbols-outlined text-2xl">
+                <span className="material-symbols-outlined text-2xl" aria-hidden="true">
                     {isOpen ? 'close' : 'chat_bubble'}
                 </span>
             </button>
 
             {/* Chat Window */}
-            <div className={`fixed bottom-24 right-6 z-40 w-[90vw] md:w-96 max-h-[600px] h-[70vh] flex flex-col bg-white dark:bg-[#1a2232] rounded-2xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10 transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0 pointer-events-none'}`}>
+            <div
+                aria-hidden={!isOpen}
+                className={`fixed bottom-24 right-6 z-40 w-[90vw] md:w-96 max-h-[600px] h-[70vh] flex flex-col bg-white dark:bg-[#1a2232] rounded-2xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10 transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100 visible' : 'scale-75 opacity-0 invisible'}`}
+            >
                 {/* Header */}
                 <div className="flex items-center gap-3 p-4 border-b border-slate-100 dark:border-white/5 bg-surface-light dark:bg-[#1e283a] rounded-t-2xl">
                     <div className="relative">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white">
-                            <span className="material-symbols-outlined text-xl">smart_toy</span>
+                            <span className="material-symbols-outlined text-xl" aria-hidden="true">smart_toy</span>
                         </div>
                         <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-[#1e283a] rounded-full"></span>
                     </div>
@@ -88,7 +117,12 @@ export const StudioAssistant: React.FC = () => {
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-[#111722]">
+                <div
+                    className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-[#111722]"
+                    role="log"
+                    aria-live="polite"
+                    aria-label="Chat history"
+                >
                     {messages.map((msg, idx) => (
                         <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
@@ -103,7 +137,7 @@ export const StudioAssistant: React.FC = () => {
                     {isLoading && (
                         <div className="flex justify-start">
                              <div className="bg-white dark:bg-[#243047] rounded-2xl rounded-bl-none px-4 py-3 border border-slate-200 dark:border-white/5 shadow-sm">
-                                <div className="flex gap-1.5">
+                                <div className="flex gap-1.5" role="status" aria-label="Assistant is typing">
                                     <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"></span>
                                     <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]"></span>
                                     <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]"></span>
@@ -123,14 +157,17 @@ export const StudioAssistant: React.FC = () => {
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Ask about pricing, style..."
+                            aria-label="Type your message"
+                            maxLength={500}
                             className="w-full bg-slate-100 dark:bg-[#111722] text-slate-900 dark:text-white placeholder-slate-500 rounded-xl pl-4 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                         />
                         <button 
                             onClick={handleSend}
                             disabled={!inputValue.trim() || isLoading}
+                            aria-label="Send message"
                             className="absolute right-2 p-1.5 text-primary hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                            <span className="material-symbols-outlined">send</span>
+                            <span className="material-symbols-outlined" aria-hidden="true">send</span>
                         </button>
                     </div>
                     <div className="text-center mt-2">
@@ -140,4 +177,4 @@ export const StudioAssistant: React.FC = () => {
             </div>
         </>
     );
-};
+});

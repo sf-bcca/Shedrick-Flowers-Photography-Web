@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,22 +15,70 @@ serve(async (req) => {
   try {
     const { messages } = await req.json()
     const apiKey = Deno.env.get('GEMINI_API_KEY')
-    if (!apiKey) {
-      throw new Error('Missing GEMINI_API_KEY in environment variables')
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
+
+    if (!apiKey || !supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Missing environment variables')
     }
 
-    const SYSTEM_INSTRUCTION = `You are the dedicated Studio Concierge for 'Shedrick Flowers Photography', a premium photography studio based in Grenada, Mississippi led by Shedrick Flowers.
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+    // Fetch Settings
+    const { data: settingsData, error: settingsError } = await supabase
+      .from('settings')
+      .select('*')
+      .single()
+
+    if (settingsError) {
+      console.error('Error fetching settings:', settingsError)
+    }
+
+    // Fetch Services
+    const { data: servicesData, error: servicesError } = await supabase
+      .from('services')
+      .select('title, price, description, features')
+
+    if (servicesError) {
+      console.error('Error fetching services:', servicesError)
+    }
+
+    // Construct Dynamic Info
+    const studioName = settingsData?.site_title || 'Shedrick Flowers Photography';
+    const location = settingsData?.contact_address_city && settingsData?.contact_address_state
+        ? `${settingsData.contact_address_city}, ${settingsData.contact_address_state}`
+        : 'Grenada, Mississippi';
+    const email = settingsData?.contact_email || '';
+    const phone = settingsData?.contact_phone || '';
+
+    let servicesText = '';
+    if (servicesData && servicesData.length > 0) {
+        servicesText = servicesData.map((service: any) => {
+            const features = service.features && Array.isArray(service.features) && service.features.length > 0
+                ? ` Features include: ${service.features.join(', ')}.`
+                : '';
+            return `- **${service.title}:** ${service.price}. ${service.description}.${features}`;
+        }).join('\n');
+    } else {
+        // Fallback if DB fetch fails or is empty
+        servicesText = `- **Wedding & Engagement:** Starts at $2,400. Includes cinematic storytelling, 20-50+ retouched images.
+- **Portraiture:** Starts at $350. Studio or outdoor options.
+- **Commercial:** Custom quoting based on usage and scope.
+*Note: We offer a variety of other photography and editing services not listed here. Please ask if you don't see what you're looking for.*`;
+    }
+
+    const SYSTEM_INSTRUCTION = `You are the dedicated Studio Concierge for '${studioName}', a premium photography studio based in ${location} led by Shedrick Flowers.
 Your role is to assist potential clients with warmth, sophistication, and brevity.
 
 **Studio Information:**
 - **Photographer:** Shedrick Flowers (12+ years exp, Sony A7R V gear).
 - **Style:** Authentic, unscripted, natural light, "soul of the moment".
-- **Location:** Grenada, Mississippi, but available for travel throughout Mississippi and beyond (travel fees apply).
+- **Location:** ${location}, but available for travel throughout Mississippi and beyond (travel fees apply).
+${email ? `- **Email:** ${email}` : ''}
+${phone ? `- **Phone:** ${phone}` : ''}
 
 **Services & Pricing:**
-- **Wedding & Engagement:** Starts at $2,400. Includes cinematic storytelling, 20-50+ retouched images.
-- **Portraiture:** Starts at $350. Studio or outdoor options.
-- **Commercial:** Custom quoting based on usage and scope.
+${servicesText}
 
 **Booking Policy:**
 - A 30% non-refundable retainer is required to secure a date.
@@ -56,7 +105,7 @@ Your role is to assist potential clients with warmth, sophistication, and brevit
     console.log("Sending request to Gemini with payload:", JSON.stringify(geminiPayload).substring(0, 200) + "...")
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.0-flash-preview:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -79,7 +128,7 @@ Your role is to assist potential clients with warmth, sophistication, and brevit
 
   } catch (error) {
     console.error('Edge Function Error:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     })

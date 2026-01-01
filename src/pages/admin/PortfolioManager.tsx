@@ -4,6 +4,13 @@ import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } fr
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
+/**
+ * PortfolioManager Component
+ *
+ * Manages the photography portfolio items.
+ * Allows adding/editing images, titles, categories, and layout options (margins).
+ * Includes image optimization and uploading.
+ */
 const PortfolioManager = () => {
     const [items, setItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -17,6 +24,9 @@ const PortfolioManager = () => {
         fetchItems();
     }, []);
 
+    /**
+     * Fetches portfolio items from Supabase.
+     */
     const fetchItems = async () => {
         setLoading(true);
         const { data, error } = await supabase
@@ -28,12 +38,19 @@ const PortfolioManager = () => {
         setLoading(false);
     };
 
+    /**
+     * Deletes a portfolio item.
+     */
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure? This cannot be undone.')) return;
         await supabase.from('portfolio').delete().eq('id', id);
         fetchItems();
     };
 
+    /**
+     * Creates or updates a portfolio item.
+     * Handles complex logic for margins and image association.
+     */
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
@@ -90,6 +107,9 @@ const PortfolioManager = () => {
         item.category.toLowerCase().includes(search.toLowerCase())
     );
 
+    /**
+     * Uploads and optimizes a portfolio image.
+     */
     const handleImageUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
@@ -174,9 +194,11 @@ const PortfolioManager = () => {
                 {/* Toolbar */}
                 <div className="p-4 border-b border-slate-200 dark:border-white/5 flex items-center gap-4">
                     <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
                         <input
                             type="text"
+                            id="search-portfolio"
+                            aria-label="Search portfolio"
                             placeholder="Search portfolio..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -216,12 +238,14 @@ const PortfolioManager = () => {
                                                 <button
                                                     onClick={() => { setEditItem(item); setImagePreview(item.image); setIsModalOpen(true); }}
                                                     className="p-2 text-slate-400 hover:text-primary transition-colors"
+                                                    aria-label={`Edit ${item.title}`}
                                                 >
                                                     <Edit size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(item.id)}
                                                     className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                                                    aria-label={`Delete ${item.title}`}
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -241,16 +265,16 @@ const PortfolioManager = () => {
                     <div className="bg-white dark:bg-[#1e283a] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
                         <div className="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
                             <h3 className="text-xl font-bold dark:text-white">{editItem ? 'Edit Item' : 'New Portfolio Item'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white"><X size={24} /></button>
+                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white" aria-label="Close modal"><X size={24} /></button>
                         </div>
                         <form onSubmit={handleSave} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Title</label>
-                                <input name="title" defaultValue={editItem?.title} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
+                                <label htmlFor="portfolio-title" className="block text-xs font-bold uppercase text-slate-500 mb-1">Title</label>
+                                <input id="portfolio-title" name="title" defaultValue={editItem?.title} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Category</label>
-                                <input name="category" defaultValue={editItem?.category} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
+                                <label htmlFor="portfolio-category" className="block text-xs font-bold uppercase text-slate-500 mb-1">Category</label>
+                                <input id="portfolio-category" name="category" defaultValue={editItem?.category} required className="w-full bg-slate-50 dark:bg-[#111722] border border-slate-200 dark:border-white/10 rounded-lg p-2.5 text-sm dark:text-white" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Portfolio Image</label>
@@ -265,6 +289,7 @@ const PortfolioManager = () => {
                                                     onClick={handleRemoveImage}
                                                     className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                                                     title="Remove image"
+                                                    aria-label="Remove image"
                                                 >
                                                     <X size={18} />
                                                 </button>

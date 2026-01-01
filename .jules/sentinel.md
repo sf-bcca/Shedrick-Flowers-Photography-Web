@@ -1,9 +1,23 @@
-## 2025-12-14 - Exposed AI API Key in Client-Side Architecture
-**Vulnerability:** The Gemini API key is embedded in the client-side JavaScript bundle and exposed to anyone inspecting the source code or network traffic.
-**Learning:** Client-only architectures cannot safely hold secrets for third-party APIs unless those APIs support scoped/restricted browser keys (like Firebase or Google Maps). GenAI keys typically allow content generation which can be abused or quota-drained if exposed.
-**Prevention:** Use a backend proxy (e.g., Supabase Edge Function) to hold the secret key and proxy requests from the client. Alternatively, use API keys with strict quotas and HTTP Referrer restrictions if the provider supports them.
+# Sentinel Journal
 
-## 2025-12-15 - Stored XSS in Rich Text Content
-**Vulnerability:** Blog content was rendered using `dangerouslySetInnerHTML` without sanitization. Although primarily authored by admins, a compromised admin account or database injection could lead to Stored XSS affecting all visitors.
-**Learning:** Trusting "internal" content is risky. Rich text editors often produce HTML that *looks* safe but relies on the rendering component to strip malicious scripts.
-**Prevention:** Always sanitize HTML content immediately before rendering using a library like `dompurify`, even if the source is considered trusted.
+This journal tracks CRITICAL security learnings, vulnerability patterns, and architectural gaps found in the codebase.
+
+## 2024-05-22 - [Sentinel Initialized]
+**Vulnerability:** N/A
+**Learning:** Initialized Sentinel security journal.
+**Prevention:** N/A
+
+## 2024-05-22 - [Stored XSS in Settings]
+**Vulnerability:** Settings input for social links accepted any string, including `javascript:` URIs, allowing Stored XSS in the global Footer.
+**Learning:** React renders `href` attributes as-is; always validate protocol (http/https) for user-provided URLs.
+**Prevention:** Implemented centralized `isValidUrl` check and enforced it on all link inputs.
+
+## 2024-05-24 - [Edge Function Info Leak]
+**Vulnerability:** The `gemini-chat` Edge Function returned raw `error.message` to the client in the `catch` block, potentially exposing stack traces or upstream API error details (e.g., from Gemini or Supabase).
+**Learning:** Even in serverless/edge functions, default error handling often favors debuggability over security; "Fail Securely" requires explicit generic error responses.
+**Prevention:** Updated the global `catch` block to log the specific error to the console but return a generic "Internal Server Error" (HTTP 500) to the client.
+
+## 2024-05-24 - [Reverse Tabnabbing in Blog]
+**Vulnerability:** Blog content rendered via `dangerouslySetInnerHTML` allowed `target="_blank"` links without `rel="noopener noreferrer"`.
+**Learning:** `DOMPurify` sanitizes XSS but does not enforce `rel` attributes by default. Links opening in new tabs can expose the parent window object to malicious pages.
+**Prevention:** Implemented a centralized `sanitizeHtml` utility with a `DOMPurify` hook to strictly enforce `rel="noopener noreferrer"` on all external links, and configured Tiptap to add it by default.

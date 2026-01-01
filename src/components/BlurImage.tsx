@@ -1,9 +1,25 @@
 import React, { useState, useMemo } from 'react';
 
+/**
+ * Props for the BlurImage component.
+ * Extends standard HTMLImageElement attributes.
+ */
 interface BlurImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+    /** Additional classes for the container div */
     containerClassName?: string;
 }
 
+/**
+ * BlurImage Component
+ *
+ * A progressive image loading component that displays a blurry low-resolution placeholder
+ * before the full-resolution image loads. Optimized for Supabase Storage images.
+ *
+ * Performance Optimizations:
+ * - Uses `React.memo` to prevent unnecessary re-renders.
+ * - Generates low-res placeholder URL via `useMemo`.
+ * - Handles synchronous state updates to prevent stale content flashes.
+ */
 export const BlurImage: React.FC<BlurImageProps> = React.memo(({
     src,
     className,
