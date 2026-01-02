@@ -191,7 +191,7 @@ export const Footer: React.FC = () => {
             <a
               href={socialLinks.instagram || "#"}
               target={socialLinks.instagram ? "_blank" : "_self"}
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all"
               aria-label="Visit Instagram"
             >
@@ -200,7 +200,7 @@ export const Footer: React.FC = () => {
             <a
               href={socialLinks.facebook || "#"}
               target={socialLinks.facebook ? "_blank" : "_self"}
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all"
               aria-label="Visit Facebook"
             >
@@ -209,7 +209,7 @@ export const Footer: React.FC = () => {
             <a
               href={socialLinks.twitter || "#"}
               target={socialLinks.twitter ? "_blank" : "_self"}
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all"
               aria-label="Visit Twitter"
             >
@@ -218,7 +218,7 @@ export const Footer: React.FC = () => {
             <a
               href={socialLinks.linkedin || "#"}
               target={socialLinks.linkedin ? "_blank" : "_self"}
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-background-dark flex items-center justify-center text-slate-400 hover:text-primary hover:bg-white transition-all"
               aria-label="Visit LinkedIn"
             >
