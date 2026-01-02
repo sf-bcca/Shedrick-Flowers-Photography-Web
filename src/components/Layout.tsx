@@ -3,52 +3,43 @@ import { Link, useNavigate } from "react-router-dom";
 import { NavLinks, MobileMenu } from "./Navigation";
 import { fetchSettings } from "../services/supabaseClient";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { getLocalStorageString } from "../services/storage";
 
 interface LayoutProps {
   children: React.ReactNode;
   transparentHeader?: boolean;
 }
 
-export const Header: React.FC<{ transparent?: boolean }> = ({
+interface SiteSettings {
+  logoUrl: string;
+  siteTitle: string;
+  socialLinks: {
+    facebook?: string;
+    twitter?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
+}
+
+interface HeaderProps {
+  transparent?: boolean;
+  logoUrl: string;
+  siteTitle: string;
+}
+
+interface FooterProps {
+  logoUrl: string;
+  siteTitle: string;
+  socialLinks: SiteSettings['socialLinks'];
+}
+
+export const Header: React.FC<HeaderProps> = React.memo(({
   transparent = false,
+  logoUrl,
+  siteTitle
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [logoUrl, setLogoUrl] = useState(
-    () => localStorage.getItem("site_logo_url") || "",
-  );
-  const [siteTitle, setSiteTitle] = useState(
-    () => localStorage.getItem("site_title") || "Shedrick Flowers Photography",
-  );
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const loadSettings = async () => {
-      const data = await fetchSettings();
-
-      if (data) {
-        if (data.logo_url) {
-          setLogoUrl(data.logo_url);
-          localStorage.setItem("site_logo_url", data.logo_url);
-        }
-        if (data.site_title) {
-          setSiteTitle(data.site_title);
-          localStorage.setItem("site_title", data.site_title);
-        }
-        if (data.favicon_url) {
-          // Update favicon in DOM
-          const faviconLink = document.getElementById(
-            "favicon",
-          ) as HTMLLinkElement;
-          if (faviconLink) {
-            faviconLink.href = data.favicon_url;
-          }
-          // Update localStorage cache
-          localStorage.setItem("site_favicon_url", data.favicon_url);
-        }
-      }
-    };
-    loadSettings();
-  }, []);
 
   return (
     <>
@@ -100,7 +91,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
       </header>
     </>
   );
-};
+});
 
 const XIcon = ({
   size = 24,
@@ -121,46 +112,11 @@ const XIcon = ({
   </svg>
 );
 
-export const Footer: React.FC = () => {
-  const [logoUrl, setLogoUrl] = useState(
-    () => localStorage.getItem("site_logo_url") || "",
-  );
-  const [siteTitle, setSiteTitle] = useState(
-    () => localStorage.getItem("site_title") || "Shedrick Flowers Photography",
-  );
-  const [socialLinks, setSocialLinks] = useState({
-    facebook: "",
-    twitter: "",
-    instagram: "",
-    linkedin: "",
-  });
-
-  useEffect(() => {
-    const loadSettings = async () => {
-      const data = await fetchSettings();
-
-      if (data) {
-        if (data.logo_url) {
-          setLogoUrl(data.logo_url);
-          localStorage.setItem("site_logo_url", data.logo_url);
-        }
-        if (data.site_title) {
-          setSiteTitle(data.site_title);
-          localStorage.setItem("site_title", data.site_title);
-        }
-        if (data.social_links) {
-          setSocialLinks({
-            facebook: data.social_links.facebook || "",
-            twitter: data.social_links.twitter || "",
-            instagram: data.social_links.instagram || "",
-            linkedin: data.social_links.linkedin || "",
-          });
-        }
-      }
-    };
-    loadSettings();
-  }, []);
-
+export const Footer: React.FC<FooterProps> = React.memo(({
+  logoUrl,
+  siteTitle,
+  socialLinks
+}) => {
   return (
     <footer className="bg-surface-dark border-t border-white/10 pt-16 pb-8 px-4 md:px-10 mt-auto w-full">
       <div className="max-w-[1200px] mx-auto">
@@ -245,12 +201,53 @@ export const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});
 
 export const PageLayout: React.FC<LayoutProps> = ({
   children,
   transparentHeader = false,
 }) => {
+  // Centralized state management for site settings
+  // Uses lazy initialization from localStorage to prevent blocking
+  const [settings, setSettings] = useState<SiteSettings>(() => ({
+    logoUrl: getLocalStorageString('site_logo_url'),
+    siteTitle: getLocalStorageString('site_title', 'Shedrick Flowers Photography'),
+    socialLinks: {}
+  }));
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const data = await fetchSettings();
+
+      if (data) {
+        setSettings(prev => ({
+          ...prev,
+          logoUrl: data.logo_url || prev.logoUrl,
+          siteTitle: data.site_title || prev.siteTitle,
+          socialLinks: {
+            facebook: data.social_links?.facebook || "",
+            twitter: data.social_links?.twitter || "",
+            instagram: data.social_links?.instagram || "",
+            linkedin: data.social_links?.linkedin || "",
+          }
+        }));
+
+        // Persist to localStorage
+        if (data.logo_url) localStorage.setItem("site_logo_url", data.logo_url);
+        if (data.site_title) localStorage.setItem("site_title", data.site_title);
+
+        if (data.favicon_url) {
+          const faviconLink = document.getElementById("favicon") as HTMLLinkElement;
+          if (faviconLink) {
+            faviconLink.href = data.favicon_url;
+          }
+          localStorage.setItem("site_favicon_url", data.favicon_url);
+        }
+      }
+    };
+    loadSettings();
+  }, []);
+
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden min-h-screen flex flex-col">
       <a
@@ -259,7 +256,11 @@ export const PageLayout: React.FC<LayoutProps> = ({
       >
         Skip to content
       </a>
-      <Header transparent={transparentHeader} />
+      <Header
+        transparent={transparentHeader}
+        logoUrl={settings.logoUrl}
+        siteTitle={settings.siteTitle}
+      />
       <main
         id="main-content"
         className="flex-1 flex flex-col w-full min-h-screen pt-16 focus:outline-none"
@@ -267,7 +268,11 @@ export const PageLayout: React.FC<LayoutProps> = ({
       >
         {children}
       </main>
-      <Footer />
+      <Footer
+        logoUrl={settings.logoUrl}
+        siteTitle={settings.siteTitle}
+        socialLinks={settings.socialLinks}
+      />
     </div>
   );
 };
