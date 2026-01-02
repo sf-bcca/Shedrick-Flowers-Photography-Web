@@ -22,7 +22,7 @@ This document provides a reference for the service layer functions used througho
 
 #### `fetchSettings()`
 
-Fetches global site settings with caching and request deduplication.
+Fetches global site settings.
 
 ```typescript
 fetchSettings(): Promise<Settings | null>
@@ -31,8 +31,7 @@ fetchSettings(): Promise<Settings | null>
 | Property          | Description                                       |
 | ----------------- | ------------------------------------------------- |
 | **Returns**       | `Settings` object or `null` if error              |
-| **Caching**       | Results are cached in memory for the session      |
-| **Deduplication** | Simultaneous calls share a single network request |
+| **Note**          | Currently fetches directly from database on each call |
 
 **Example:**
 
