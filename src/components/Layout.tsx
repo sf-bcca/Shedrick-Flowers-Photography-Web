@@ -70,7 +70,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
             ) : (
               <>
                 <div className="size-8 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                  <span className="material-symbols-outlined text-3xl">
+                  <span className="material-symbols-outlined text-3xl" aria-hidden="true">
                     camera
                   </span>
                 </div>
@@ -94,7 +94,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
             className="md:hidden text-white p-2"
             aria-label="Open main menu"
           >
-            <span className="material-symbols-outlined">menu</span>
+            <span className="material-symbols-outlined" aria-hidden="true">menu</span>
           </button>
         </div>
       </header>
@@ -175,7 +175,7 @@ export const Footer: React.FC = () => {
                 />
               ) : (
                 <>
-                  <span className="material-symbols-outlined text-primary">
+                  <span className="material-symbols-outlined text-primary" aria-hidden="true">
                     camera
                   </span>
                   {siteTitle}

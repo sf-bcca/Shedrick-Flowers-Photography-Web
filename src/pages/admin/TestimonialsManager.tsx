@@ -345,7 +345,7 @@ const TestimonialsManager = () => {
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-slate-400">
-                                            <span className="material-symbols-outlined">person</span>
+                                            <span className="material-symbols-outlined" aria-hidden="true">person</span>
                                         </div>
                                     )}
                                 </div>
