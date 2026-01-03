@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { supabase } from '../../services/supabaseClient';
 import { Trash2, Copy, Upload, Check, Loader2, X } from 'lucide-react';
+import { optimizeImage, isValidImageFile } from '../../services/imageOptimizer';
 
 const BUCKET_NAME = 'images';
 
@@ -23,6 +24,7 @@ interface MediaPickerProps {
  * MediaPicker Component
  *
  * A reusable component for browsing and uploading images to Supabase Storage.
+ * Includes security validation and optimization for uploaded files.
  *
  * @param onSelect - Optional callback when an image is selected.
  * @param onClose - Optional callback to close the picker (e.g. in a modal).
@@ -61,22 +63,48 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
 
     /**
      * Handles file drops, uploads to Storage, and refreshes the list.
+     * Enforces security checks and image optimization.
      */
     const onDrop = useCallback(async (acceptedFiles: File[]) => {
         setUploading(true);
         try {
             for (const file of acceptedFiles) {
-                // Sanitize file name
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                // 1. Security Check: Validate file type
+                if (!isValidImageFile(file)) {
+                    alert(`Skipping invalid file: ${file.name}. Only JPG, PNG, WEBP, and GIF are allowed.`);
+                    continue;
+                }
 
-                const { error } = await supabase.storage
-                    .from(BUCKET_NAME)
-                    .upload(fileName, file);
+                try {
+                    // 2. Security & Performance: Optimize/Re-encode image
+                    // This strips EXIF data and ensures a safe, consistent format (WebP)
+                    // We use high quality settings since this is the source library
+                    const optimizedFile = await optimizeImage(file, {
+                        maxWidth: 2048,
+                        maxHeight: 2048,
+                        quality: 0.9,
+                        format: 'webp'
+                    });
 
-                if (error) {
-                    console.error('Error uploading:', error);
-                    alert(`Failed to upload ${file.name}`);
+                    // 3. Generate unique safe filename
+                    const fileExt = optimizedFile.name.split('.').pop();
+                    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+                    // 4. Upload
+                    const { error } = await supabase.storage
+                        .from(BUCKET_NAME)
+                        .upload(fileName, optimizedFile, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (error) {
+                        console.error('Error uploading:', error);
+                        alert(`Failed to upload ${file.name}`);
+                    }
+                } catch (err) {
+                    console.error('Optimization failed for:', file.name, err);
+                    alert(`Failed to process ${file.name}`);
                 }
             }
             await fetchFiles();
@@ -170,7 +198,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                     {uploading ? (
                         <div className="flex flex-col items-center gap-2">
                             <Loader2 className="animate-spin" size={32} />
-                            <p className="font-bold">Uploading...</p>
+                            <p className="font-bold">Optimizing & Uploading...</p>
                         </div>
                     ) : (
                         <div className="flex flex-col items-center gap-2">
