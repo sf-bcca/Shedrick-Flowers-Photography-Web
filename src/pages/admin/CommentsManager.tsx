@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import { CheckCircle, XCircle, Trash2, Search, MessageSquare } from 'lucide-react';
 
 const CommentsManager = () => {
@@ -97,7 +98,7 @@ const CommentsManager = () => {
 
                 <div className="divide-y divide-slate-200 dark:divide-white/5">
                     {loading ? (
-                        <div className="p-8 text-center text-slate-500">Loading...</div>
+                        <LoadingSpinner fullScreen={false} className="py-20" label="Loading comments..." />
                     ) : filteredComments.length === 0 ? (
                         <div className="p-8 text-center text-slate-500 flex flex-col items-center gap-2">
                             <MessageSquare size={32} className="opacity-20" />

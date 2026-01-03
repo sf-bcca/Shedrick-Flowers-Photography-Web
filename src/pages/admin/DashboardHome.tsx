@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { FileText, Image as ImageIcon, Layers, TrendingUp } from 'lucide-react';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const DashboardHome = () => {
     const [stats, setStats] = useState({
@@ -89,7 +90,9 @@ const DashboardHome = () => {
 
                 <div className="h-[300px] w-full">
                     {loading ? (
-                        <div className="h-full flex items-center justify-center text-slate-400">Loading data...</div>
+                        <div className="h-full flex items-center justify-center">
+                            <LoadingSpinner fullScreen={false} size="sm" label="Loading chart data..." />
+                        </div>
                     ) : (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={data}>

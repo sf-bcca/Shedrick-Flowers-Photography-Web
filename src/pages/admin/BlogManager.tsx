@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Plus, Edit, Trash2, Search, ChevronLeft, Eye, Settings, X } from 'lucide-react';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import TiptapEditor from '../../components/admin/Editor/TiptapEditor';
 import PublishCard from '../../components/admin/Editor/Sidebar/PublishCard';
 import CategoryCard from '../../components/admin/Editor/Sidebar/CategoryCard';
@@ -391,7 +392,7 @@ const BlogManager = () => {
 
                 <div className="divide-y divide-slate-200 dark:divide-white/5">
                     {loading ? (
-                        <div className="p-8 text-center text-slate-500">Loading...</div>
+                        <LoadingSpinner fullScreen={false} className="py-20" label="Loading posts..." />
                     ) : filteredItems.length === 0 ? (
                          <div className="p-8 text-center text-slate-500">No posts found.</div>
                     ) : (
