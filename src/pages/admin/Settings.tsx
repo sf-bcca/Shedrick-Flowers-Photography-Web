@@ -491,8 +491,9 @@ const Settings = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Site Title</label>
+                                <label htmlFor="site_title" className="block text-xs font-bold uppercase text-slate-500 mb-1">Site Title</label>
                                 <input
+                                    id="site_title"
                                     value={siteTitle}
                                     onChange={e => setSiteTitle(e.target.value)}
                                     maxLength={100}
@@ -500,10 +501,11 @@ const Settings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Contact Email</label>
+                                <label htmlFor="contact_email" className="block text-xs font-bold uppercase text-slate-500 mb-1">Contact Email</label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                                     <input
+                                        id="contact_email"
                                         type="email"
                                         value={contactEmail}
                                         onChange={e => setContactEmail(e.target.value)}
@@ -515,8 +517,9 @@ const Settings = () => {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Site Description</label>
+                            <label htmlFor="site_description" className="block text-xs font-bold uppercase text-slate-500 mb-1">Site Description</label>
                             <textarea
+                                id="site_description"
                                 value={siteDesc}
                                 onChange={e => setSiteDesc(e.target.value)}
                                 rows={3}
@@ -987,8 +990,9 @@ const Settings = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Phone Number</label>
+                                <label htmlFor="contact_phone" className="block text-xs font-bold uppercase text-slate-500 mb-1">Phone Number</label>
                                 <input
+                                    id="contact_phone"
                                     type="tel"
                                     value={contactPhone}
                                     onChange={e => setContactPhone(e.target.value)}
@@ -997,8 +1001,9 @@ const Settings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Street Address</label>
+                                <label htmlFor="contact_street" className="block text-xs font-bold uppercase text-slate-500 mb-1">Street Address</label>
                                 <input
+                                    id="contact_street"
                                     type="text"
                                     value={contactAddressStreet}
                                     onChange={e => setContactAddressStreet(e.target.value)}
@@ -1010,8 +1015,9 @@ const Settings = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">City</label>
+                                <label htmlFor="contact_city" className="block text-xs font-bold uppercase text-slate-500 mb-1">City</label>
                                 <input
+                                    id="contact_city"
                                     type="text"
                                     value={contactAddressCity}
                                     onChange={e => setContactAddressCity(e.target.value)}
@@ -1020,8 +1026,9 @@ const Settings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">State</label>
+                                <label htmlFor="contact_state" className="block text-xs font-bold uppercase text-slate-500 mb-1">State</label>
                                 <input
+                                    id="contact_state"
                                     type="text"
                                     value={contactAddressState}
                                     onChange={e => setContactAddressState(e.target.value)}
@@ -1030,8 +1037,9 @@ const Settings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">ZIP Code</label>
+                                <label htmlFor="contact_zip" className="block text-xs font-bold uppercase text-slate-500 mb-1">ZIP Code</label>
                                 <input
+                                    id="contact_zip"
                                     type="text"
                                     value={contactAddressZip}
                                     onChange={e => setContactAddressZip(e.target.value)}
@@ -1050,8 +1058,9 @@ const Settings = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Instagram URL</label>
+                                <label htmlFor="social_instagram" className="block text-xs font-bold uppercase text-slate-500 mb-1">Instagram URL</label>
                                 <input
+                                    id="social_instagram"
                                     value={socialLinks.instagram}
                                     onChange={e => setSocialLinks({...socialLinks, instagram: e.target.value})}
                                     maxLength={200}
@@ -1060,8 +1069,9 @@ const Settings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Facebook URL</label>
+                                <label htmlFor="social_facebook" className="block text-xs font-bold uppercase text-slate-500 mb-1">Facebook URL</label>
                                 <input
+                                    id="social_facebook"
                                     value={socialLinks.facebook}
                                     onChange={e => setSocialLinks({...socialLinks, facebook: e.target.value})}
                                     maxLength={200}
@@ -1070,8 +1080,9 @@ const Settings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Twitter (X) URL</label>
+                                <label htmlFor="social_twitter" className="block text-xs font-bold uppercase text-slate-500 mb-1">Twitter (X) URL</label>
                                 <input
+                                    id="social_twitter"
                                     value={socialLinks.twitter}
                                     onChange={e => setSocialLinks({...socialLinks, twitter: e.target.value})}
                                     maxLength={200}
@@ -1080,8 +1091,9 @@ const Settings = () => {
                                 />
                             </div>
                              <div>
-                                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">LinkedIn URL</label>
+                                <label htmlFor="social_linkedin" className="block text-xs font-bold uppercase text-slate-500 mb-1">LinkedIn URL</label>
                                 <input
+                                    id="social_linkedin"
                                     value={socialLinks.linkedin}
                                     onChange={e => setSocialLinks({...socialLinks, linkedin: e.target.value})}
                                     maxLength={200}

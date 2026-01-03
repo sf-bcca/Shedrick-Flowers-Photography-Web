@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 
@@ -203,7 +204,9 @@ const ServiceManager = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                     {loading ? (
-                        <p className="text-slate-500">Loading...</p>
+                        <div className="col-span-full">
+                            <LoadingSpinner fullScreen={false} className="py-20" label="Loading services..." />
+                        </div>
                     ) : filteredItems.length === 0 ? (
                         <p className="text-slate-500">No services found.</p>
                     ) : (
