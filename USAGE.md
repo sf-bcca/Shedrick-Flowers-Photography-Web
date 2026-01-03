@@ -44,7 +44,8 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
   - **Statistics**: Immediate view of total Portfolio Items, Blog Posts, and Active Services.
   - **Content Chart**: Visual breakdown of content distribution using interactive bar charts.
 - **Media Library**: View and manage all images stored in the system.
-  - **Upload**: Drag and drop images or click to select files (Supports JPG, PNG, WEBP).
+  - **Upload**: Drag and drop images or click to select files (Supports JPG, PNG, WEBP, GIF).
+  - **Optimization**: Images uploaded here are stored in their original format. *Note: Images uploaded via Portfolio or Services managers are automatically optimized and converted to static WebP/JPEG formats.*
   - **Management**: Delete images or copy their public URL to the clipboard.
   - **Smart Naming**: Files are automatically renamed with a timestamp to prevent collisions.
 - **Portfolio Manager**: Upload images, set categories, and manage display order.
