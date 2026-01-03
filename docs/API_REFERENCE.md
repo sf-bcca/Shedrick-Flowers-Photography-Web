@@ -10,6 +10,9 @@ This document provides a reference for the service layer functions used througho
   - [Blog-Specific Functions](#blog-specific-functions)
 - [Image Optimizer](#image-optimizer)
 - [Storage Utilities](#storage-utilities)
+- [Security Utilities](#security-utilities)
+  - [Sanitization](#sanitization)
+  - [Validation](#validation)
 - [TypeScript Interfaces](#typescript-interfaces)
 
 ---
@@ -291,10 +294,52 @@ Retrieves and JSON-parses a value from localStorage.
 ### `getLocalStorageString(key, defaultValue)`
 
 ```typescript
-getLocalStorageString(key: string, defaultValue?: string): string
+getLocalStorageString(key, defaultValue?: string): string
 ```
 
 Retrieves a raw string value from localStorage (no JSON parsing).
+
+---
+
+## Security Utilities
+
+**Location:** [`src/utils/sanitize.ts`](../src/utils/sanitize.ts) & [`src/utils/validation.ts`](../src/utils/validation.ts)
+
+### Sanitization
+
+#### `sanitizeHtml(content)`
+
+Sanitizes HTML content using DOMPurify with configured security hooks (e.g., preventing reverse tabnabbing). Used for rendering rich text content.
+
+```typescript
+sanitizeHtml(content: string): string
+```
+
+#### `sanitizePlainText(content)`
+
+Sanitizes text input by stripping all HTML tags and attributes. Used for cleaning form inputs.
+
+```typescript
+sanitizePlainText(content: string): string
+```
+
+### Validation
+
+#### `isValidUrl(url)`
+
+Validates that a string is a safe URL (http/https), preventing `javascript:` URI injection.
+
+```typescript
+isValidUrl(url: string): boolean
+```
+
+#### `isValidEmail(email)`
+
+Validates email format using regex.
+
+```typescript
+isValidEmail(email: string): boolean
+```
 
 ---
 
