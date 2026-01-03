@@ -65,14 +65,22 @@ export const fetchSettings = async (): Promise<Settings | null> => {
  * Fetch all records from a specified table.
  *
  * @param table - The name of the table to fetch from (e.g., 'portfolio', 'blog', 'services').
+ * @param select - The columns to select (default: '*').
+ * @param limit - Optional limit on the number of records to fetch.
  * @returns {Promise<any[]>} A promise that resolves to an array of records sorted by 'created_at' in descending order.
  *
  * @remarks
  * Returns a generic array `any[]`. The consumer is responsible for casting the result to the appropriate
  * interface (e.g., `as PortfolioItem[]`). If an error occurs, it logs to the console and returns an empty array.
  */
-export const fetchData = async (table: 'portfolio' | 'blog' | 'services', select = '*') => {
-    const { data, error } = await supabase.from(table).select(select).order('created_at', { ascending: false });
+export const fetchData = async (table: 'portfolio' | 'blog' | 'services', select = '*', limit?: number) => {
+    let query = supabase.from(table).select(select).order('created_at', { ascending: false });
+
+    if (limit) {
+        query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
     if (error) {
         console.error(`Error fetching ${table}:`, error);
         return [];
