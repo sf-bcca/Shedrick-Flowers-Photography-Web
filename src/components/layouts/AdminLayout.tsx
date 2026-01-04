@@ -164,8 +164,9 @@ export const AdminLayout = () => {
                         <button
                             onClick={() => setSidebarOpen(!isSidebarOpen)}
                             className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5"
+                            aria-label={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                         >
-                            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                            {isSidebarOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
                         </button>
                     </div>
 
@@ -206,8 +207,9 @@ export const AdminLayout = () => {
                                 onClick={handleSignOut}
                                 className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                 title="Sign Out"
+                                aria-label="Sign Out"
                             >
-                                <LogOut size={20} />
+                                <LogOut size={20} aria-hidden="true" />
                             </button>
                         </div>
                     </div>
@@ -221,8 +223,9 @@ export const AdminLayout = () => {
                     <button
                         onClick={() => setSidebarOpen(true)}
                         className="p-2 mr-4 -ml-2 text-slate-500 dark:text-slate-400"
+                        aria-label="Open navigation menu"
                     >
-                        <Menu size={24} />
+                        <Menu size={24} aria-hidden="true" />
                     </button>
 
                     <div className="flex items-center gap-2">
