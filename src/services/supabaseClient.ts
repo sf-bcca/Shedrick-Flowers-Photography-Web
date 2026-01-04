@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, PostgrestResponse } from '@supabase/supabase-js';
 import { PortfolioItem, BlogPost, ServiceTier, Settings } from '../types';
 
 // Access environment variables using Vite's import.meta.env
@@ -111,7 +111,7 @@ export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
  *
  * @param table - The target database table (e.g., 'portfolio', 'blog').
  * @param item - The data object to insert.
- * @returns {Promise<any>} The response from Supabase, containing `data` (the inserted row) or `error`.
+ * @returns {Promise<PostgrestResponse<any>>} The response from Supabase, containing `data` (the inserted row) or `error`.
  *
  * @remarks
  * This function automatically strips the `id` field from the input object before insertion,
@@ -131,7 +131,7 @@ export const createItem = async (table: 'portfolio' | 'blog' | 'services', item:
  * @param table - The target database table.
  * @param id - The UUID (or unique identifier) of the record to update.
  * @param updates - An object containing only the fields to be updated (partial update).
- * @returns {Promise<any>} The response from Supabase.
+ * @returns {Promise<PostgrestResponse<any>>} The response from Supabase.
  */
 export const updateItem = async (table: 'portfolio' | 'blog' | 'services', id: string, updates: any) => {
     return await supabase.from(table).update(updates).eq('id', id);
@@ -142,7 +142,7 @@ export const updateItem = async (table: 'portfolio' | 'blog' | 'services', id: s
  *
  * @param table - The target database table.
  * @param id - The UUID (or unique identifier) of the record to delete.
- * @returns {Promise<any>} The response from Supabase.
+ * @returns {Promise<PostgrestResponse<any>>} The response from Supabase.
  */
 export const deleteItem = async (table: 'portfolio' | 'blog' | 'services', id: string) => {
     return await supabase.from(table).delete().eq('id', id);
