@@ -12,6 +12,10 @@ export interface OptimizeOptions {
 
 /**
  * Optimize an image file by resizing and compressing
+ *
+ * @security This function effectively sanitizes the image by redrawing it onto a canvas,
+ * stripping potential malicious payloads or metadata (EXIF) before the file is uploaded.
+ *
  * @param file - Original image file
  * @param options - Optimization options
  * @returns Promise with optimized file
