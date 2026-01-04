@@ -9,9 +9,18 @@ interface LayoutProps {
   transparentHeader?: boolean;
 }
 
-export const Header: React.FC<{ transparent?: boolean }> = ({
+/**
+ * Header Component
+ *
+ * Displays the site logo, navigation links, and mobile menu toggle.
+ *
+ * @performance Optimization:
+ * - Wrapped in React.memo to prevent unnecessary re-renders when parent PageLayout re-renders
+ *   due to page-level state updates (e.g., data fetching completion).
+ */
+export const Header = React.memo(({
   transparent = false,
-}) => {
+}: { transparent?: boolean }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState(
     () => localStorage.getItem("site_logo_url") || "",
@@ -100,7 +109,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
       </header>
     </>
   );
-};
+});
 
 const XIcon = ({
   size = 24,
@@ -121,7 +130,15 @@ const XIcon = ({
   </svg>
 );
 
-export const Footer: React.FC = () => {
+/**
+ * Footer Component
+ *
+ * Displays site footer with social links and secondary navigation.
+ *
+ * @performance Optimization:
+ * - Wrapped in React.memo to prevent unnecessary re-renders.
+ */
+export const Footer = React.memo(() => {
   const [logoUrl, setLogoUrl] = useState(
     () => localStorage.getItem("site_logo_url") || "",
   );
@@ -245,7 +262,7 @@ export const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});
 
 export const PageLayout: React.FC<LayoutProps> = ({
   children,
