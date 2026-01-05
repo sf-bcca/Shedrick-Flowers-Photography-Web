@@ -25,12 +25,12 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, setCategory }) =>
              <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                 {PRESET_CATEGORIES.map(cat => (
                     <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${category === cat ? 'bg-primary border-primary' : 'border-slate-500 group-hover:border-white'}`}>
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${category === cat ? 'bg-primary border-primary' : 'border-slate-500 group-hover:border-white'} group-focus-within:ring-2 group-focus-within:ring-primary group-focus-within:ring-offset-1 group-focus-within:ring-offset-[#1a2232]`}>
                             {category === cat && <div className="w-2 h-2 bg-white rounded-sm" />}
                         </div>
                         <input
                             type="checkbox"
-                            className="hidden"
+                            className="sr-only"
                             checked={category === cat}
                             onChange={() => handleCheck(cat)}
                         />
@@ -49,7 +49,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, setCategory }) =>
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="Or type custom..."
-                className="w-full bg-[#111722] border border-white/10 rounded-lg p-2 text-sm text-white mt-2 placeholder:text-slate-600"
+                aria-label="Custom category"
+                className="w-full bg-[#111722] border border-white/10 rounded-lg p-2 text-sm text-white mt-2 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50"
              />
         </div>
     );
