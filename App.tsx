@@ -25,6 +25,7 @@ const ServiceManager = lazy(() => import('./src/pages/admin/ServiceManager'));
 const CommentsManager = lazy(() => import('./src/pages/admin/CommentsManager'));
 const TestimonialsManager = lazy(() => import('./src/pages/admin/TestimonialsManager'));
 const Settings = lazy(() => import('./src/pages/admin/Settings'));
+const TestComponents = lazy(() => import('./src/pages/TestComponents'));
 
 const App = () => {
     return (
@@ -32,6 +33,7 @@ const App = () => {
             <ScrollToTop />
             <Suspense fallback={<LoadingSpinner />}>
                 <Routes>
+                    <Route path="/test-components" element={<TestComponents />} />
                     {/* Public Routes */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/blog" element={<BlogPage />} />
