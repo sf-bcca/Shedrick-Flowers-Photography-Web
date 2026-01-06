@@ -47,17 +47,21 @@ if (settings) {
 
 ---
 
-#### `fetchData(table)`
+#### `fetchData(table, select)`
 
-Fetches all records from a specified table.
+Fetches all records from a specified table, with optional column selection.
 
 ```typescript
-fetchData(table: 'portfolio' | 'blog' | 'services'): Promise<any[]>
+fetchData(
+  table: 'portfolio' | 'blog' | 'services',
+  select: string = '*'
+): Promise<any[]>
 ```
 
-| Parameter | Type                                      | Description       |
-| --------- | ----------------------------------------- | ----------------- |
-| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table name |
+| Parameter | Type                                      | Description                                 |
+| --------- | ----------------------------------------- | ------------------------------------------- |
+| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table name                           |
+| `select`  | `string`                                  | (Optional) Supabase select query (default: `*`) |
 
 | Property     | Description                                        |
 | ------------ | -------------------------------------------------- |
@@ -295,6 +299,50 @@ getLocalStorageString(key: string, defaultValue?: string): string
 ```
 
 Retrieves a raw string value from localStorage (no JSON parsing).
+
+---
+
+## Utilities
+
+**Location:** `src/utils/`
+
+### Sanitization (`src/utils/sanitize.ts`)
+
+Powered by **DOMPurify**.
+
+#### `sanitizeHtml(content)`
+
+Sanitizes HTML content (e.g., from rich text editor) with security hooks (adds `rel="noopener noreferrer"` to external links).
+
+```typescript
+sanitizeHtml(content: string): string
+```
+
+#### `sanitizePlainText(content)`
+
+Strips all HTML tags and attributes. Used for cleaning form inputs.
+
+```typescript
+sanitizePlainText(content: string): string
+```
+
+### Validation (`src/utils/validation.ts`)
+
+#### `isValidUrl(url)`
+
+Validates that a string is a safe HTTP/HTTPS URL (prevents `javascript:` XSS vectors).
+
+```typescript
+isValidUrl(url: string): boolean
+```
+
+#### `isValidEmail(email)`
+
+Validates email format using regex.
+
+```typescript
+isValidEmail(email: string): boolean
+```
 
 ---
 
