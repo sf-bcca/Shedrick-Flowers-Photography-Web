@@ -42,3 +42,8 @@
 
 **Learning:** Using `div`s with `onClick` handlers for interactive elements (like "scroll down" arrows) creates barriers for keyboard and screen reader users. These elements are not focusable and lack semantic meaning.
 **Action:** Always replace interactive `div`s with semantic `<button>` elements. Use `bg-transparent border-none` to reset styles if needed, and ensure `aria-label` is provided for icon-only buttons.
+
+## 2025-12-22 - Invisible Text in Light Mode
+
+**Learning:** Hardcoding light text colors (e.g., `text-slate-300`) without a dark mode alternative (`dark:`) or a light mode override makes content invisible when the background is white (Light Mode).
+**Action:** Always verify color contrast in both Light and Dark modes. Use utility classes like `text-slate-700 dark:text-slate-300` to ensure text is readable against both `bg-white` and `bg-slate-900`.

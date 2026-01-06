@@ -360,12 +360,12 @@ const PortfolioManager = () => {
                                 )}
                             </div>
                             <div className="flex gap-6 pt-2">
-                                <label className="flex items-center gap-2 text-sm text-slate-300">
-                                    <input type="checkbox" name="marginTop" defaultChecked={editItem?.marginTop} className="rounded bg-slate-700 border-white/10 text-primary focus:ring-primary" />
+                                <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                                    <input type="checkbox" name="marginTop" defaultChecked={editItem?.marginTop} className="rounded bg-slate-200 dark:bg-slate-700 border-slate-300 dark:border-white/10 text-primary focus:ring-primary" />
                                     Offset Top
                                 </label>
-                                <label className="flex items-center gap-2 text-sm text-slate-300">
-                                    <input type="checkbox" name="marginTopInverse" defaultChecked={editItem?.marginTopInverse} className="rounded bg-slate-700 border-white/10 text-primary focus:ring-primary" />
+                                <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                                    <input type="checkbox" name="marginTopInverse" defaultChecked={editItem?.marginTopInverse} className="rounded bg-slate-200 dark:bg-slate-700 border-slate-300 dark:border-white/10 text-primary focus:ring-primary" />
                                     Offset Negative
                                 </label>
                             </div>
