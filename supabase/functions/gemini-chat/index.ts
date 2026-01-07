@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { validateInput } from './validation.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,7 +14,27 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json()
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      console.error('Invalid JSON:', e);
+      return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const validation = validateInput(body);
+    if (!validation.isValid || !validation.sanitizedMessages) {
+      console.error('Validation Error:', validation.error);
+      return new Response(JSON.stringify({ error: validation.error }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const messages = validation.sanitizedMessages;
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
@@ -90,7 +111,7 @@ ${servicesText}
 - Maintain a helpful, high-end professional tone.`;
 
     // Convert messages to Gemini format
-    const contents = messages.map((msg: any) => ({
+    const contents = messages.map((msg) => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.text }]
     }))
