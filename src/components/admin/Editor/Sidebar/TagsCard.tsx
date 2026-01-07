@@ -31,7 +31,14 @@ const TagsCard: React.FC<TagsCardProps> = ({ tags = [], setTags }) => {
                  {tags.map(tag => (
                      <span key={tag} className="bg-[#3b82f6]/20 text-blue-400 text-xs px-2 py-1 rounded flex items-center gap-1 border border-blue-500/20">
                          {tag}
-                         <button onClick={() => removeTag(tag)} className="hover:text-white"><X size={12} /></button>
+                         <button
+                            onClick={() => removeTag(tag)}
+                            className="hover:text-white focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none rounded"
+                            aria-label={`Remove tag ${tag}`}
+                            title={`Remove tag ${tag}`}
+                        >
+                            <X size={12} />
+                        </button>
                      </span>
                  ))}
              </div>
@@ -42,7 +49,7 @@ const TagsCard: React.FC<TagsCardProps> = ({ tags = [], setTags }) => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Type and press Enter..."
-                className="w-full bg-[#111722] border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-primary/50 placeholder:text-slate-600"
+                className="w-full bg-[#111722] border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-primary/50 placeholder:text-slate-600 focus:ring-1 focus:ring-primary/50 transition-all"
              />
         </div>
     );
