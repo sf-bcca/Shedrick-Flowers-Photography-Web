@@ -64,14 +64,20 @@ export const fetchSettings = async (): Promise<Settings | null> => {
 /**
  * Fetch all records from a specified table.
  *
- * @param table - The name of the table to fetch from (e.g., 'portfolio', 'blog', 'services').
+ * @param table - The name of the table to fetch from.
+ * @param select - Optional comma-separated list of columns to select (defaults to '*').
  * @returns {Promise<any[]>} A promise that resolves to an array of records sorted by 'created_at' in descending order.
  *
  * @remarks
  * Returns a generic array `any[]`. The consumer is responsible for casting the result to the appropriate
  * interface (e.g., `as PortfolioItem[]`). If an error occurs, it logs to the console and returns an empty array.
  */
-export const fetchData = async (table: 'portfolio' | 'blog' | 'services', select = '*') => {
+export const fetchData = async (
+    table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments' | 'contact_submissions',
+    select = '*'
+) => {
+    // Note: 'testimonials' uses 'display_order' for sorting in its manager, but this generic fetcher defaults to 'created_at'.
+    // If specific sorting is needed, consider using the Supabase client directly or adding a sort param here.
     const { data, error } = await supabase.from(table).select(select).order('created_at', { ascending: false });
     if (error) {
         console.error(`Error fetching ${table}:`, error);
@@ -109,7 +115,7 @@ export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
 /**
  * Create a new record in the specified table.
  *
- * @param table - The target database table (e.g., 'portfolio', 'blog').
+ * @param table - The target database table.
  * @param item - The data object to insert.
  * @returns {Promise<any>} The response from Supabase, containing `data` (the inserted row) or `error`.
  *
@@ -118,7 +124,10 @@ export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
  * allowing the database to generate a new UUID or auto-incrementing ID.
  * It uses `.select()` to return the inserted record immediately.
  */
-export const createItem = async (table: 'portfolio' | 'blog' | 'services', item: any) => {
+export const createItem = async (
+    table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments',
+    item: any
+) => {
     // Remove ID if present to let DB auto-increment or gen UUID
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...dataToInsert } = item;
@@ -133,7 +142,11 @@ export const createItem = async (table: 'portfolio' | 'blog' | 'services', item:
  * @param updates - An object containing only the fields to be updated (partial update).
  * @returns {Promise<any>} The response from Supabase.
  */
-export const updateItem = async (table: 'portfolio' | 'blog' | 'services', id: string, updates: any) => {
+export const updateItem = async (
+    table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments',
+    id: string,
+    updates: any
+) => {
     return await supabase.from(table).update(updates).eq('id', id);
 };
 
@@ -144,7 +157,10 @@ export const updateItem = async (table: 'portfolio' | 'blog' | 'services', id: s
  * @param id - The UUID (or unique identifier) of the record to delete.
  * @returns {Promise<any>} The response from Supabase.
  */
-export const deleteItem = async (table: 'portfolio' | 'blog' | 'services', id: string) => {
+export const deleteItem = async (
+    table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments',
+    id: string
+) => {
     return await supabase.from(table).delete().eq('id', id);
 };
 

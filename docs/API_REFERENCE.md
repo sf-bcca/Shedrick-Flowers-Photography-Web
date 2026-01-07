@@ -47,17 +47,21 @@ if (settings) {
 
 ---
 
-#### `fetchData(table)`
+#### `fetchData(table, select)`
 
 Fetches all records from a specified table.
 
 ```typescript
-fetchData(table: 'portfolio' | 'blog' | 'services'): Promise<any[]>
+fetchData(
+  table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments' | 'contact_submissions',
+  select?: string
+): Promise<any[]>
 ```
 
-| Parameter | Type                                      | Description       |
-| --------- | ----------------------------------------- | ----------------- |
-| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table name |
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `table` | Union String | Target table name (e.g., `'portfolio'`, `'testimonials'`) |
+| `select` | String | Optional columns to select (default: `'*'`) |
 
 | Property     | Description                                        |
 | ------------ | -------------------------------------------------- |
@@ -70,7 +74,11 @@ fetchData(table: 'portfolio' | 'blog' | 'services'): Promise<any[]>
 import { fetchData } from "./services/supabaseClient";
 import { PortfolioItem } from "./types";
 
+// Fetch all fields
 const items = (await fetchData("portfolio")) as PortfolioItem[];
+
+// Fetch specific fields only
+const services = await fetchData("services", "id, title, image");
 ```
 
 ---
@@ -101,15 +109,15 @@ Creates a new record in the specified table.
 
 ```typescript
 createItem(
-  table: 'portfolio' | 'blog' | 'services',
+  table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments',
   item: any
 ): Promise<PostgrestResponse>
 ```
 
-| Parameter | Type                                      | Description                                |
-| --------- | ----------------------------------------- | ------------------------------------------ |
-| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table                               |
-| `item`    | Object                                    | Data to insert (ID field is auto-stripped) |
+| Parameter | Type         | Description                                |
+| --------- | ------------ | ------------------------------------------ |
+| `table`   | Union String | Target table                               |
+| `item`    | Object       | Data to insert (ID field is auto-stripped) |
 
 **Example:**
 
@@ -129,9 +137,9 @@ Updates an existing record by ID.
 
 ```typescript
 updateItem(
-  table: 'portfolio' | 'blog' | 'services',
+  table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments',
   id: string,
-  updates: Partial<PortfolioItem | BlogPost | ServiceTier>
+  updates: Partial<PortfolioItem | BlogPost | ServiceTier | Testimonial | Comment>
 ): Promise<PostgrestResponse>
 ```
 
@@ -149,7 +157,7 @@ Deletes a record by ID.
 
 ```typescript
 deleteItem(
-  table: 'portfolio' | 'blog' | 'services',
+  table: 'portfolio' | 'blog' | 'services' | 'testimonials' | 'comments',
   id: string
 ): Promise<PostgrestResponse>
 ```
