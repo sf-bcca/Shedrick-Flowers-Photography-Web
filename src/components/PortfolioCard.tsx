@@ -1,16 +1,20 @@
 import React from 'react';
 import { PortfolioItem } from '../types';
 import { BlurImage } from './BlurImage';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 interface PortfolioCardProps {
     item: PortfolioItem;
 }
 
 export const PortfolioCard: React.FC<PortfolioCardProps> = React.memo(({ item }) => {
+    // Optimize image size: 800px width covers Retina on mobile (full width) and Desktop grid
+    const optimizedImage = getOptimizedImageUrl(item.image, 800);
+
     return (
         <div className={`group relative overflow-hidden rounded-xl aspect-[4/5] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 ${item.marginTop ? 'lg:mt-16' : ''} ${item.marginTopInverse ? 'lg:-mt-16' : ''}`}>
             <BlurImage
-                src={item.image}
+                src={optimizedImage}
                 alt={item.title}
                 loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

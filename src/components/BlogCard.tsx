@@ -1,6 +1,7 @@
 import React from 'react';
 import { BlogPost } from '../types';
 import { BlurImage } from './BlurImage';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 interface BlogCardProps {
     post: BlogPost;
@@ -15,13 +16,17 @@ interface BlogCardProps {
  * - Wrapped in React.memo to prevent unnecessary re-renders when parent list re-renders
  *   but this specific item's data hasn't changed.
  * - Uses BlurImage for progressive loading.
+ * - Uses getOptimizedImageUrl to request resized images from the server.
  */
 export const BlogCard = React.memo<BlogCardProps>(({ post }) => {
+    // Optimize image size: 800px width covers Retina on mobile (full width) and Desktop grid
+    const optimizedImage = getOptimizedImageUrl(post.image, 800);
+
     return (
         <article className="flex flex-col gap-5 group cursor-pointer h-full">
             <div className="w-full aspect-[3/2] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark relative shadow-md group-hover:shadow-xl transition-all duration-300">
                 <BlurImage
-                    src={post.image}
+                    src={optimizedImage}
                     alt={post.title}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
