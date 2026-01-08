@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { supabase } from '../../services/supabaseClient';
-import { Trash2, Copy, Upload, Check, Loader2, X } from 'lucide-react';
+import { Trash2, Copy, Upload, Check, X } from 'lucide-react';
+import LoadingSpinner from '../LoadingSpinner';
 
 const BUCKET_NAME = 'images';
 
@@ -169,7 +170,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                     <input {...getInputProps()} />
                     {uploading ? (
                         <div className="flex flex-col items-center gap-2">
-                            <Loader2 className="animate-spin" size={32} />
+                            <LoadingSpinner size="sm" fullScreen={false} label="Uploading" />
                             <p className="font-bold">Uploading...</p>
                         </div>
                     ) : (
@@ -183,9 +184,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
 
                 {/* Gallery */}
                 {loading ? (
-                    <div className="flex justify-center py-20">
-                        <Loader2 className="animate-spin text-primary" size={40} />
-                    </div>
+                    <LoadingSpinner size="md" fullScreen={false} className="py-20" label="Loading media library" />
                 ) : files.length === 0 ? (
                     <div className="text-center py-20 text-slate-500">
                         <p>No images found. Upload some!</p>
