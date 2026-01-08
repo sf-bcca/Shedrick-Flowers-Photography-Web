@@ -35,6 +35,17 @@ We maintain a high standard of documentation to ensure the project remains maint
 - **JSDoc**: All complex functions and services (especially in `src/services/`) must have JSDoc comments explaining parameters, return values, and side effects.
 - **Markdown**: Use relative links, verify code blocks, and keep the Table of Contents updated.
 
+## Accessibility Standards
+
+We adhere to strict accessibility guidelines (documented in `.jules/palette.md`):
+
+1.  **Icon-Only Buttons**: Must have an `aria-label` describing the action (e.g., "Delete Wedding Portfolio").
+2.  **Decorative Icons**: Icons that are purely visual (or use text ligatures) must have `aria-hidden="true"`.
+3.  **Responsive Text**: If text is hidden on mobile (`hidden sm:inline`), the button must have a static `aria-label`.
+4.  **Semantic Elements**: Use `<button>` for interactions, not `<div>`.
+5.  **Skip Links**: Include "Skip to content" links for keyboard navigation.
+6.  **Loading States**: Use the standard `LoadingSpinner` with `role="status"` and screen-reader text.
+
 ## Pull Request (PR) Process
 
 We follow a standard Git workflow:

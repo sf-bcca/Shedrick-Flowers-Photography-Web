@@ -99,6 +99,24 @@ graph TB
 └── [config files]          # Vite, TypeScript, Docker configs
 ```
 
+## Performance Patterns
+
+The application implements several performance optimizations documented in the `.jules/bolt.md` journal.
+
+1.  **Static Data Caching**: `sessionStorage` is heavily utilized for data that changes infrequently (e.g., Portfolio, Services) to simulate a "static site" feel. This reduces network requests during a user session.
+2.  **Lazy State Initialization**: `useState(() => localStorage.getItem('key'))` is used to ensure storage access only happens on the initial render, preventing synchronous blocking.
+3.  **BlurImage Optimization**: The `BlurImage` component uses `useMemo` and synchronous state updates (via `prevProps` pattern) to prevent flashes of stale content and unnecessary re-renders.
+4.  **Optimized Lists**: Admin lists (e.g., Blog Manager) fetch partial data (excluding large content fields) to minimize payload size.
+
+## Security Patterns
+
+Critical security defenses documented in `.jules/sentinel.md`:
+
+1.  **Fail Securely (Edge Functions)**: Functions catch all exceptions and return generic "Internal Server Error" messages to the client, logging actual details only to the server console.
+2.  **Strict URL Validation**: All user-provided URLs (e.g., in Settings) are validated to prevent `javascript:` URI attacks.
+3.  **Reverse Tabnabbing Protection**: A centralized `sanitizeHtml` utility enforces `rel="noopener noreferrer"` on all external links.
+4.  **Strict Output Encoding**: `DOMPurify` is used to sanitize all rich text content before rendering.
+
 ## Database Schema
 
 Seven tables power the application:
