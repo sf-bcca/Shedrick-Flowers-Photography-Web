@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
-import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X, Upload, Image as ImageIcon } from 'lucide-react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 /**
  * PortfolioManager Component
@@ -314,7 +315,7 @@ const PortfolioManager = () => {
                                             <input {...getInputProps()} />
                                             {uploadingImage ? (
                                                 <div className="flex flex-col items-center gap-2">
-                                                    <Loader2 className="animate-spin" size={24} />
+                                                    <LoadingSpinner size="sm" fullScreen={false} label="Optimizing and uploading" />
                                                     <p className="text-sm font-semibold">Optimizing and uploading...</p>
                                                 </div>
                                             ) : (
@@ -342,7 +343,7 @@ const PortfolioManager = () => {
                                         <input {...getInputProps()} />
                                         {uploadingImage ? (
                                             <div className="flex flex-col items-center gap-3">
-                                                <Loader2 className="animate-spin" size={32} />
+                                                <LoadingSpinner size="md" fullScreen={false} label="Optimizing and uploading" />
                                                 <p className="font-semibold">Optimizing and uploading...</p>
                                                 <p className="text-sm opacity-70">This may take a moment</p>
                                             </div>
