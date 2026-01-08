@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { ServiceCard } from '../components/ServiceCard';
 import { fetchData } from '../services/supabaseClient';
 import { ServiceTier } from '../types';
 import { getSessionStorage } from '../services/storage';
@@ -44,6 +44,14 @@ const FALLBACK_SERVICES: ServiceTier[] = [
         price: "1800",
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdOA3mAUqDUcHv1Eijk2LLjTmE2t6rWsDLyzPK1GKFuDmz_p2KwWtjZb9SEHZNDUEQGuU5rFGpv1dOmbhc43DY512hCI_HESxYWAxWwstP9nwxKgvlJ4aQwghXEGeb6gcFT96l2Qqr924qBjaCOHngdFyGDqXWqz_p9x5Pz1SU8iNXurBKcPcJNvkvfaYekZ98lGXjLq5fC1GATlHUk1yndhG1np_noJIfm-254JrwbJ5ly_oNejJ9dO3AHooDyNRJ6HBCEAQdQK5P"
     }
+];
+
+const FEATURE_COMPARISON_DATA = [
+    { f: "Photo Resolution", s: "High Res (24MP)", p: "Ultra High Res (42MP+)" },
+    { f: "Retouched Images", s: "20 Images", p: "50+ Images" },
+    { f: "Online Gallery Duration", s: "6 Months", p: "Lifetime" },
+    { f: "Print Release", s: "Personal Use", p: "Full Commercial" },
+    { f: "Turnaround Time", s: "3 Weeks", p: "1 Week" },
 ];
 
 const ServicesPage = () => {
@@ -106,35 +114,7 @@ const ServicesPage = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {services.map((item, idx) => (
-                                <div key={idx} className="group flex flex-col overflow-hidden rounded-2xl bg-surface-dark shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 border border-white/5 hover:border-primary/50 relative">
-                                    <div className="relative w-full aspect-[4/3] overflow-hidden">
-                                        <BlurImage
-                                            src={item.image}
-                                            alt={item.title}
-                                            loading="lazy"
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            containerClassName="absolute inset-0 w-full h-full"
-                                        />
-                                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
-                                    </div>
-                                    <div className="flex flex-col flex-1 p-8 gap-4">
-                                        <h3 className="text-white text-2xl font-bold">{item.title}</h3>
-                                        <p className="text-text-secondary text-sm leading-relaxed">{item.description}</p>
-                                        <div className="mt-auto pt-6 border-t border-white/10 flex items-center justify-between">
-                                            <div className="flex flex-col">
-                                                <span className="text-xs text-slate-500 uppercase font-bold">Starting at</span>
-                                                <span className="text-white font-bold text-xl">{item.price === "Custom" ? "Custom Quote" : `$${item.price}`}</span>
-                                            </div>
-                                            <Link
-                                                to="/contact"
-                                                aria-label={`Book ${item.title}`}
-                                                className="h-10 px-6 rounded-lg bg-white/5 hover:bg-primary text-white text-sm font-bold transition-all hover:scale-105 border border-white/10 hover:border-transparent flex items-center justify-center"
-                                            >
-                                                Book Now
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ServiceCard key={item.id || idx} item={item} />
                             ))}
                         </div>
                     )}
@@ -158,13 +138,7 @@ const ServicesPage = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#243047]">
-                                {[
-                                    { f: "Photo Resolution", s: "High Res (24MP)", p: "Ultra High Res (42MP+)" },
-                                    { f: "Retouched Images", s: "20 Images", p: "50+ Images" },
-                                    { f: "Online Gallery Duration", s: "6 Months", p: "Lifetime" },
-                                    { f: "Print Release", s: "Personal Use", p: "Full Commercial" },
-                                    { f: "Turnaround Time", s: "3 Weeks", p: "1 Week" },
-                                ].map((row, i) => (
+                                {FEATURE_COMPARISON_DATA.map((row, i) => (
                                     <tr key={i} className="hover:bg-white/5 transition-colors">
                                         <td className="px-8 py-5 font-medium text-white">{row.f}</td>
                                         <td className="px-8 py-5 text-center">{row.s}</td>
