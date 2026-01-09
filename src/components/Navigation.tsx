@@ -32,6 +32,7 @@ export const NavLinks: React.FC<{ mobile?: boolean }> = React.memo(({ mobile = f
                     <Link
                         key={item.path}
                         to={item.path}
+                        aria-current={isActive ? 'page' : undefined}
                         className={`transition-colors duration-200 ${
                             isActive
                             ? 'text-primary font-bold'
@@ -49,7 +50,12 @@ export const NavLinks: React.FC<{ mobile?: boolean }> = React.memo(({ mobile = f
 export const MobileMenu: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 z-[60] bg-background-dark/95 backdrop-blur-xl p-8 flex flex-col items-center justify-center animate-fade-in-up">
+        <div
+            className="fixed inset-0 z-[60] bg-background-dark/95 backdrop-blur-xl p-8 flex flex-col items-center justify-center animate-fade-in-up"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
+        >
             <button onClick={onClose} className="absolute top-6 right-6 p-2 text-white hover:text-primary transition-colors" aria-label="Close menu">
                 <span className="material-symbols-outlined text-4xl" aria-hidden="true">close</span>
             </button>
