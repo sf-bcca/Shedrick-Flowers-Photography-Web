@@ -21,7 +21,8 @@ const HomePage = () => {
 
     const fetchPortfolio = () => {
         // Optimize: Select only necessary fields for the grid to reduce payload
-        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse').then((data: any) => {
+        // Limit to 9 items to prevent massive payload on home page
+        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse', 9).then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
             sessionStorage.setItem('portfolioItems', JSON.stringify(data));
