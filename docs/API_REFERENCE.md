@@ -10,6 +10,7 @@ This document provides a reference for the service layer functions used througho
   - [Blog-Specific Functions](#blog-specific-functions)
 - [Image Optimizer](#image-optimizer)
 - [Storage Utilities](#storage-utilities)
+- [Utilities](#utilities)
 - [TypeScript Interfaces](#typescript-interfaces)
 
 ---
@@ -295,6 +296,44 @@ getLocalStorageString(key: string, defaultValue?: string): string
 ```
 
 Retrieves a raw string value from localStorage (no JSON parsing).
+
+---
+
+## Utilities
+
+**Location:** `src/utils/`
+
+### Sanitize (`src/utils/sanitize.ts`)
+
+#### `sanitizeHtml(content)`
+Sanitizes HTML content using DOMPurify with configured security hooks (e.g., adding `rel="noopener noreferrer"` to external links).
+
+```typescript
+sanitizeHtml(content: string): string
+```
+
+#### `sanitizePlainText(content)`
+Strips all HTML tags and attributes from a string.
+
+```typescript
+sanitizePlainText(content: string): string
+```
+
+### Validation (`src/utils/validation.ts`)
+
+#### `isValidUrl(url)`
+Checks if a string is a valid HTTP/HTTPS URL.
+
+```typescript
+isValidUrl(url: string): boolean
+```
+
+#### `isValidEmail(email)`
+Checks if a string matches a basic email format.
+
+```typescript
+isValidEmail(email: string): boolean
+```
 
 ---
 
