@@ -46,6 +46,14 @@ const FALLBACK_SERVICES: ServiceTier[] = [
     }
 ];
 
+const COMPARISON_DATA = [
+    { f: "Photo Resolution", s: "High Res (24MP)", p: "Ultra High Res (42MP+)" },
+    { f: "Retouched Images", s: "20 Images", p: "50+ Images" },
+    { f: "Online Gallery Duration", s: "6 Months", p: "Lifetime" },
+    { f: "Print Release", s: "Personal Use", p: "Full Commercial" },
+    { f: "Turnaround Time", s: "3 Weeks", p: "1 Week" },
+];
+
 const ServicesPage = () => {
     // Lazy initialize from session storage
     const [services, setServices] = useState<ServiceTier[]>(() =>
@@ -158,13 +166,7 @@ const ServicesPage = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#243047]">
-                                {[
-                                    { f: "Photo Resolution", s: "High Res (24MP)", p: "Ultra High Res (42MP+)" },
-                                    { f: "Retouched Images", s: "20 Images", p: "50+ Images" },
-                                    { f: "Online Gallery Duration", s: "6 Months", p: "Lifetime" },
-                                    { f: "Print Release", s: "Personal Use", p: "Full Commercial" },
-                                    { f: "Turnaround Time", s: "3 Weeks", p: "1 Week" },
-                                ].map((row, i) => (
+                                {COMPARISON_DATA.map((row, i) => (
                                     <tr key={i} className="hover:bg-white/5 transition-colors">
                                         <td className="px-8 py-5 font-medium text-white">{row.f}</td>
                                         <td className="px-8 py-5 text-center">{row.s}</td>
