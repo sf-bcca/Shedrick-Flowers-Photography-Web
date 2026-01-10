@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { supabase } from '../../services/supabaseClient';
 import { Trash2, Copy, Upload, Check, Loader2, X } from 'lucide-react';
+import { optimizeImage, isValidImageFile } from '../../services/imageOptimizer';
 
 const BUCKET_NAME = 'images';
 
@@ -66,13 +67,43 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         setUploading(true);
         try {
             for (const file of acceptedFiles) {
-                // Sanitize file name
-                const fileExt = file.name.split('.').pop();
+                // Security: Validate image type
+                if (!isValidImageFile(file)) {
+                    alert(`Skipped ${file.name}: Invalid file type.`);
+                    continue;
+                }
+
+                let fileToUpload = file;
+                let fileExt = file.name.split('.').pop();
+
+                // Security & Performance: Optimize image (sanitize)
+                // Skip optimization for GIFs to preserve animation
+                if (file.type !== 'image/gif') {
+                    try {
+                        fileToUpload = await optimizeImage(file, {
+                            maxWidth: 2000, // Reasonable max for media library
+                            maxHeight: 2000,
+                            quality: 0.9,
+                            format: 'webp' // Standardize to WebP
+                        });
+                        fileExt = 'webp';
+                    } catch (err) {
+                        console.error('Optimization failed for', file.name, err);
+                        // Fail securely: if optimization (sanitization) fails, don't upload.
+                        alert(`Failed to process ${file.name}`);
+                        continue;
+                    }
+                }
+
+                // Generate secure random filename
                 const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
                 const { error } = await supabase.storage
                     .from(BUCKET_NAME)
-                    .upload(fileName, file);
+                    .upload(fileName, fileToUpload, {
+                        cacheControl: '3600',
+                        contentType: fileToUpload.type // Explicitly set content type
+                    });
 
                 if (error) {
                     console.error('Error uploading:', error);
