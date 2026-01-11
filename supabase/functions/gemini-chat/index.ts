@@ -14,6 +14,37 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // 🛡️ Security: Input Validation
+    if (!Array.isArray(messages)) {
+      return new Response(JSON.stringify({ error: 'Invalid input: messages must be an array' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (messages.length > 20) {
+      return new Response(JSON.stringify({ error: 'Invalid input: too many messages (max 20)' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    for (const msg of messages) {
+      if (!msg || typeof msg !== 'object' || !msg.text || typeof msg.text !== 'string') {
+        return new Response(JSON.stringify({ error: 'Invalid input: message must be an object with a text string' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+      if (msg.text.length > 2000) {
+        return new Response(JSON.stringify({ error: 'Invalid input: message text too long (max 2000 chars)' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
