@@ -264,8 +264,8 @@ const PortfolioManager = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white dark:bg-[#1e283a] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
                         <div className="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
-                            <h3 className="text-xl font-bold dark:text-white">{editItem ? 'Edit Item' : 'New Portfolio Item'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white" aria-label="Close modal"><X size={24} /></button>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white">{editItem ? 'Edit Item' : 'New Portfolio Item'}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors" aria-label="Close modal"><X size={24} /></button>
                         </div>
                         <form onSubmit={handleSave} className="p-6 space-y-4">
                             <div>
@@ -360,12 +360,12 @@ const PortfolioManager = () => {
                                 )}
                             </div>
                             <div className="flex gap-6 pt-2">
-                                <label className="flex items-center gap-2 text-sm text-slate-300">
-                                    <input type="checkbox" name="marginTop" defaultChecked={editItem?.marginTop} className="rounded bg-slate-700 border-white/10 text-primary focus:ring-primary" />
+                                <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marginTop" defaultChecked={editItem?.marginTop} className="rounded bg-slate-200 dark:bg-slate-700 border-slate-300 dark:border-white/10 text-primary focus:ring-primary" />
                                     Offset Top
                                 </label>
-                                <label className="flex items-center gap-2 text-sm text-slate-300">
-                                    <input type="checkbox" name="marginTopInverse" defaultChecked={editItem?.marginTopInverse} className="rounded bg-slate-700 border-white/10 text-primary focus:ring-primary" />
+                                <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marginTopInverse" defaultChecked={editItem?.marginTopInverse} className="rounded bg-slate-200 dark:bg-slate-700 border-slate-300 dark:border-white/10 text-primary focus:ring-primary" />
                                     Offset Negative
                                 </label>
                             </div>
