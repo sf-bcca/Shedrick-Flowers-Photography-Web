@@ -62,9 +62,13 @@ export const fetchSettings = async (): Promise<Settings | null> => {
 };
 
 /**
- * Fetch all records from a specified table.
+ * Fetch all records from a specified core table.
+ *
+ * @note This helper is typed for core content tables ('portfolio', 'blog', 'services').
+ * For other tables like 'testimonials' or 'comments', use the `supabase` client directly.
  *
  * @param table - The name of the table to fetch from (e.g., 'portfolio', 'blog', 'services').
+ * @param select - Optional column selection string (default: '*').
  * @returns {Promise<any[]>} A promise that resolves to an array of records sorted by 'created_at' in descending order.
  *
  * @remarks
@@ -107,7 +111,9 @@ export const fetchPublishedBlogPosts = async (): Promise<BlogPost[]> => {
 };
 
 /**
- * Create a new record in the specified table.
+ * Create a new record in a core content table.
+ *
+ * @note This helper is typed for core content tables. Use `supabase.from('table').insert()` for others.
  *
  * @param table - The target database table (e.g., 'portfolio', 'blog').
  * @param item - The data object to insert.
@@ -126,7 +132,7 @@ export const createItem = async (table: 'portfolio' | 'blog' | 'services', item:
 };
 
 /**
- * Update an existing record by its ID.
+ * Update an existing record in a core content table.
  *
  * @param table - The target database table.
  * @param id - The UUID (or unique identifier) of the record to update.
@@ -138,7 +144,7 @@ export const updateItem = async (table: 'portfolio' | 'blog' | 'services', id: s
 };
 
 /**
- * Delete a record by its ID.
+ * Delete a record from a core content table.
  *
  * @param table - The target database table.
  * @param id - The UUID (or unique identifier) of the record to delete.

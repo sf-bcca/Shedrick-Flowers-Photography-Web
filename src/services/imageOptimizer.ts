@@ -1,20 +1,42 @@
 /**
  * Image Optimization Utility
- * Handles image resizing, compression, and format conversion
+ * Handles client-side image resizing, compression, and format conversion using the Canvas API.
+ * This is crucial for:
+ * 1. Performance: Reducing upload sizes and bandwidth usage.
+ * 2. Security: Re-rendering images to canvas sanitizes them by stripping potential malicious metadata/payloads.
  */
 
 export interface OptimizeOptions {
+    /** Max width in pixels. Aspect ratio is preserved. Default: 800 */
     maxWidth?: number;
+    /** Max height in pixels. Aspect ratio is preserved. Default: 400 */
     maxHeight?: number;
-    quality?: number; // 0-1
+    /** Compression quality from 0 to 1. Default: 0.85 */
+    quality?: number;
+    /** Output format. Default: 'webp' */
     format?: 'webp' | 'jpeg' | 'png';
 }
 
 /**
- * Optimize an image file by resizing and compressing
- * @param file - Original image file
- * @param options - Optimization options
- * @returns Promise with optimized file
+ * Optimizes an image file by resizing and compressing it via an HTML5 Canvas.
+ *
+ * @security This function effectively sanitizes images by decoding them and re-encoding them
+ * onto a clean canvas, removing any non-image data (EXIF, scripts, etc.).
+ *
+ * @example
+ * ```ts
+ * const file = event.target.files[0];
+ * const optimized = await optimizeImage(file, {
+ *   maxWidth: 1200,
+ *   quality: 0.8,
+ *   format: 'webp'
+ * });
+ * // Upload 'optimized' to Supabase
+ * ```
+ *
+ * @param file - The original File object from a file input.
+ * @param options - Configuration for optimization (dimensions, quality, format).
+ * @returns Promise that resolves to a new File object ready for upload.
  */
 export async function optimizeImage(
     file: File,
@@ -59,6 +81,7 @@ export async function optimizeImage(
                 canvas.height = height;
 
                 // Draw image on canvas
+                // This step strips metadata and potential payloads
                 ctx.drawImage(img, 0, 0, width, height);
 
                 // Convert to blob
@@ -108,9 +131,11 @@ export async function optimizeImage(
 }
 
 /**
- * Validate if file is a supported image type (JPEG, PNG, WebP, GIF)
- * @param file - The file object to validate
- * @returns {boolean} True if the file type is supported, false otherwise
+ * Validates if a file is a supported image type.
+ * Explicitly allows: JPEG, JPG, PNG, WEBP, GIF.
+ *
+ * @param file - The file object to validate.
+ * @returns {boolean} True if the file type is in the allowed list.
  */
 export function isValidImageFile(file: File): boolean {
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
@@ -118,9 +143,11 @@ export function isValidImageFile(file: File): boolean {
 }
 
 /**
- * Get natural dimensions (width/height) from an image file asynchronously
- * @param file - The image file to inspect
- * @returns {Promise<{ width: number; height: number }>} Object containing width and height in pixels
+ * Gets the natural dimensions (width/height) of an image file asynchronously.
+ * Useful for validating image size before processing.
+ *
+ * @param file - The image file to inspect.
+ * @returns {Promise<{ width: number; height: number }>} Object containing width and height in pixels.
  */
 export async function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
     return new Promise((resolve, reject) => {
@@ -148,9 +175,10 @@ export async function getImageDimensions(file: File): Promise<{ width: number; h
 }
 
 /**
- * Format file size for display
- * @param bytes - File size in bytes
- * @returns Formatted string
+ * Formats a byte count into a human-readable string (e.g., "1.5 MB").
+ *
+ * @param bytes - File size in bytes.
+ * @returns Formatted string with appropriate unit.
  */
 export function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
