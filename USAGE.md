@@ -85,7 +85,11 @@ A floating chat interface powered by Google Gemini AI, currently available on th
 - **Purpose**: Helps visitors visualize their session, get pricing info, and learn about services.
 - **Dynamic Knowledge**: The assistant reads directly from your **Services** and **Settings** tables. Updates to your pricing or contact info in the dashboard are immediately reflected in the AI's answers.
 - **Usage**: Click the chat bubble icon in the bottom-right corner.
-- **Requirements**: Requires the `gemini-chat` Edge Function to be deployed and `GEMINI_API_KEY` set (see INSTALL.md).
+- **Requirements**:
+  1.  **Deployment**: The `gemini-chat` Edge Function must be deployed to Supabase.
+  2.  **API Key**: A Google Gemini API key must be set as a Supabase Secret (`GEMINI_API_KEY`).
+
+  👉 **See [INSTALL.md](./INSTALL.md#4-deploy-edge-functions-ai-features) for detailed setup instructions.**
 
 ## Configuration Options
 

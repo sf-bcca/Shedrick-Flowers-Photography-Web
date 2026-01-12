@@ -9,6 +9,19 @@ interface LayoutProps {
   transparentHeader?: boolean;
 }
 
+/**
+ * Global Header Component
+ *
+ * Renders the main site navigation and branding.
+ *
+ * Features:
+ * - Fetches and displays the site logo and title from Supabase settings.
+ * - Handles the mobile menu toggle state.
+ * - Supports a transparent mode for overlaying on hero images.
+ * - Includes a "Book a Session" CTA.
+ *
+ * @param transparent - If true, renders with a transparent background (for hero sections).
+ */
 export const Header: React.FC<{ transparent?: boolean }> = ({
   transparent = false,
 }) => {
@@ -22,6 +35,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch global settings on mount to ensure branding is up-to-date
     const loadSettings = async () => {
       const data = await fetchSettings();
 
@@ -35,7 +49,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
           localStorage.setItem("site_title", data.site_title);
         }
         if (data.favicon_url) {
-          // Update favicon in DOM
+          // Update favicon in DOM dynamically
           const faviconLink = document.getElementById(
             "favicon",
           ) as HTMLLinkElement;
@@ -102,6 +116,7 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
   );
 };
 
+// Custom 'X' icon for Twitter/X branding
 const XIcon = ({
   size = 24,
   className = "",
@@ -121,6 +136,12 @@ const XIcon = ({
   </svg>
 );
 
+/**
+ * Global Footer Component
+ *
+ * Renders the site footer with branding, social links, and navigation.
+ * Fetches dynamic social links and branding from Supabase settings.
+ */
 export const Footer: React.FC = () => {
   const [logoUrl, setLogoUrl] = useState(
     () => localStorage.getItem("site_logo_url") || "",
@@ -247,6 +268,16 @@ export const Footer: React.FC = () => {
   );
 };
 
+/**
+ * Public Page Layout Wrapper
+ *
+ * Provides the standard structure for all public-facing pages.
+ * Includes Header, Main Content Area, and Footer.
+ * Handles the "Skip to content" accessibility feature.
+ *
+ * @param children - The page content.
+ * @param transparentHeader - Whether the header should be transparent (passed to Header).
+ */
 export const PageLayout: React.FC<LayoutProps> = ({
   children,
   transparentHeader = false,
