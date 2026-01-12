@@ -16,6 +16,20 @@ import {
     Star
 } from 'lucide-react';
 
+/**
+ * Admin Dashboard Layout
+ *
+ * Provides the structural shell for all protected admin pages.
+ * Features a responsive sidebar navigation that adapts to mobile devices.
+ *
+ * Responsiveness:
+ * - Desktop (>= 768px): Sidebar is persistent and collapsible (width 64px <-> 256px).
+ * - Mobile (< 768px): Sidebar is hidden and accessed via a full-screen overlay menu.
+ *
+ * Branding:
+ * - Dynamically fetches site logo and title from Supabase 'settings' table.
+ * - Caches branding in localStorage to prevent flickering.
+ */
 export const AdminLayout = () => {
     const { signOut, user } = useAuth();
     const navigate = useNavigate();
