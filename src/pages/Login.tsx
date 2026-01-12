@@ -25,7 +25,16 @@ const LoginPage = () => {
             
             navigate('/admin');
         } catch (err: any) {
-            setError(err.message || 'Failed to login');
+            // Security: Log the actual error for debugging but show a generic message to the user
+            console.error("Login failed:", err);
+
+            // Check for network errors vs auth errors
+            if (err.message === 'Network request failed' || err.message?.includes('network')) {
+                setError('Network error. Please check your connection.');
+            } else {
+                // Generic error to prevent user enumeration
+                setError('Authentication failed. Please check your credentials.');
+            }
         } finally {
             setLoading(false);
         }
@@ -41,7 +50,8 @@ const LoginPage = () => {
             });
             if (error) throw error;
         } catch (err: any) {
-            setError(err.message || 'Failed to initiate Google Login');
+            console.error("Google Login failed:", err);
+            setError('Failed to initiate login. Please try again.');
         }
     };
 
@@ -55,7 +65,7 @@ const LoginPage = () => {
                     </div>
 
                     {error && (
-                        <div className="mb-4 p-3 bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm">
+                        <div className="mb-4 p-3 bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm" role="alert">
                             {error}
                         </div>
                     )}
