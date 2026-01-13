@@ -51,7 +51,10 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 - **Blog Manager**: Write and edit posts using the rich text editor.
   - **Status Workflow**: Posts can be saved as **Draft** (visible only to admins) or **Published** (visible to the public).
   - **Preview**: To preview a post, you must **Save** it first, then click the "Preview" eye icon to see it on the live site.
-- **Services Manager**: Update pricing tiers and features.
+- **Services Manager**: Manage service packages and pricing tiers.
+  - **Drag-and-Drop Upload**: Easily upload service images by dragging files onto the card or upload area.
+  - **Auto-Optimization**: Images are automatically resized and converted to WebP format for optimal performance.
+  - **Fields**: Manage Title, Price, Description, and Image.
 - **Testimonials Manager**: Full control over client reviews displayed on the About page.
   - **Add/Edit**: Inputs for Client Name, Subtitle (Role/Service), Quote, Rating (1-5), and Display Order.
   - **Images**: Upload client photos directly; these are stored in the `testimonials/` folder in your storage bucket.
