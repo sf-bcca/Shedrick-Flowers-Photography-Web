@@ -14,6 +14,43 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // Input Validation
+    if (!Array.isArray(messages)) {
+      return new Response(JSON.stringify({ error: 'Invalid input: messages must be an array' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (messages.length > 10) {
+      return new Response(JSON.stringify({ error: 'Invalid input: too many messages (max 10)' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    for (const msg of messages) {
+      if (!msg.role || !msg.text) {
+        return new Response(JSON.stringify({ error: 'Invalid input: message missing role or text' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+      if (msg.role !== 'user' && msg.role !== 'model') {
+        return new Response(JSON.stringify({ error: 'Invalid input: invalid role' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+      if (typeof msg.text !== 'string' || msg.text.length > 1000) {
+        return new Response(JSON.stringify({ error: 'Invalid input: text too long (max 1000 chars) or invalid type' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
