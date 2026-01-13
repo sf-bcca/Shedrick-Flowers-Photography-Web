@@ -56,7 +56,7 @@ For detailed instructions, please refer to the following guides:
 ## Technologies
 
 - **Frontend**: React 19, React Router v7, Vite
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS (CDN)
 - **Backend/Database**: Supabase (PostgreSQL, Auth, Storage)
 - **AI**: Google Gemini (via Supabase Edge Functions)
 - **Icons**: Lucide React, Material Symbols

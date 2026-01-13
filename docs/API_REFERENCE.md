@@ -52,12 +52,16 @@ if (settings) {
 Fetches all records from a specified table.
 
 ```typescript
-fetchData(table: 'portfolio' | 'blog' | 'services'): Promise<any[]>
+fetchData(
+  table: 'portfolio' | 'blog' | 'services',
+  select: string = '*'
+): Promise<any[]>
 ```
 
-| Parameter | Type                                      | Description       |
-| --------- | ----------------------------------------- | ----------------- |
-| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table name |
+| Parameter | Type                                      | Description                                  |
+| --------- | ----------------------------------------- | -------------------------------------------- |
+| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table name                            |
+| `select`  | `string`                                  | (Optional) Columns to select (default: `'*'`)|
 
 | Property     | Description                                        |
 | ------------ | -------------------------------------------------- |
