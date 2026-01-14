@@ -70,7 +70,10 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
             ) : (
               <>
                 <div className="size-8 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                  <span className="material-symbols-outlined text-3xl">
+                  <span
+                    className="material-symbols-outlined text-3xl"
+                    aria-hidden="true"
+                  >
                     camera
                   </span>
                 </div>
@@ -82,19 +85,21 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
           </Link>
           <div className="hidden md:flex flex-1 justify-end gap-8 items-center text-slate-300">
             <NavLinks />
-            <button
-              onClick={() => navigate("/contact")}
+            <Link
+              to="/contact"
               className="flex cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 transition-colors text-white text-sm font-bold tracking-wide shadow-lg shadow-primary/20"
             >
               Book a Session
-            </button>
+            </Link>
           </div>
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="md:hidden text-white p-2"
             aria-label="Open main menu"
           >
-            <span className="material-symbols-outlined">menu</span>
+            <span className="material-symbols-outlined" aria-hidden="true">
+              menu
+            </span>
           </button>
         </div>
       </header>
