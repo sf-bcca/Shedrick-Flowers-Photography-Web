@@ -14,6 +14,29 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // Input Validation
+    if (!messages || !Array.isArray(messages)) {
+      throw new Error('Messages must be an array')
+    }
+    if (messages.length > 10) {
+      throw new Error('Too many messages (max 10)')
+    }
+    for (const msg of messages) {
+      if (typeof msg !== 'object' || !msg) {
+        throw new Error('Invalid message format')
+      }
+      if (msg.role !== 'user' && msg.role !== 'model') {
+        throw new Error('Invalid role')
+      }
+      if (typeof msg.text !== 'string') {
+        throw new Error('Message text must be a string')
+      }
+      if (msg.text.length > 1000) {
+        throw new Error('Message too long (max 1000 chars)')
+      }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
