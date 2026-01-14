@@ -20,9 +20,9 @@ Open a GitHub Issue with the label `enhancement`. Describe the feature, why it i
 ## Local Development Setup
 
 1.  Follow the detailed instructions in [INSTALL.md](INSTALL.md) to set up your local environment, including database and environment variables.
-2.  **Install Dependencies**: Due to React 19 dependencies, you must use the legacy peer deps flag:
+2.  **Install Dependencies**: This project uses **pnpm** as the package manager.
     ```bash
-    npm install --legacy-peer-deps
+    pnpm install
     ```
 3.  Ensure you have the correct `.env` variables set up (see `INSTALL.md`).
 
@@ -48,7 +48,7 @@ We follow a standard Git workflow:
     git checkout -b fix/bug-description
     ```
 4.  **Make Changes**: Write your code.
-5.  **Test**: Ensure the application runs without errors (`npm run dev`) and builds successfully (`npm run build`).
+5.  **Test**: Ensure the application runs without errors (`pnpm dev`) and builds successfully (`pnpm build`).
 6.  **Commit**: Use descriptive commit messages.
     ```bash
     git commit -m "Add new photo filter component"
@@ -63,6 +63,7 @@ We follow a standard Git workflow:
 
 - **Style**: We use standard React/TypeScript best practices.
 - **Formatting**: Keep code clean and readable.
+- **Package Manager**: You must use **pnpm**. Do not use `npm` or `yarn`.
 - **Linting**: We currently do not enforce a strict linting pipeline. Please rely on your IDE's formatting and linting suggestions.
 - **Types**: Avoid using `any` whenever possible; define interfaces in `src/types.ts`.
 - **Components**: Create reusable components in `src/components/`.
@@ -74,13 +75,13 @@ This project currently relies on **manual testing** rather than automated unit t
 1.  **Development server runs without errors:**
 
     ```bash
-    npm run dev
+    pnpm dev
     ```
 
 2.  **Production build succeeds:**
 
     ```bash
-    npm run build
+    pnpm build
     ```
 
 3.  **Affected features work correctly:**
