@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { CheckCircle, XCircle, Trash2, Search, MessageSquare } from 'lucide-react';
 
+/**
+ * CommentsManager Page
+ *
+ * Admin interface for moderating blog comments.
+ * Allows administrators to view, approve, reject, and delete user-submitted comments.
+ *
+ * Features:
+ * - Filtering by status (All, Pending, Approved)
+ * - Text search (Author name, Content)
+ * - Approval workflow (Pending -> Approved/Rejected)
+ * - Permanent deletion
+ */
 const CommentsManager = () => {
     const [comments, setComments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -12,6 +24,9 @@ const CommentsManager = () => {
         fetchComments();
     }, []);
 
+    /**
+     * Fetches all comments from Supabase, ordered by most recent.
+     */
     const fetchComments = async () => {
         setLoading(true);
         const { data, error } = await supabase
@@ -23,6 +38,11 @@ const CommentsManager = () => {
         setLoading(false);
     };
 
+    /**
+     * Updates the status of a comment.
+     * @param id - The UUID of the comment.
+     * @param newStatus - The new status ('approved' | 'rejected' | 'pending').
+     */
     const handleStatusChange = async (id: string, newStatus: 'approved' | 'rejected' | 'pending') => {
         const { error } = await supabase
             .from('comments')
@@ -34,6 +54,10 @@ const CommentsManager = () => {
         }
     };
 
+    /**
+     * Permanently deletes a comment from the database.
+     * @param id - The UUID of the comment to delete.
+     */
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this comment?')) return;
 
