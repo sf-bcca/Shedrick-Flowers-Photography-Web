@@ -1,3 +1,15 @@
+/**
+ * Studio Assistant Edge Function
+ *
+ * This server-side function powers the AI chatbot on the Contact page.
+ * It acts as a secure proxy between the client and Google's Gemini API,
+ * injecting dynamic context (services, settings) and enforcing system instructions.
+ *
+ * @module gemini-chat
+ * @requires Deno
+ * @requires @supabase/supabase-js
+ */
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -6,6 +18,24 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+/**
+ * Main Request Handler
+ *
+ * @param {Request} req - The incoming HTTP request.
+ * @returns {Promise<Response>} JSON response containing the AI's reply or error message.
+ *
+ * @environment GEMINI_API_KEY - Google AI Studio API Key.
+ * @environment SUPABASE_URL - URL of the Supabase project.
+ * @environment SUPABASE_ANON_KEY - Public anonymous key for Supabase.
+ *
+ * @example
+ * Request Body:
+ * {
+ *   "messages": [
+ *     { "role": "user", "text": "How much for a wedding?" }
+ *   ]
+ * }
+ */
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
