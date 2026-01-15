@@ -15,3 +15,7 @@
 ## 2024-05-24 - [Lazy State Initialization]
 **Learning:** `useState(localStorage.getItem('key'))` executes `getItem` on every render, causing synchronous blocking even if the result is ignored after mount.
 **Action:** Use `useState(() => localStorage.getItem('key'))` to ensure the initializer only runs during the first render.
+
+## 2024-06-25 - [Supabase Image Transformation]
+**Learning:** The Media Library was loading full-resolution images (sometimes 5MB+) for 200px thumbnails, causing severe bandwidth usage. Supabase Storage supports on-the-fly image transformations via URL parameters (`?width=300&resize=cover`).
+**Action:** Always use transformed URLs for thumbnail grids or previews when using Supabase Storage. Do not rely on CSS resizing alone for grid views.

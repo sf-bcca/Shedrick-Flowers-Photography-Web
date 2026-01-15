@@ -98,6 +98,16 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
     };
 
     /**
+     * Generates a transformed URL for the thumbnail grid.
+     * Uses Supabase Image Transformations to request a smaller, compressed version.
+     */
+    const getThumbnailUrl = (path: string) => {
+        const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
+        // Request a 300x300 crop with 60% quality for the thumbnail grid
+        return `${data.publicUrl}?width=300&height=300&resize=cover&quality=60`;
+    };
+
+    /**
      * Copies the image URL to clipboard.
      */
     const handleCopyUrl = (e: React.MouseEvent, path: string) => {
@@ -196,6 +206,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                              if (file.name === '.emptyFolderPlaceholder') return null;
 
                              const url = getPublicUrl(file.name);
+                             const thumbnailUrl = getThumbnailUrl(file.name);
                              return (
                                 <div
                                     key={file.id}
@@ -214,8 +225,8 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                                     ) : null}
 
                                     <img
-                                        src={url}
-                                        alt=""
+                                        src={thumbnailUrl}
+                                        alt={file.name}
                                         className="w-full h-full object-cover"
                                         loading="lazy"
                                     />
