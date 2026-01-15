@@ -211,7 +211,7 @@ const ServiceManager = () => {
                             <div key={item.id} className="group bg-slate-50 dark:bg-[#111722] rounded-xl overflow-hidden border border-slate-200 dark:border-white/5 relative">
                                 <div className="aspect-video bg-slate-200 relative">
                                     <img src={item.image} alt="" className="w-full h-full object-cover" />
-                                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                                         <button onClick={() => openModal(item)} className="p-2 bg-white text-slate-900 rounded-full hover:text-primary shadow-sm" aria-label={`Edit ${item.title}`}><Edit size={16} /></button>
                                         <button onClick={() => handleDelete(item.id)} className="p-2 bg-white text-slate-900 rounded-full hover:text-red-500 shadow-sm" aria-label={`Delete ${item.title}`}><Trash2 size={16} /></button>
                                     </div>
