@@ -14,6 +14,37 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // Input Validation
+    if (!Array.isArray(messages)) {
+      return new Response(JSON.stringify({ error: 'Invalid input: messages must be an array' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      })
+    }
+
+    if (messages.length > 10) {
+      return new Response(JSON.stringify({ error: 'Invalid input: too many messages (max 10)' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      })
+    }
+
+    for (const msg of messages) {
+      if (!msg.role || (msg.role !== 'user' && msg.role !== 'model')) {
+        return new Response(JSON.stringify({ error: 'Invalid input: message role must be "user" or "model"' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        })
+      }
+      if (!msg.text || typeof msg.text !== 'string' || msg.text.length > 1000) {
+        return new Response(JSON.stringify({ error: 'Invalid input: message text must be a string under 1000 chars' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        })
+      }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')

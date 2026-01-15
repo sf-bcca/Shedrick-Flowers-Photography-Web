@@ -21,3 +21,8 @@ This journal tracks CRITICAL security learnings, vulnerability patterns, and arc
 **Vulnerability:** Blog content rendered via `dangerouslySetInnerHTML` allowed `target="_blank"` links without `rel="noopener noreferrer"`.
 **Learning:** `DOMPurify` sanitizes XSS but does not enforce `rel` attributes by default. Links opening in new tabs can expose the parent window object to malicious pages.
 **Prevention:** Implemented a centralized `sanitizeHtml` utility with a `DOMPurify` hook to strictly enforce `rel="noopener noreferrer"` on all external links, and configured Tiptap to add it by default.
+
+## 2024-05-25 - [Edge Function Input Validation]
+**Vulnerability:** The `gemini-chat` Edge Function processed the `messages` payload without validation, allowing non-array inputs or excessive content to potentially crash the function or cause Denial of Service.
+**Learning:** Assuming client-side validation is sufficient or that payloads will always match the happy path is risky; Edge Functions are public API endpoints and must validate all inputs defensibly.
+**Prevention:** Implemented strict input validation for `messages` (array check, max length 10) and message content (role, max text length 1000) at the start of the function.
