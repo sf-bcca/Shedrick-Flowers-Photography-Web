@@ -42,3 +42,8 @@
 
 **Learning:** Using `div`s with `onClick` handlers for interactive elements (like "scroll down" arrows) creates barriers for keyboard and screen reader users. These elements are not focusable and lack semantic meaning.
 **Action:** Always replace interactive `div`s with semantic `<button>` elements. Use `bg-transparent border-none` to reset styles if needed, and ensure `aria-label` is provided for icon-only buttons.
+
+## 2025-12-22 - Visible Focus for Hover Actions
+
+**Learning:** Interactive elements hidden by opacity (e.g., "reveal on hover" actions) create an "invisible focus" trap for keyboard users, who can tab to the buttons but cannot see them.
+**Action:** Always add `focus-within:opacity-100` to the container of any interactive elements that use `opacity-0 group-hover:opacity-100`, ensuring they become visible when they receive keyboard focus.
