@@ -104,6 +104,19 @@ The application relies on specific database tables in Supabase.
       - `services/` - Service tier images
     - _Note: You do not need to create these folders manually; the application will create them upon first upload._
 
+### Troubleshooting Database Schema
+
+**⚠️ Important Note for Existing Databases:**
+The provided `supabase_schema.sql` script uses `CREATE TABLE IF NOT EXISTS`. This means if you already have tables (e.g., from an older version of the project), running the script **will not update them** with new columns (like `marginTop` in `portfolio`).
+
+If you encounter "missing column" errors:
+1.  **Option A (Fresh Start):** If you don't need the data, drop the existing tables (`DROP TABLE portfolio CASCADE;`, etc.) and re-run the script.
+2.  **Option B (Manual Update):** Manually add the missing columns using SQL:
+    ```sql
+    ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS "marginTop" BOOLEAN DEFAULT FALSE;
+    ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS "marginTopInverse" BOOLEAN DEFAULT FALSE;
+    ```
+
 ## 6. Verify Installation
 
 Before running the application, verify that your local environment is correctly connected to Supabase. This script performs the following checks:
