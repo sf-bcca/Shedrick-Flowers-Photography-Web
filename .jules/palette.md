@@ -42,3 +42,8 @@
 
 **Learning:** Using `div`s with `onClick` handlers for interactive elements (like "scroll down" arrows) creates barriers for keyboard and screen reader users. These elements are not focusable and lack semantic meaning.
 **Action:** Always replace interactive `div`s with semantic `<button>` elements. Use `bg-transparent border-none` to reset styles if needed, and ensure `aria-label` is provided for icon-only buttons.
+
+## 2025-12-23 - HashRouter Verification Trap
+
+**Learning:** This application uses `HashRouter`, meaning client-side routes are prefixed with `/#/`. Standard Playwright/Selenium navigation to `/path` will load the Home page instead of the target route (e.g., `/login` vs `/#/login`), causing automated verification to fail silently or confusingly.
+**Action:** When writing verification scripts or referencing URLs in this project, always verify the routing strategy and use `/#/` prefixes for all client-side routes.

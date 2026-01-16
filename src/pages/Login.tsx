@@ -55,15 +55,16 @@ const LoginPage = () => {
                     </div>
 
                     {error && (
-                        <div className="mb-4 p-3 bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm">
+                        <div className="mb-4 p-3 bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm" role="alert">
                             {error}
                         </div>
                     )}
 
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                            <label htmlFor="email" className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
                             <input 
+                                id="email"
                                 type="email" 
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
@@ -73,8 +74,9 @@ const LoginPage = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Password</label>
+                            <label htmlFor="password" className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Password</label>
                             <input 
+                                id="password"
                                 type="password" 
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
