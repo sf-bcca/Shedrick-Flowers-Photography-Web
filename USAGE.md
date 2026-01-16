@@ -7,7 +7,7 @@ This document covers how to run, build, and interact with the Shedrick Flowers P
 To start the development server with hot-reload:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The application will typically start at `http://localhost:3000` (check your terminal for the exact port).
@@ -17,7 +17,7 @@ The application will typically start at `http://localhost:3000` (check your term
 To create an optimized production build:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 The output will be generated in the `dist/` directory. These files are static and can be deployed to any web server (Nginx, Apache, Vercel, Netlify, GitHub Pages).
@@ -27,7 +27,7 @@ The output will be generated in the `dist/` directory. These files are static an
 To test the built version before deploying:
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
 ## Core Functionality
@@ -256,10 +256,8 @@ Or check logs in Supabase Dashboard → Edge Functions → gemini-chat → Logs.
 
 ```bash
 rm -rf node_modules
-npm install --legacy-peer-deps
+pnpm install
 ```
-
-The `--legacy-peer-deps` flag is required due to React 19 dependencies.
 
 #### Environment Variables Not Working in Production
 
