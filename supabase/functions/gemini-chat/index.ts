@@ -14,6 +14,26 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // 🛡️ Sentinel: Input Validation
+    if (!Array.isArray(messages)) {
+      throw new Error('Invalid input: messages must be an array')
+    }
+    if (messages.length > 10) {
+      throw new Error('Invalid input: Too many messages (max 10)')
+    }
+    for (const msg of messages) {
+      if (!msg || typeof msg !== 'object') {
+        throw new Error('Invalid input: Message must be an object')
+      }
+      if (typeof msg.text !== 'string') {
+        throw new Error('Invalid input: Message text must be a string')
+      }
+      if (msg.text.length > 1000) {
+        throw new Error('Invalid input: Message text too long (max 1000 chars)')
+      }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
