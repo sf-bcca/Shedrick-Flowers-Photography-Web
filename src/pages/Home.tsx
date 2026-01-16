@@ -12,19 +12,21 @@ const HomePage = () => {
     const navigate = useNavigate();
 
     // Lazy initialize state from storage to prevent unnecessary re-renders and layout shifts
+    // Use a unique key for Home page to avoid conflict with full portfolio pages
     const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(() =>
-        getSessionStorage<PortfolioItem[]>('portfolioItems') || []
+        getSessionStorage<PortfolioItem[]>('homePortfolioItems') || []
     );
-    const [loading, setLoading] = useState(() => !getSessionStorage('portfolioItems'));
+    const [loading, setLoading] = useState(() => !getSessionStorage('homePortfolioItems'));
     const [heroImageUrl, setHeroImageUrl] = useState(() => getLocalStorageString('hero_image_url'));
     const [avatarUrl, setAvatarUrl] = useState(() => getLocalStorageString('avatar_url'));
 
     const fetchPortfolio = () => {
         // Optimize: Select only necessary fields for the grid to reduce payload
-        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse').then((data: any) => {
+        // Limit to 6 items for the "Selected Works" section to improve initial load speed
+        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse', 6).then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
-            sessionStorage.setItem('portfolioItems', JSON.stringify(data));
+            sessionStorage.setItem('homePortfolioItems', JSON.stringify(data));
         });
     };
 
