@@ -42,6 +42,19 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
             const separator = src.includes('?') ? '&' : '?';
             return `${src}${separator}width=20&quality=10&resize=contain`;
         }
+        // Google Photos / User Content Optimization (lh3.googleusercontent.com, etc)
+        // These URLs support dynamic resizing via parameters (e.g. =w20)
+        if (src.includes('googleusercontent.com') && !src.includes('?')) {
+            // Handle existing parameters (e.g. =s1000) by splitting and replacing/appending
+            if (src.includes('=')) {
+                // If it already has sizing params, we try to replace them or be conservative.
+                // Simple strategy: Split at '=' and take the base URL, then append our low-res param.
+                // This assumes the part after '=' is just sizing/cropping instructions.
+                const baseUrl = src.split('=')[0];
+                return `${baseUrl}=w20`;
+            }
+            return `${src}=w20`;
+        }
         return null;
     }, [src]);
 
