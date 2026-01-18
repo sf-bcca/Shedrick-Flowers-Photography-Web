@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { supabase } from '../../services/supabaseClient';
 import { Trash2, Copy, Upload, Check, Loader2, X } from 'lucide-react';
+import { getOptimizedImageUrl } from '../../utils/imageTransform';
 
 const BUCKET_NAME = 'images';
 
@@ -195,7 +196,10 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                         {files.map((file) => {
                              if (file.name === '.emptyFolderPlaceholder') return null;
 
-                             const url = getPublicUrl(file.name);
+                             const originalUrl = getPublicUrl(file.name);
+                             // Optimize thumbnail for grid display (300x300) to reduce bandwidth
+                             const displayUrl = getOptimizedImageUrl(originalUrl, 300, 300, 'cover');
+
                              return (
                                 <div
                                     key={file.id}
@@ -214,7 +218,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                                     ) : null}
 
                                     <img
-                                        src={url}
+                                        src={displayUrl}
                                         alt=""
                                         className="w-full h-full object-cover"
                                         loading="lazy"
