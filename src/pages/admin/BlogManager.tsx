@@ -8,6 +8,7 @@ import FeaturedImageCard from '../../components/admin/Editor/Sidebar/FeaturedIma
 import TagsCard from '../../components/admin/Editor/Sidebar/TagsCard';
 import { BlogPost } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { getOptimizedImageUrl } from '../../utils/imageTransform';
 
 /**
  * BlogManager Component
@@ -399,7 +400,12 @@ const BlogManager = () => {
                             <div key={item.id} className="p-4 flex flex-col md:flex-row gap-4 items-center hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                                 <div className="w-full md:w-24 h-16 bg-slate-200 dark:bg-[#111722] rounded-lg overflow-hidden flex-shrink-0">
                                     {item.image ? (
-                                        <img src={item.image} alt="" className="w-full h-full object-cover" />
+                                        <img
+                                            src={getOptimizedImageUrl(item.image, 200, 200, 'cover')}
+                                            alt=""
+                                            className="w-full h-full object-cover"
+                                            loading="lazy"
+                                        />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs">No Img</div>
                                     )}

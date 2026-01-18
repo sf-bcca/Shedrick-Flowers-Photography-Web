@@ -3,6 +3,7 @@ import { supabase } from '../../services/supabaseClient';
 import { Plus, Edit, Trash2, Search, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
+import { getOptimizedImageUrl } from '../../utils/imageTransform';
 
 /**
  * PortfolioManager Component
@@ -228,7 +229,12 @@ const PortfolioManager = () => {
                                     <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                                         <td className="px-6 py-3">
                                             <div className="w-16 h-12 rounded bg-slate-200 overflow-hidden">
-                                                <img src={item.image} alt="" className="w-full h-full object-cover" />
+                                                <img
+                                                    src={getOptimizedImageUrl(item.image, 100, 100, 'cover')}
+                                                    alt=""
+                                                    className="w-full h-full object-cover"
+                                                    loading="lazy"
+                                                />
                                             </div>
                                         </td>
                                         <td className="px-6 py-3 font-bold text-slate-900 dark:text-white">{item.title}</td>
