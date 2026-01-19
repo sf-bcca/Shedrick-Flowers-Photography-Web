@@ -7,6 +7,9 @@ import { createClient } from '@supabase/supabase-js';
  * to connect to the Supabase instance. It checks for the presence of environment
  * variables and attempts a test query against the 'settings' table.
  *
+ * Prerequisite:
+ * Ensure dependencies are installed via `pnpm install`.
+ *
  * Usage:
  * node --env-file=.env verify-supabase.js
  */
