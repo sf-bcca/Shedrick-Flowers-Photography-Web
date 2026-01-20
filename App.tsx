@@ -7,6 +7,9 @@ import ProtectedRoute from './src/components/ProtectedRoute';
 // Lazy load Admin Layout (Named Export)
 const AdminLayout = lazy(() => import('./src/components/layouts/AdminLayout').then(module => ({ default: module.AdminLayout })));
 
+// Lazy load Public Layout
+const PublicLayout = lazy(() => import('./src/components/Layout').then(module => ({ default: module.PublicLayout })));
+
 // Lazy load Public Pages
 const HomePage = lazy(() => import('./src/pages/Home'));
 const BlogPage = lazy(() => import('./src/pages/Blog'));
@@ -33,13 +36,15 @@ const App = () => {
             <Suspense fallback={<LoadingSpinner />}>
                 <Routes>
                     {/* Public Routes */}
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/blog" element={<BlogPage />} />
-                    <Route path="/blog/:id" element={<BlogPostDetail />} />
-                    <Route path="/services" element={<ServicesPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/login" element={<LoginPage />} />
+                    <Route element={<PublicLayout />}>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/blog" element={<BlogPage />} />
+                        <Route path="/blog/:id" element={<BlogPostDetail />} />
+                        <Route path="/services" element={<ServicesPage />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                    </Route>
 
                     {/* Admin Routes (Nested) */}
                     <Route path="/admin" element={

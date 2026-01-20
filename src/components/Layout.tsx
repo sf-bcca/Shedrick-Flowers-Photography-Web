@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Outlet, useLocation } from "react-router-dom";
 import { NavLinks, MobileMenu } from "./Navigation";
 import { fetchSettings } from "../services/supabaseClient";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
@@ -266,6 +266,31 @@ export const PageLayout: React.FC<LayoutProps> = ({
         tabIndex={-1}
       >
         {children}
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export const PublicLayout: React.FC = () => {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
+  return (
+    <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden min-h-screen flex flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-white focus:text-primary focus:font-bold focus:rounded-xl focus:shadow-2xl focus:ring-4 focus:ring-primary/20 transition-all"
+      >
+        Skip to content
+      </a>
+      <Header transparent={isHome} />
+      <main
+        id="main-content"
+        className="flex-1 flex flex-col w-full min-h-screen pt-16 focus:outline-none"
+        tabIndex={-1}
+      >
+        <Outlet />
       </main>
       <Footer />
     </div>

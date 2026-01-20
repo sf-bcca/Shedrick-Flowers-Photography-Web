@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { PageLayout } from '../components/Layout';
 import { BlogCard } from '../components/BlogCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchPostById, fetchRelatedPosts } from '../services/supabaseClient';
@@ -35,25 +34,21 @@ const BlogPostDetail = () => {
 
     if (loading) {
         return (
-            <PageLayout>
-                <LoadingSpinner fullScreen className="min-h-screen" label="Loading post details..." />
-            </PageLayout>
+            <LoadingSpinner fullScreen className="min-h-screen" label="Loading post details..." />
         );
     }
 
     if (!post) {
         return (
-            <PageLayout>
-                <div className="min-h-screen flex flex-col justify-center items-center gap-4">
-                    <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Post not found</h1>
-                    <Link to="/blog" className="text-primary hover:underline">Return to Blog</Link>
-                </div>
-            </PageLayout>
+            <div className="min-h-screen flex flex-col justify-center items-center gap-4">
+                <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Post not found</h1>
+                <Link to="/blog" className="text-primary hover:underline">Return to Blog</Link>
+            </div>
         );
     }
 
     return (
-        <PageLayout>
+        <>
             {/* Article Header */}
             <article className="max-w-4xl mx-auto px-4 py-12 md:py-20">
                 <div className="mb-8 text-center">
@@ -110,7 +105,7 @@ const BlogPostDetail = () => {
                     </div>
                 </section>
             )}
-        </PageLayout>
+        </>
     );
 };
 

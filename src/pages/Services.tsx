@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchData } from '../services/supabaseClient';
@@ -71,7 +70,7 @@ const ServicesPage = () => {
     }, []);
 
     return (
-        <PageLayout>
+        <>
              {/* Header Hero */}
              <section className="relative px-4 md:px-10 lg:px-40 py-10">
                 <div className="relative w-full rounded-2xl overflow-hidden min-h-[500px] flex items-center justify-center text-center p-8 group">
@@ -206,7 +205,7 @@ const ServicesPage = () => {
                     </div>
                 </div>
             </section>
-        </PageLayout>
+        </>
     );
 };
 

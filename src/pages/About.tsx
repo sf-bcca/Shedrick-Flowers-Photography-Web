@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { PageLayout } from '../components/Layout';
 import { Link } from 'react-router-dom';
 import { supabase, fetchSettings } from '../services/supabaseClient';
 
@@ -48,9 +47,8 @@ const AboutPage = () => {
     const photoUrl = aboutPhotoUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuAmHoj0vChTuwRwtj4WMJB_K9TL4vBvRxb_58w3tE5hI_0c3EwhXM9rL2oijC2VuLBvc_jwud3uawTIwKumgLE2K5Q4dE_Od4MedX3mtrYD3GSqkQvPH8yIXSM3FL_b4p2JWH8MyXuYXMZzweYwVq9gCKCYw7w604pT9jzzQRO3fkWympgDWXcKtFKKShQam2j3w3IU7Rx76HyQGOGoj7IqOVdmtn09BJDlOUF-ZtB5BCvw3xtLyABS8s6G_2gxQd2bq-C1T5E9zmod";
 
     return (
-        <PageLayout>
-             <div className="w-full max-w-7xl mx-auto px-4 md:px-10 lg:px-20 py-12 flex flex-col gap-20">
-                {/* Hero Section: Split Layout */}
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-10 lg:px-20 py-12 flex flex-col gap-20">
+            {/* Hero Section: Split Layout */}
                 <section className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-center justify-center min-h-[60vh] animate-fade-in-up">
                     <div className="w-full lg:w-5/12 relative group perspective-1000">
                         <div className="absolute -inset-4 bg-gradient-to-tr from-primary to-purple-600 rounded-3xl blur-xl opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
@@ -176,8 +174,7 @@ const AboutPage = () => {
                         </div>
                     </div>
                 </section>
-            </div>
-        </PageLayout>
+        </div>
     );
 };
 
