@@ -16,6 +16,8 @@ interface FormData {
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
+const MAX_MESSAGE_LENGTH = 2000;
+
 const ContactPage = () => {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -411,9 +413,22 @@ const ContactPage = () => {
                   </label>
                 </div>
                 <label className="block group">
-                  <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                    Your Vision
-                  </span>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
+                      Your Vision
+                    </span>
+                    <span
+                      className={`text-xs font-medium transition-colors duration-300 ${
+                        formData.message.length >= MAX_MESSAGE_LENGTH
+                          ? "text-red-500"
+                          : formData.message.length >= MAX_MESSAGE_LENGTH * 0.9
+                          ? "text-orange-500"
+                          : "text-slate-400"
+                      }`}
+                    >
+                      {formData.message.length} / {MAX_MESSAGE_LENGTH}
+                    </span>
+                  </div>
                   <textarea
                     name="message"
                     value={formData.message}
@@ -421,7 +436,7 @@ const ContactPage = () => {
                     className="block w-full rounded-xl border-slate-200 bg-slate-50 p-6 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] resize-none transition-all"
                     placeholder="Tell me a bit about what you are looking for..."
                     rows={5}
-                    maxLength={2000}
+                    maxLength={MAX_MESSAGE_LENGTH}
                   ></textarea>
                 </label>
                 <div className="pt-4">
