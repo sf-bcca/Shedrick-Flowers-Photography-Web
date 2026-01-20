@@ -25,7 +25,8 @@ const LoginPage = () => {
             
             navigate('/admin');
         } catch (err: any) {
-            setError(err.message || 'Failed to login');
+            console.error('Login error:', err);
+            setError('Invalid email or password.');
         } finally {
             setLoading(false);
         }
@@ -41,7 +42,8 @@ const LoginPage = () => {
             });
             if (error) throw error;
         } catch (err: any) {
-            setError(err.message || 'Failed to initiate Google Login');
+            console.error('Google login error:', err);
+            setError('Failed to initiate Google Login. Please try again.');
         }
     };
 
