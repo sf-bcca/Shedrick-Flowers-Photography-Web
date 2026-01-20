@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { PageLayout } from '../components/Layout';
 import { BlurImage } from '../components/BlurImage';
 import { PortfolioCard } from '../components/PortfolioCard';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -71,7 +70,7 @@ const HomePage = () => {
     }, []);
 
     return (
-        <PageLayout transparentHeader={true}>
+        <>
             {/* Hero Section */}
             <section className="relative h-[90vh] -mt-16 w-full flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
@@ -166,7 +165,7 @@ const HomePage = () => {
                     </button>
                 </div>
             </section>
-        </PageLayout>
+        </>
     );
 };
 

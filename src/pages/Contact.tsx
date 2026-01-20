@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { PageLayout } from "../components/Layout";
 import { StudioAssistant } from "../components/StudioAssistant";
 import { supabase, fetchSettings } from "../services/supabaseClient";
 import { sanitizePlainText } from "../utils/sanitize";
@@ -216,7 +215,7 @@ const ContactPage = () => {
   const addressZip = settings?.contact_address_zip || "10012";
 
   return (
-    <PageLayout>
+    <>
       <StudioAssistant />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-24">
         <div className="mb-12 text-center lg:mb-20 lg:text-left">
@@ -541,7 +540,7 @@ const ContactPage = () => {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </>
   );
 };
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PageLayout } from '../components/Layout';
 import { BlogCard } from '../components/BlogCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchPublishedBlogPosts } from '../services/supabaseClient';
@@ -30,7 +29,7 @@ const BlogPage = () => {
     }, []);
 
     return (
-        <PageLayout>
+        <>
             <section className="w-full px-4 md:px-10 lg:px-40 py-8 md:py-16">
                 <div className="@container">
                     <div className="flex flex-col gap-8 md:gap-16 lg:flex-row items-center">
@@ -62,7 +61,7 @@ const BlogPage = () => {
                     </div>
                 )}
             </section>
-        </PageLayout>
+        </>
     );
 };
 

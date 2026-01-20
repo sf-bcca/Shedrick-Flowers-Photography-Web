@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
-import { PageLayout } from '../components/Layout';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -46,7 +45,7 @@ const LoginPage = () => {
     };
 
     return (
-        <PageLayout>
+        <>
             <div className="min-h-[70vh] flex items-center justify-center px-4">
                 <div className="w-full max-w-md bg-white dark:bg-[#1a2232] rounded-2xl shadow-xl border border-slate-200 dark:border-white/5 p-8">
                     <div className="text-center mb-8">
@@ -106,7 +105,7 @@ const LoginPage = () => {
                     </button>
                 </div>
             </div>
-        </PageLayout>
+        </>
     );
 };
 
