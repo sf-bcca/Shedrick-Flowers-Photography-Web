@@ -4,10 +4,11 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Copy package files first to leverage Docker cache
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies (using legacy-peer-deps as required by React 19 + Tiptap)
-RUN npm install --legacy-peer-deps
+# Install dependencies
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN pnpm install
 
 # Copy source code
 COPY . .
@@ -21,7 +22,7 @@ ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
 ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 
 # Build the application
-RUN npm run build
+RUN pnpm build
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
