@@ -256,10 +256,8 @@ Or check logs in Supabase Dashboard → Edge Functions → gemini-chat → Logs.
 
 ```bash
 rm -rf node_modules
-npm install --legacy-peer-deps
+pnpm install
 ```
-
-The `--legacy-peer-deps` flag is required due to React 19 dependencies.
 
 #### Environment Variables Not Working in Production
 

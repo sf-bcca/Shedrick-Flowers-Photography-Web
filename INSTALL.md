@@ -5,7 +5,7 @@ This guide will help you set up the Shedrick Flowers Photography Web application
 ## Prerequisites
 
 - **Node.js**: Version 18 or higher (LTS recommended).
-- **npm**: Included with Node.js.
+- **pnpm**: Required for package management.
 - **Supabase Account**: For database, authentication, and storage.
 - **Docker** (Optional): For containerized self-hosting.
 
@@ -19,13 +19,12 @@ cd Shedrick-Flowers-Photography-Web
 ## 2. Install Dependencies
 
 Install the required Node.js packages.
-**Note:** Due to React 19 dependencies, `legacy-peer-deps` is required.
 
 ```bash
-npm install --legacy-peer-deps
+pnpm install
 ```
 
-_Note: Supabase Edge Functions (in `supabase/functions/`) use Deno and manage their own dependencies via `import_map.json` or direct URL imports. You do not need to run `npm install` inside the functions directory._
+_Note: Supabase Edge Functions (in `supabase/functions/`) use Deno and manage their own dependencies via `import_map.json` or direct URL imports. You do not need to run `pnpm install` inside the functions directory._
 
 ## 3. Environment Configuration
 
@@ -62,8 +61,8 @@ The "Studio Assistant" feature uses a Supabase Edge Function (`gemini-chat`) pow
 You need your Supabase Project Reference ID (found in your Dashboard URL: `https://supabase.com/dashboard/project/<project-id>`).
 
 ```bash
-npx supabase login
-npx supabase link --project-ref <your-project-id>
+pnpm dlx supabase login
+pnpm dlx supabase link --project-ref <your-project-id>
 ```
 
 ### Step 2: Set Secrets
@@ -71,7 +70,7 @@ npx supabase link --project-ref <your-project-id>
 Obtain a Gemini API Key from [Google AI Studio](https://aistudio.google.com/). Then set it as a secret:
 
 ```bash
-npx supabase secrets set GEMINI_API_KEY=your_api_key_here
+pnpm dlx supabase secrets set GEMINI_API_KEY=your_api_key_here
 ```
 
 ### Step 3: Deploy
@@ -79,7 +78,7 @@ npx supabase secrets set GEMINI_API_KEY=your_api_key_here
 Deploy the function code from the `supabase/functions` directory:
 
 ```bash
-npx supabase functions deploy gemini-chat
+pnpm dlx supabase functions deploy gemini-chat
 ```
 
 ## 5. Database Setup (Supabase)
