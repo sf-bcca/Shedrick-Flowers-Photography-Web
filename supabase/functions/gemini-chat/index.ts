@@ -14,6 +14,44 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // 🛡️ Sentinel: Input Validation to prevent DoS and Cost Injection
+    if (!Array.isArray(messages)) {
+      return new Response(JSON.stringify({ error: 'Invalid input: messages must be an array' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (messages.length > 20) {
+      return new Response(JSON.stringify({ error: 'Too many messages' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    for (const msg of messages) {
+      if (!msg || typeof msg !== 'object') {
+        return new Response(JSON.stringify({ error: 'Invalid message format' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+      if (typeof msg.text !== 'string' || msg.text.length > 1000) {
+        return new Response(JSON.stringify({ error: 'Message text invalid or too long (max 1000 chars)' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+      // Basic role validation
+      if (msg.role !== 'user' && msg.role !== 'model') {
+        return new Response(JSON.stringify({ error: 'Invalid message role' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
