@@ -42,6 +42,9 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
             const separator = src.includes('?') ? '&' : '?';
             return `${src}${separator}width=20&quality=10&resize=contain`;
         }
+        if (src.includes('googleusercontent.com')) {
+            return `${src}=w20`;
+        }
         return null;
     }, [src]);
 
