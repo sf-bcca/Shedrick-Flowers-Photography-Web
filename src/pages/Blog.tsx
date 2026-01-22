@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/Layout';
+import { BlurImage } from '../components/BlurImage';
 import { BlogCard } from '../components/BlogCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchPublishedBlogPosts } from '../services/supabaseClient';
@@ -35,10 +36,12 @@ const BlogPage = () => {
                 <div className="@container">
                     <div className="flex flex-col gap-8 md:gap-16 lg:flex-row items-center">
                         <div className="w-full lg:w-3/5 aspect-video md:aspect-[16/9] lg:aspect-[4/3] rounded-xl overflow-hidden shadow-2xl relative group cursor-pointer">
-                            <img
+                            <BlurImage
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6dwKikfC342afi1MaVXiwZ0NcdwRthX9XaX-XeqTUmq19TtL9cuUn8i3bUdl6O1OpjLtGCMJU2VSy7e6MQ4NFK3dEz8P25bultf_M3ZJOn1geKTDaeHMN0n8Zbs8xQQe2iDspgYevSCg7k7XNtL9CVXHZP9RWRnYyfVmk5izk4qBQvKItg4w0pPakHP0U5epcpKlwbzReOM3Ls6Jxuy9djYvzP8S1jxHDykpmb1ZrzZywwQcJf6iJdjUup9_Bb4yA8p7sJ6rS7Cf-"
                                 alt="Featured"
+                                width={1200}
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                containerClassName="w-full h-full"
                             />
                         </div>
                         <div className="w-full lg:w-2/5 flex flex-col gap-6 items-start text-left animate-fade-in-up">
