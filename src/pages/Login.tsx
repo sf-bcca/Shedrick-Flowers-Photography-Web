@@ -25,7 +25,9 @@ const LoginPage = () => {
             
             navigate('/admin');
         } catch (err: any) {
-            setError(err.message || 'Failed to login');
+            // 🛡️ Sentinel: Prevent enumeration by showing generic error
+            console.error('Login failed:', err);
+            setError('Invalid email or password');
         } finally {
             setLoading(false);
         }
@@ -41,7 +43,9 @@ const LoginPage = () => {
             });
             if (error) throw error;
         } catch (err: any) {
-            setError(err.message || 'Failed to initiate Google Login');
+            // 🛡️ Sentinel: Log details but show generic error to user
+            console.error('Google login failed:', err);
+            setError('Unable to sign in with Google. Please try again.');
         }
     };
 

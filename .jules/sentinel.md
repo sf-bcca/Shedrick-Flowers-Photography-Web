@@ -21,3 +21,8 @@ This journal tracks CRITICAL security learnings, vulnerability patterns, and arc
 **Vulnerability:** Blog content rendered via `dangerouslySetInnerHTML` allowed `target="_blank"` links without `rel="noopener noreferrer"`.
 **Learning:** `DOMPurify` sanitizes XSS but does not enforce `rel` attributes by default. Links opening in new tabs can expose the parent window object to malicious pages.
 **Prevention:** Implemented a centralized `sanitizeHtml` utility with a `DOMPurify` hook to strictly enforce `rel="noopener noreferrer"` on all external links, and configured Tiptap to add it by default.
+
+## 2024-05-25 - [Login Error Enumeration]
+**Vulnerability:** The login page displayed raw error messages from Supabase (e.g., "User not found"), allowing attackers to enumerate valid email addresses.
+**Learning:** Supabase Auth errors can be verbose; relying on `error.message` directly in the UI leaks state.
+**Prevention:** Hardcoded a generic "Invalid email or password" message for all authentication failures while preserving the detailed log in the console for debugging.
