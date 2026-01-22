@@ -13,6 +13,7 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = React.memo(({ item })
                 src={item.image}
                 alt={item.title}
                 loading="lazy"
+                width={800}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 containerClassName="absolute inset-0 w-full h-full"
             />

@@ -24,6 +24,7 @@ export const BlogCard = React.memo<BlogCardProps>(({ post }) => {
                     src={post.image}
                     alt={post.title}
                     loading="lazy"
+                    width={800}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     containerClassName="w-full h-full"
                 />
