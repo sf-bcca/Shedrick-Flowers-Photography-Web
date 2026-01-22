@@ -15,7 +15,7 @@ A professional photography portfolio website built with React, Vite, and Supabas
 ## Key Features
 
 - **Dynamic Portfolio**: Showcase photography with categorization and custom layout options.
-- **Blog System**: Rich text blogging platform with user comments and moderation.
+- **Blog System**: Rich text blogging platform with backend support for comments and moderation (Frontend UI pending).
 - **Service Listings**: Display pricing tiers and service details.
 - **Client Testimonials**: Dedicated management for client reviews and ratings.
 - **Studio Assistant**: AI-powered chat agent (Google Gemini) to help visitors with pricing and services.
@@ -30,12 +30,12 @@ A professional photography portfolio website built with React, Vite, and Supabas
 1.  Clone the repository.
 2.  Install dependencies:
     ```bash
-    npm install --legacy-peer-deps
+    pnpm install
     ```
 3.  Set up environment variables (see [INSTALL.md](INSTALL.md)).
 4.  Run the development server:
     ```bash
-    npm run dev
+    pnpm dev
     ```
 5.  Verify Connection
     Run `node --env-file=.env verify-supabase.js` to confirm your local environment is correctly connected to Supabase.
