@@ -87,13 +87,13 @@ export const AdminLayout = () => {
                     className="absolute top-6 right-6 p-2 text-white hover:text-primary transition-colors z-10"
                     aria-label="Close menu"
                 >
-                    <span className="material-symbols-outlined text-4xl">close</span>
+                    <span className="material-symbols-outlined text-4xl" aria-hidden="true">close</span>
                 </button>
 
                 {/* Scrollable Content Container */}
                 <div className="flex-1 overflow-y-auto py-20 px-8 flex flex-col items-center animate-fade-in-up">
                     <div className="flex flex-col items-center gap-2 mb-10 text-primary">
-                        <span className="material-symbols-outlined text-5xl">admin_panel_settings</span>
+                        <span className="material-symbols-outlined text-5xl" aria-hidden="true">admin_panel_settings</span>
                         <span className="font-bold text-2xl text-white">CMS Admin</span>
                     </div>
 
@@ -155,15 +155,16 @@ export const AdminLayout = () => {
                     <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-white/5">
                         {isSidebarOpen ? (
                             <div className="flex items-center gap-2 font-bold text-lg text-primary">
-                                <span className="material-symbols-outlined">admin_panel_settings</span>
+                                <span className="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
                                 <span>CMS Admin</span>
                             </div>
                         ) : (
-                            <span className="material-symbols-outlined text-primary mx-auto">admin_panel_settings</span>
+                            <span className="material-symbols-outlined text-primary mx-auto" aria-hidden="true">admin_panel_settings</span>
                         )}
                         <button
                             onClick={() => setSidebarOpen(!isSidebarOpen)}
                             className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5"
+                            aria-label={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                         >
                             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
@@ -206,6 +207,7 @@ export const AdminLayout = () => {
                                 onClick={handleSignOut}
                                 className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                 title="Sign Out"
+                                aria-label="Sign Out"
                             >
                                 <LogOut size={20} />
                             </button>
@@ -221,6 +223,7 @@ export const AdminLayout = () => {
                     <button
                         onClick={() => setSidebarOpen(true)}
                         className="p-2 mr-4 -ml-2 text-slate-500 dark:text-slate-400"
+                        aria-label="Open sidebar"
                     >
                         <Menu size={24} />
                     </button>
