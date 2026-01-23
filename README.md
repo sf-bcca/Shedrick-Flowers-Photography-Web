@@ -25,17 +25,17 @@ A professional photography portfolio website built with React, Vite, and Supabas
 
 ## Quick Start
 
-**Prerequisites**: Node.js v18+
+**Prerequisites**: Node.js v18+ (with pnpm enabled)
 
 1.  Clone the repository.
 2.  Install dependencies:
     ```bash
-    npm install --legacy-peer-deps
+    pnpm install
     ```
 3.  Set up environment variables (see [INSTALL.md](INSTALL.md)).
 4.  Run the development server:
     ```bash
-    npm run dev
+    pnpm dev
     ```
 5.  Verify Connection
     Run `node --env-file=.env verify-supabase.js` to confirm your local environment is correctly connected to Supabase.
