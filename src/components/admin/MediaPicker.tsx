@@ -97,6 +97,16 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         return data.publicUrl;
     };
 
+    const getThumbnailUrl = (url: string) => {
+        if (!url) return '';
+        if (url.includes('supabase.co')) {
+            const optimizedUrl = url.replace('/object/public/', '/render/image/public/');
+            const separator = optimizedUrl.includes('?') ? '&' : '?';
+            return `${optimizedUrl}${separator}width=400&height=400&resize=cover&quality=60`;
+        }
+        return url;
+    };
+
     /**
      * Copies the image URL to clipboard.
      */
@@ -196,6 +206,8 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                              if (file.name === '.emptyFolderPlaceholder') return null;
 
                              const url = getPublicUrl(file.name);
+                             const thumbnailUrl = getThumbnailUrl(url);
+
                              return (
                                 <div
                                     key={file.id}
@@ -214,7 +226,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                                     ) : null}
 
                                     <img
-                                        src={url}
+                                        src={thumbnailUrl}
                                         alt=""
                                         className="w-full h-full object-cover"
                                         loading="lazy"
