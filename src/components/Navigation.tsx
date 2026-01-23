@@ -32,6 +32,7 @@ export const NavLinks: React.FC<{ mobile?: boolean }> = React.memo(({ mobile = f
                     <Link
                         key={item.path}
                         to={item.path}
+                        aria-current={isActive ? 'page' : undefined}
                         className={`transition-colors duration-200 ${
                             isActive
                             ? 'text-primary font-bold'
