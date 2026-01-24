@@ -42,3 +42,7 @@
 
 **Learning:** Using `div`s with `onClick` handlers for interactive elements (like "scroll down" arrows) creates barriers for keyboard and screen reader users. These elements are not focusable and lack semantic meaning.
 **Action:** Always replace interactive `div`s with semantic `<button>` elements. Use `bg-transparent border-none` to reset styles if needed, and ensure `aria-label` is provided for icon-only buttons.
+
+## 2025-01-22 - Visual Feedback for Constraints
+**Learning:** Hidden constraints like character limits (maxLength) frustrate users if they hit them unexpectedly. Code reviews or docs might claim they exist, but always verify visually.
+**Action:** When enforcing `maxLength`, always pair it with a visible "current / max" counter using a `flex justify-between` label container, and use color changes (orange/red) to warn when approaching the limit.
