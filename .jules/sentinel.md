@@ -21,3 +21,8 @@ This journal tracks CRITICAL security learnings, vulnerability patterns, and arc
 **Vulnerability:** Blog content rendered via `dangerouslySetInnerHTML` allowed `target="_blank"` links without `rel="noopener noreferrer"`.
 **Learning:** `DOMPurify` sanitizes XSS but does not enforce `rel` attributes by default. Links opening in new tabs can expose the parent window object to malicious pages.
 **Prevention:** Implemented a centralized `sanitizeHtml` utility with a `DOMPurify` hook to strictly enforce `rel="noopener noreferrer"` on all external links, and configured Tiptap to add it by default.
+
+## 2025-02-17 - [Unrestricted File Upload in Media Library]
+**Vulnerability:** The `MediaPicker` component allowed direct upload of any file type without validation or sanitization, bypassing the image optimization pipeline used elsewhere.
+**Learning:** Generic UI components (like a media picker) can become security blind spots if they don't enforce the same strict validation as feature-specific components (like PortfolioManager).
+**Prevention:** Enforced `optimizeImage` and `isValidImageFile` checks within the `MediaPicker`'s drop handler to ensure all uploads are validated and sanitized (converted to WebP) before storage.
