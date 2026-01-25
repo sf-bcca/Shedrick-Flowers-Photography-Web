@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { NavLinks, MobileMenu } from "./Navigation";
 import { fetchSettings } from "../services/supabaseClient";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
@@ -19,7 +19,6 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
   const [siteTitle, setSiteTitle] = useState(
     () => localStorage.getItem("site_title") || "Shedrick Flowers Photography",
   );
-  const navigate = useNavigate();
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -82,12 +81,12 @@ export const Header: React.FC<{ transparent?: boolean }> = ({
           </Link>
           <div className="hidden md:flex flex-1 justify-end gap-8 items-center text-slate-300">
             <NavLinks />
-            <button
-              onClick={() => navigate("/contact")}
+            <Link
+              to="/contact"
               className="flex cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 transition-colors text-white text-sm font-bold tracking-wide shadow-lg shadow-primary/20"
             >
               Book a Session
-            </button>
+            </Link>
           </div>
           <button
             onClick={() => setMobileMenuOpen(true)}
