@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { supabase } from '../../services/supabaseClient';
 import { Trash2, Copy, Upload, Check, Loader2, X } from 'lucide-react';
+import { optimizeImage, isValidImageFile } from '../../services/imageOptimizer';
 
 const BUCKET_NAME = 'images';
 
@@ -66,13 +67,26 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         setUploading(true);
         try {
             for (const file of acceptedFiles) {
-                // Sanitize file name
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                if (!isValidImageFile(file)) {
+                    alert(`Invalid file type: ${file.name}`);
+                    continue;
+                }
+
+                // Optimize & Sanitize (convert to WebP, resize to reasonable max dimensions)
+                const optimizedFile = await optimizeImage(file, {
+                    maxWidth: 2000,
+                    maxHeight: 2000,
+                    quality: 0.85,
+                    format: 'webp'
+                });
+
+                // Generate secure filename using UUID
+                const fileExt = 'webp';
+                const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
                 const { error } = await supabase.storage
                     .from(BUCKET_NAME)
-                    .upload(fileName, file);
+                    .upload(fileName, optimizedFile);
 
                 if (error) {
                     console.error('Error uploading:', error);
@@ -80,6 +94,9 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                 }
             }
             await fetchFiles();
+        } catch (error) {
+            console.error('Unexpected error during upload:', error);
+            alert('An unexpected error occurred during upload.');
         } finally {
             setUploading(false);
         }
