@@ -13,18 +13,19 @@ const HomePage = () => {
 
     // Lazy initialize state from storage to prevent unnecessary re-renders and layout shifts
     const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(() =>
-        getSessionStorage<PortfolioItem[]>('portfolioItems') || []
+        getSessionStorage<PortfolioItem[]>('homePortfolioItems') || []
     );
-    const [loading, setLoading] = useState(() => !getSessionStorage('portfolioItems'));
+    const [loading, setLoading] = useState(() => !getSessionStorage('homePortfolioItems'));
     const [heroImageUrl, setHeroImageUrl] = useState(() => getLocalStorageString('hero_image_url'));
     const [avatarUrl, setAvatarUrl] = useState(() => getLocalStorageString('avatar_url'));
 
     const fetchPortfolio = () => {
         // Optimize: Select only necessary fields for the grid to reduce payload
-        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse').then((data: any) => {
+        // Limit to 6 items (2 rows on large screens) for better performance
+        fetchData('portfolio', 'id, title, category, image, marginTop, marginTopInverse', 6).then((data: any) => {
             setPortfolioItems(data);
             setLoading(false);
-            sessionStorage.setItem('portfolioItems', JSON.stringify(data));
+            sessionStorage.setItem('homePortfolioItems', JSON.stringify(data));
         });
     };
 
