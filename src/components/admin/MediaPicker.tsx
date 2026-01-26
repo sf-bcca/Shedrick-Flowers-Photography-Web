@@ -98,6 +98,20 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
     };
 
     /**
+     * Generates a thumbnail URL for the grid to improve performance.
+     * Appends resizing parameters to the Supabase Storage URL.
+     */
+    const getThumbnailUrl = (url: string) => {
+        if (url.includes('supabase.co')) {
+            const separator = url.includes('?') ? '&' : '?';
+            // Replace /object/public/ with /render/image/public/ to ensure the image is transformed on the server
+            const transformedUrl = url.replace('/object/public/', '/render/image/public/');
+            return `${transformedUrl}${separator}width=300&height=300&resize=cover&quality=60`;
+        }
+        return url;
+    };
+
+    /**
      * Copies the image URL to clipboard.
      */
     const handleCopyUrl = (e: React.MouseEvent, path: string) => {
@@ -196,6 +210,9 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                              if (file.name === '.emptyFolderPlaceholder') return null;
 
                              const url = getPublicUrl(file.name);
+                             // Use thumbnail for grid display to significantly reduce bandwidth (e.g. 5MB -> 50KB)
+                             const thumbnailUrl = getThumbnailUrl(url);
+
                              return (
                                 <div
                                     key={file.id}
@@ -214,7 +231,7 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
                                     ) : null}
 
                                     <img
-                                        src={url}
+                                        src={thumbnailUrl}
                                         alt=""
                                         className="w-full h-full object-cover"
                                         loading="lazy"
