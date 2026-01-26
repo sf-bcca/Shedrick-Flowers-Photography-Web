@@ -47,17 +47,23 @@ if (settings) {
 
 ---
 
-#### `fetchData(table)`
+#### `fetchData(table, select, limit)`
 
-Fetches all records from a specified table.
+Fetches records from a specified table with optional selection and limiting.
 
 ```typescript
-fetchData(table: 'portfolio' | 'blog' | 'services'): Promise<any[]>
+fetchData(
+  table: 'portfolio' | 'blog' | 'services',
+  select: string = '*',
+  limit?: number
+): Promise<any[]>
 ```
 
-| Parameter | Type                                      | Description       |
-| --------- | ----------------------------------------- | ----------------- |
-| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table name |
+| Parameter | Type                                      | Description                                  |
+| --------- | ----------------------------------------- | -------------------------------------------- |
+| `table`   | `'portfolio'` \| `'blog'` \| `'services'` | Target table name                            |
+| `select`  | `string`                                  | Columns to select (default: `'*'`)           |
+| `limit`   | `number`                                  | Optional limit on number of records returned |
 
 | Property     | Description                                        |
 | ------------ | -------------------------------------------------- |
