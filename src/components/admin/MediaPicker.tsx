@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { supabase } from '../../services/supabaseClient';
+import { optimizeImage, isValidImageFile } from '../../services/imageOptimizer';
 import { Trash2, Copy, Upload, Check, Loader2, X } from 'lucide-react';
 
 const BUCKET_NAME = 'images';
@@ -66,17 +67,34 @@ const MediaPicker: React.FC<MediaPickerProps> = ({ onSelect, onClose }) => {
         setUploading(true);
         try {
             for (const file of acceptedFiles) {
-                // Sanitize file name
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                if (!isValidImageFile(file)) {
+                    alert(`Skipped ${file.name}: Invalid image format.`);
+                    continue;
+                }
 
-                const { error } = await supabase.storage
-                    .from(BUCKET_NAME)
-                    .upload(fileName, file);
+                try {
+                    // Optimize and Sanitize (Convert to WebP, remove metadata)
+                    const optimizedFile = await optimizeImage(file, {
+                        maxWidth: 2000,
+                        maxHeight: 2000,
+                        quality: 0.9,
+                        format: 'webp'
+                    });
 
-                if (error) {
-                    console.error('Error uploading:', error);
-                    alert(`Failed to upload ${file.name}`);
+                    // Generate secure filename
+                    const fileName = `${crypto.randomUUID()}.webp`;
+
+                    const { error } = await supabase.storage
+                        .from(BUCKET_NAME)
+                        .upload(fileName, optimizedFile);
+
+                    if (error) {
+                        console.error('Error uploading:', error);
+                        alert(`Failed to upload ${file.name}`);
+                    }
+                } catch (error) {
+                    console.error('Error processing file:', error);
+                    alert(`Failed to process ${file.name}`);
                 }
             }
             await fetchFiles();

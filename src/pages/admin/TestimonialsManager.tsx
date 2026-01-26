@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
+import { optimizeImage, isValidImageFile } from '../../services/imageOptimizer';
 import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
@@ -129,7 +130,7 @@ const TestimonialsManager = () => {
 
     /**
      * Uploads a client image to Supabase Storage.
-     * Generates a random filename to avoid collisions.
+     * Optimizes image and generates a secure filename.
      */
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         try {
@@ -138,13 +139,26 @@ const TestimonialsManager = () => {
             }
             setUploading(true);
             const file = event.target.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
+
+            if (!isValidImageFile(file)) {
+                alert('Invalid image file. Please upload a valid image.');
+                return;
+            }
+
+            // Optimize and Sanitize
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 800,
+                maxHeight: 800,
+                quality: 0.9,
+                format: 'webp'
+            });
+
+            const fileName = `${crypto.randomUUID()}.webp`;
             const filePath = `testimonials/${fileName}`;
 
             const { error: uploadError } = await supabase.storage
                 .from('images')
-                .upload(filePath, file);
+                .upload(filePath, optimizedFile);
 
             if (uploadError) throw uploadError;
 
