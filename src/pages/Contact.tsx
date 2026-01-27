@@ -17,6 +17,7 @@ interface FormData {
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 const ContactPage = () => {
+  const MAX_MESSAGE_LENGTH = 2000;
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -411,8 +412,19 @@ const ContactPage = () => {
                   </label>
                 </div>
                 <label className="block group">
-                  <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                    Your Vision
+                  <span className="mb-3 flex justify-between items-center text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
+                    <span>Your Vision</span>
+                    <span
+                      className={`text-xs font-medium normal-case tracking-normal ${
+                        formData.message.length >= MAX_MESSAGE_LENGTH
+                          ? "text-red-500"
+                          : formData.message.length >= MAX_MESSAGE_LENGTH * 0.9
+                          ? "text-orange-500"
+                          : "text-slate-400"
+                      }`}
+                    >
+                      {formData.message.length} / {MAX_MESSAGE_LENGTH}
+                    </span>
                   </span>
                   <textarea
                     name="message"
@@ -421,7 +433,7 @@ const ContactPage = () => {
                     className="block w-full rounded-xl border-slate-200 bg-slate-50 p-6 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-[#344465] dark:bg-[#111722] dark:text-white dark:placeholder:text-[#93a5c8] resize-none transition-all"
                     placeholder="Tell me a bit about what you are looking for..."
                     rows={5}
-                    maxLength={2000}
+                    maxLength={MAX_MESSAGE_LENGTH}
                   ></textarea>
                 </label>
                 <div className="pt-4">
