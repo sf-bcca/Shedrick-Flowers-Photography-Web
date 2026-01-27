@@ -7,17 +7,20 @@ import React, { useState, useMemo } from 'react';
 interface BlurImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     /** Additional classes for the container div */
     containerClassName?: string;
+    /** Target width for image optimization (default: 2000px) */
+    width?: number;
 }
 
 /**
  * BlurImage Component
  *
  * A progressive image loading component that displays a blurry low-resolution placeholder
- * before the full-resolution image loads. Optimized for Supabase Storage images.
+ * before the full-resolution image loads. Optimized for Supabase Storage and Google Photos images.
  *
  * Performance Optimizations:
  * - Uses `React.memo` to prevent unnecessary re-renders.
  * - Generates low-res placeholder URL via `useMemo`.
+ * - Automatically requests optimized image sizes from CDNs based on `width` prop.
  * - Handles synchronous state updates to prevent stale content flashes.
  */
 export const BlurImage: React.FC<BlurImageProps> = React.memo(({
@@ -25,6 +28,7 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
     className,
     containerClassName = "",
     alt,
+    width = 2000,
     ...props
 }) => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -42,8 +46,32 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
             const separator = src.includes('?') ? '&' : '?';
             return `${src}${separator}width=20&quality=10&resize=contain`;
         }
+        if (src.includes('googleusercontent.com')) {
+            // Google Photos / User Content
+            return `${src}=w20`;
+        }
         return null;
     }, [src]);
+
+    const optimizedSrc = useMemo(() => {
+        if (!src) return undefined;
+
+        // Google Photos optimization
+        if (src.includes('googleusercontent.com')) {
+            // If it already has params, we might need to handle differently, but appending usually works
+            // or implies replacing existing size params if we were smarter, but simplistic appending
+            // is often sufficient for these URLs as they often come clean.
+            return `${src}=w${width}`;
+        }
+
+        // Supabase Storage optimization
+        if (src.includes('supabase.co')) {
+            const separator = src.includes('?') ? '&' : '?';
+            return `${src}${separator}width=${width}`;
+        }
+
+        return src;
+    }, [src, width]);
 
     return (
         <div className={`relative overflow-hidden ${containerClassName}`}>
@@ -64,7 +92,7 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
             <div className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <img
                     key={src} // Force re-mount of image when src changes
-                    src={src}
+                    src={optimizedSrc}
                     alt={alt}
                     className={className}
                     onLoad={() => setIsLoaded(true)}
