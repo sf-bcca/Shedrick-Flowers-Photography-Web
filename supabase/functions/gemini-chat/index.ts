@@ -14,6 +14,45 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // 🛡️ Sentinel: Input Validation
+    if (!messages || !Array.isArray(messages)) {
+      return new Response(JSON.stringify({ error: 'Invalid input: messages must be an array' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      })
+    }
+
+    if (messages.length > 20) {
+      return new Response(JSON.stringify({ error: 'Invalid input: too many messages (max 20)' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      })
+    }
+
+    for (const msg of messages) {
+      if (typeof msg !== 'object' || msg === null || !msg.role || !msg.text) {
+        return new Response(JSON.stringify({ error: 'Invalid message structure' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        })
+      }
+
+      if (typeof msg.text !== 'string' || msg.text.length > 2000) {
+        return new Response(JSON.stringify({ error: 'Invalid message: text too long (max 2000 chars)' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        })
+      }
+
+      if (!['user', 'model', 'assistant'].includes(msg.role)) {
+        return new Response(JSON.stringify({ error: 'Invalid message role' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        })
+      }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
