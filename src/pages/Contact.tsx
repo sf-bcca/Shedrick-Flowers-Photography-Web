@@ -411,9 +411,14 @@ const ContactPage = () => {
                   </label>
                 </div>
                 <label className="block group">
-                  <span className="mb-3 block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                    Your Vision
-                  </span>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
+                      Your Vision
+                    </span>
+                    <span className="text-xs text-slate-400 font-medium">
+                      {formData.message.length}/2000
+                    </span>
+                  </div>
                   <textarea
                     name="message"
                     value={formData.message}
