@@ -21,3 +21,8 @@ This journal tracks CRITICAL security learnings, vulnerability patterns, and arc
 **Vulnerability:** Blog content rendered via `dangerouslySetInnerHTML` allowed `target="_blank"` links without `rel="noopener noreferrer"`.
 **Learning:** `DOMPurify` sanitizes XSS but does not enforce `rel` attributes by default. Links opening in new tabs can expose the parent window object to malicious pages.
 **Prevention:** Implemented a centralized `sanitizeHtml` utility with a `DOMPurify` hook to strictly enforce `rel="noopener noreferrer"` on all external links, and configured Tiptap to add it by default.
+
+## 2025-02-12 - [Input Validation in Gemini Chat]
+**Vulnerability:** The `gemini-chat` Edge Function processed user input (`messages` array) without validation, allowing potential DoS (large payloads) or cost injection (excessive tokens) attacks.
+**Learning:** Serverless functions often bypass middleware validation layers common in monoliths; explicit input validation at the function entry point is mandatory.
+**Prevention:** Implemented strict schema validation (array check, length limits, content type checks) immediately after parsing the request body.
