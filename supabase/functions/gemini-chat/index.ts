@@ -1,8 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
+// Security: Allow configurable CORS origin (default to wildcard for dev/compat)
+const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || '*';
+
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': allowedOrigin,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
@@ -20,6 +23,30 @@ serve(async (req) => {
 
     if (!apiKey || !supabaseUrl || !supabaseAnonKey) {
       throw new Error('Missing environment variables')
+    }
+
+    // Input Validation (Security)
+    // Prevent DoS and Cost Injection by limiting message count and length
+    if (!Array.isArray(messages)) {
+        throw new Error("Invalid input: 'messages' must be an array.");
+    }
+    // Limit context window abuse
+    if (messages.length > 20) {
+        throw new Error("Invalid input: Too many messages (max 20).");
+    }
+
+    // Validate each message structure and length
+    for (const [index, msg] of messages.entries()) {
+        if (!msg || typeof msg !== 'object') {
+             throw new Error(`Invalid message at index ${index}`);
+        }
+        if (typeof msg.text !== 'string') {
+             throw new Error(`Invalid text in message at index ${index}`);
+        }
+        // Limit token consumption/cost
+        if (msg.text.length > 2000) {
+             throw new Error(`Message at index ${index} exceeds 2000 characters.`);
+        }
     }
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
