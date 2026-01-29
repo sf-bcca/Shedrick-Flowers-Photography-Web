@@ -12,6 +12,7 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = React.memo(({ item })
             <BlurImage
                 src={item.image}
                 alt={item.title}
+                width={800}
                 loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 containerClassName="absolute inset-0 w-full h-full"
