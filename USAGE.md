@@ -7,7 +7,7 @@ This document covers how to run, build, and interact with the Shedrick Flowers P
 To start the development server with hot-reload:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The application will typically start at `http://localhost:3000` (check your terminal for the exact port).
@@ -17,7 +17,7 @@ The application will typically start at `http://localhost:3000` (check your term
 To create an optimized production build:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 The output will be generated in the `dist/` directory. These files are static and can be deployed to any web server (Nginx, Apache, Vercel, Netlify, GitHub Pages).
@@ -27,7 +27,7 @@ The output will be generated in the `dist/` directory. These files are static an
 To test the built version before deploying:
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
 ## Core Functionality
@@ -219,9 +219,9 @@ sessionStorage.clear();
 **Solution:**
 
 ```bash
-npx supabase login
-npx supabase link --project-ref <your-project-id>
-npx supabase functions deploy gemini-chat
+pnpm dlx supabase login
+pnpm dlx supabase link --project-ref <your-project-id>
+pnpm dlx supabase functions deploy gemini-chat
 ```
 
 #### Chat Returns "Invalid API Key" or 500 Error
@@ -231,7 +231,7 @@ npx supabase functions deploy gemini-chat
 **Solution:**
 
 ```bash
-npx supabase secrets set GEMINI_API_KEY=your_api_key_here
+pnpm dlx supabase secrets set GEMINI_API_KEY=your_api_key_here
 ```
 
 Get a key from [Google AI Studio](https://aistudio.google.com/).
@@ -241,7 +241,7 @@ Get a key from [Google AI Studio](https://aistudio.google.com/).
 View logs for the deployed function:
 
 ```bash
-npx supabase functions serve gemini-chat --debug
+pnpm dlx supabase functions serve gemini-chat --debug
 ```
 
 Or check logs in Supabase Dashboard → Edge Functions → gemini-chat → Logs.
@@ -256,10 +256,10 @@ Or check logs in Supabase Dashboard → Edge Functions → gemini-chat → Logs.
 
 ```bash
 rm -rf node_modules
-npm install --legacy-peer-deps
+pnpm install
 ```
 
-The `--legacy-peer-deps` flag is required due to React 19 dependencies.
+The `--legacy-peer-deps` flag is not required when using pnpm.
 
 #### Environment Variables Not Working in Production
 

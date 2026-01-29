@@ -17,7 +17,7 @@ The project uses Supabase Edge Functions for backend logic (e.g., AI chat).
 - Location: `supabase/functions/`
 - Deployment: Must be deployed via CLI to take effect.
   ```bash
-  npx supabase functions deploy gemini-chat
+  pnpm dlx supabase functions deploy gemini-chat
   ```
 
 ## Database Schema (Supabase)
