@@ -21,3 +21,8 @@ This journal tracks CRITICAL security learnings, vulnerability patterns, and arc
 **Vulnerability:** Blog content rendered via `dangerouslySetInnerHTML` allowed `target="_blank"` links without `rel="noopener noreferrer"`.
 **Learning:** `DOMPurify` sanitizes XSS but does not enforce `rel` attributes by default. Links opening in new tabs can expose the parent window object to malicious pages.
 **Prevention:** Implemented a centralized `sanitizeHtml` utility with a `DOMPurify` hook to strictly enforce `rel="noopener noreferrer"` on all external links, and configured Tiptap to add it by default.
+
+## 2024-06-12 - [Broken Access Control via Google Auth]
+**Vulnerability:** Supabase OAuth (Google) allows any user to sign up/login and become "authenticated". The frontend logic only checked for the existence of a user session, allowing unauthorized users to access Admin Routes.
+**Learning:** "Authenticated" != "Authorized". In a single-user application using public OAuth providers, strictly checking for the user's identity (e.g., email allowlist) is critical to prevent accidental privilege escalation.
+**Prevention:** Implemented an Email Allowlist in `AuthContext` and `ProtectedRoute`. Added `VITE_ADMIN_EMAIL` env var support. Note: Maintained a hardcoded fallback to the owner's email to prevent lockout during migration, highlighting the trade-off between "Secure by Default" and "Availability".

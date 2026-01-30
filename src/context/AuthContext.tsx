@@ -9,6 +9,8 @@ import { User } from '@supabase/supabase-js';
 interface AuthContextType {
     /** The currently authenticated Supabase user, or null if not logged in. */
     user: User | null;
+    /** Indicates if the current user is the authorized admin. */
+    isAdmin: boolean;
     /** Indicates if the initial session check is still in progress. */
     loading: boolean;
     /** Function to sign out the current user. */
@@ -28,6 +30,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+
+    // 🛡️ Security: Enforce Allowlist for Admin Access
+    // We strictly check the email against the environment variable to prevent unauthorized
+    // users (e.g. from random Google logins) from accessing admin features.
+    //
+    // NOTE: The fallback to 'shedrick@shedrickflowers.com' is maintained to prevent
+    // locking out the site owner during the migration if the environment variable
+    // is not yet set in production. In a strict environment, this fallback should be removed.
+    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'shedrick@shedrickflowers.com';
+    const isAdmin = !!user?.email && user.email === adminEmail;
 
     useEffect(() => {
         // Check for existing session on mount
@@ -56,7 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, signOut }}>
+        <AuthContext.Provider value={{ user, isAdmin, loading, signOut }}>
             {children}
         </AuthContext.Provider>
     );
@@ -66,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
  * Custom hook to access the authentication context.
  *
  * Usage:
- * const { user, loading, signOut } = useAuth();
+ * const { user, isAdmin, loading, signOut } = useAuth();
  *
  * @throws {Error} If used outside of an AuthProvider.
  * @returns {AuthContextType} The current auth context values.
