@@ -5,6 +5,18 @@ import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { optimizeImage, isValidImageFile, formatFileSize } from '../../services/imageOptimizer';
 import { isValidUrl, isValidEmail } from '../../utils/validation';
 
+/**
+ * Settings Component
+ *
+ * Manages global site configurations including:
+ * - General Information (Site Title, Description, Contact Email)
+ * - Branding (Logo, Hero Image, Avatar, Favicon)
+ * - About Photo
+ * - Contact Information (Phone, Address)
+ * - Social Media Links
+ *
+ * Data is stored in the 'settings' table with a single row (id=1).
+ */
 const Settings = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -41,6 +53,10 @@ const Settings = () => {
         fetchSettings();
     }, []);
 
+    /**
+     * Fetches the global settings from Supabase.
+     * Assumes a single-row table structure where id=1.
+     */
     const fetchSettings = async () => {
         setLoading(true);
         // We assume ID 1 is the main settings row
@@ -70,6 +86,10 @@ const Settings = () => {
         setLoading(false);
     };
 
+    /**
+     * Validates and saves all settings to Supabase.
+     * Performs UPSERT on the row with id=1.
+     */
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
@@ -118,6 +138,10 @@ const Settings = () => {
         setSaving(false);
     };
 
+    /**
+     * Handles upload and optimization of the site logo.
+     * Optimizes to 800x400 WebP.
+     */
     const handleLogoUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
@@ -177,6 +201,10 @@ const Settings = () => {
         }
     };
 
+    /**
+     * Handles upload and optimization of the hero image.
+     * Optimizes to 1920x1080 WebP.
+     */
     const handleHeroUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
@@ -233,6 +261,10 @@ const Settings = () => {
         }
     };
 
+    /**
+     * Handles upload and optimization of the user avatar.
+     * Optimizes to 400x400 WebP.
+     */
     const handleAvatarUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
@@ -301,6 +333,10 @@ const Settings = () => {
         setAvatarUrl('');
     };
 
+    /**
+     * Handles upload and optimization of the site favicon.
+     * Optimizes to 32x32 PNG.
+     */
     const handleFaviconUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
@@ -361,6 +397,10 @@ const Settings = () => {
         setFaviconUrl('');
     };
 
+    /**
+     * Handles upload and optimization of the 'About' page photo.
+     * Optimizes to 600x800 WebP.
+     */
     const handleAboutPhotoUpload = async (files: File[]) => {
         if (files.length === 0) return;
 
