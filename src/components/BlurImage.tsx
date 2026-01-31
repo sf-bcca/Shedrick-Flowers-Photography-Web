@@ -25,6 +25,7 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
     className,
     containerClassName = "",
     alt,
+    width,
     ...props
 }) => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -45,6 +46,22 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
         return null;
     }, [src]);
 
+    // Optimize main image if it's from Supabase and a width is provided
+    const optimizedSrc = useMemo(() => {
+        if (!src) return src;
+
+        // Parse width to ensure it's a number (handles string "800" vs "100%")
+        const numericWidth = typeof width === 'number'
+            ? width
+            : (typeof width === 'string' && !isNaN(parseInt(width, 10)) && !width.includes('%') ? parseInt(width, 10) : null);
+
+        if (src.includes('supabase.co') && numericWidth) {
+            const separator = src.includes('?') ? '&' : '?';
+            return `${src}${separator}width=${numericWidth}`;
+        }
+        return src;
+    }, [src, width]);
+
     return (
         <div className={`relative overflow-hidden ${containerClassName}`}>
             {/* Placeholder / Low Res */}
@@ -64,9 +81,10 @@ export const BlurImage: React.FC<BlurImageProps> = React.memo(({
             <div className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <img
                     key={src} // Force re-mount of image when src changes
-                    src={src}
+                    src={optimizedSrc}
                     alt={alt}
                     className={className}
+                    width={width}
                     onLoad={() => setIsLoaded(true)}
                     {...props}
                 />
