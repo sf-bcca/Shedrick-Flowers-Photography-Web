@@ -23,6 +23,7 @@ export const BlogCard = React.memo<BlogCardProps>(({ post }) => {
                 <BlurImage
                     src={post.image}
                     alt={post.title}
+                    width={800}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     containerClassName="w-full h-full"
