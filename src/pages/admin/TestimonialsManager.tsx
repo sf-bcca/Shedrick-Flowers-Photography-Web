@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { optimizeImage, isValidImageFile } from '../../services/imageOptimizer';
 
 /**
  * TestimonialsManager Component
@@ -132,19 +133,37 @@ const TestimonialsManager = () => {
      * Generates a random filename to avoid collisions.
      */
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const input = event.target;
         try {
-            if (!event.target.files || event.target.files.length === 0) {
+            if (!input.files || input.files.length === 0) {
                 return;
             }
+
+            const file = input.files[0];
+
+            if (!isValidImageFile(file)) {
+                alert('Please upload a valid image file (JPG, PNG, WebP, GIF)');
+                return;
+            }
+
             setUploading(true);
-            const file = event.target.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
+
+            // Optimize image before upload
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 800,
+                maxHeight: 800,
+                quality: 0.8,
+                format: 'webp'
+            });
+
+            // Use crypto.randomUUID for secure filename generation
+            const fileExt = 'webp';
+            const fileName = `${crypto.randomUUID()}.${fileExt}`;
             const filePath = `testimonials/${fileName}`;
 
             const { error: uploadError } = await supabase.storage
                 .from('images')
-                .upload(filePath, file);
+                .upload(filePath, optimizedFile);
 
             if (uploadError) throw uploadError;
 
@@ -158,6 +177,8 @@ const TestimonialsManager = () => {
             alert('Error uploading image');
         } finally {
             setUploading(false);
+            // Reset input value to allow selecting same file again
+            input.value = '';
         }
     };
 
