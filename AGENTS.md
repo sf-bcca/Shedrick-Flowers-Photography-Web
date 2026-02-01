@@ -9,6 +9,7 @@
 - **Icons**: Lucide React, Material Symbols (Google Fonts)
 - **Rich Text**: @tiptap/react
 - **Language**: TypeScript
+- **Package Manager**: pnpm
 
 ## Developer Notes
 
