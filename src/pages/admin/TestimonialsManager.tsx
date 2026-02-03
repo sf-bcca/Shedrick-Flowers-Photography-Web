@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { optimizeImage, isValidImageFile } from '../../services/imageOptimizer';
 
 /**
  * TestimonialsManager Component
@@ -136,15 +137,30 @@ const TestimonialsManager = () => {
             if (!event.target.files || event.target.files.length === 0) {
                 return;
             }
-            setUploading(true);
+
             const file = event.target.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
+
+            if (!isValidImageFile(file)) {
+                alert('Please upload a valid image file (JPG, PNG, WebP, or GIF)');
+                return;
+            }
+
+            setUploading(true);
+
+            // Optimize image
+            const optimizedFile = await optimizeImage(file, {
+                maxWidth: 800,
+                maxHeight: 800,
+                quality: 0.85,
+                format: 'webp'
+            });
+
+            const fileName = `${crypto.randomUUID()}.webp`;
             const filePath = `testimonials/${fileName}`;
 
             const { error: uploadError } = await supabase.storage
                 .from('images')
-                .upload(filePath, file);
+                .upload(filePath, optimizedFile);
 
             if (uploadError) throw uploadError;
 
