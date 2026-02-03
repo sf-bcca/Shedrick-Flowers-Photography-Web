@@ -7,7 +7,7 @@ This document covers how to run, build, and interact with the Shedrick Flowers P
 To start the development server with hot-reload:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The application will typically start at `http://localhost:3000` (check your terminal for the exact port).
@@ -17,7 +17,7 @@ The application will typically start at `http://localhost:3000` (check your term
 To create an optimized production build:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 The output will be generated in the `dist/` directory. These files are static and can be deployed to any web server (Nginx, Apache, Vercel, Netlify, GitHub Pages).
@@ -27,7 +27,7 @@ The output will be generated in the `dist/` directory. These files are static an
 To test the built version before deploying:
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
 ## Core Functionality
@@ -51,7 +51,8 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 - **Blog Manager**: Write and edit posts using the rich text editor.
   - **Status Workflow**: Posts can be saved as **Draft** (visible only to admins) or **Published** (visible to the public).
   - **Preview**: To preview a post, you must **Save** it first, then click the "Preview" eye icon to see it on the live site.
-- **Services Manager**: Update pricing tiers and features.
+- **Services Manager**: Update pricing tiers, descriptions, and images.
+  - **Auto-Optimization**: Uploaded images are automatically resized and compressed (WebP format) for optimal performance.
 - **Testimonials Manager**: Full control over client reviews displayed on the About page.
   - **Add/Edit**: Inputs for Client Name, Subtitle (Role/Service), Quote, Rating (1-5), and Display Order.
   - **Images**: Upload client photos directly; these are stored in the `testimonials/` folder in your storage bucket.
@@ -74,7 +75,7 @@ Access the content management system at `/admin` (e.g., `http://localhost:3000/#
 
 - **Home**: Landing page with featured content.
 - **Portfolio**: Filterable gallery of work.
-- **Blog**: Read articles and leave comments (subject to approval).
+- **Blog**: Read articles (Public commenting coming soon).
 - **Services**: View packages and pricing.
 - **About**: View artist biography and client testimonials.
 
@@ -256,10 +257,8 @@ Or check logs in Supabase Dashboard → Edge Functions → gemini-chat → Logs.
 
 ```bash
 rm -rf node_modules
-npm install --legacy-peer-deps
+pnpm install
 ```
-
-The `--legacy-peer-deps` flag is required due to React 19 dependencies.
 
 #### Environment Variables Not Working in Production
 
