@@ -1,12 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
 serve(async (req) => {
+  // CORS Configuration
+  const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || '*'
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  }
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -14,6 +16,39 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+
+    // 🛡️ Security: Input Validation
+    if (!Array.isArray(messages)) {
+        return new Response(JSON.stringify({ error: 'Invalid input: messages must be an array' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+    }
+
+    if (messages.length > 50) {
+        return new Response(JSON.stringify({ error: 'Invalid input: too many messages (max 50)' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+    }
+
+    for (const msg of messages) {
+        if (!msg || typeof msg !== 'object') {
+             return new Response(JSON.stringify({ error: 'Invalid message format' }), {
+                status: 400,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+        }
+
+        // Check text length
+        if (typeof msg.text !== 'string' || msg.text.length > 1000) {
+            return new Response(JSON.stringify({ error: 'Invalid input: message text must be a string and under 1000 chars' }), {
+                status: 400,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+        }
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
